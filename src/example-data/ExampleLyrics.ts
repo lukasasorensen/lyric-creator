@@ -16,5 +16,10 @@ export const darkHallowLyrics: ILyrics = {
       words: `So blow your whistle freight train\nCarry me further on down the track\nI’m going away I’m leaving today\nI’m going but I ain’t coming back`,
     },
   },
-  order: ["verse1", "chorus", "verse2", "chorus"],
+  order: [
+    { sectionName: "verse1" },
+    { sectionName: "chorus" },
+    { sectionName: "verse2" },
+    { sectionName: "chorus", isRepeated: true },
+  ],
 };

@@ -3,9 +3,13 @@ interface ISections {
   title: string;
 }
 
+interface IOrder {
+  sectionName: string;
+  isRepeated?: boolean;
+}
 export interface ILyrics {
   title: string;
-  order: string[];
+  order: IOrder[];
   sections: {
     [key: string]: ISections;
   };
