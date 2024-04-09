@@ -4,6 +4,7 @@ interface ISections {
 }
 
 export interface ILyrics {
+  title: string;
   order: string[];
   sections: {
     [key: string]: ISections;

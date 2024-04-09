@@ -1,6 +1,7 @@
 import { ILyrics } from "@/interfaces/Lyrics";
 
 export const darkHallowLyrics: ILyrics = {
+  title: "Dark Hollow",
   sections: {
     verse1: {
       title: "Verse 1",
