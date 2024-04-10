@@ -1,9 +1,21 @@
-interface ISections {
-  words: string;
+export interface IWord {
+  text: string;
+  chord?: IChord;
+  hasChord?: boolean;
+}
+
+export interface IChord {
+  letter: string;
+  quality: string;
+  extension: string;
+}
+
+export interface ISections {
+  words: IWord[];
   title: string;
 }
 
-interface IOrder {
+export interface IOrder {
   sectionName: string;
   isRepeated?: boolean;
 }
