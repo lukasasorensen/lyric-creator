@@ -4,6 +4,10 @@ export interface IWord {
   hasChord?: boolean;
 }
 
+export interface ILine {
+  words: IWord[];
+}
+
 export interface IChord {
   letter: string;
   quality: string;
@@ -11,7 +15,7 @@ export interface IChord {
 }
 
 export interface ISections {
-  words: IWord[];
+  lines: ILine[];
   title: string;
 }
 
