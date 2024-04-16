@@ -1,4 +1,4 @@
-import { ILyrics, IOrder, IWord } from "@/interfaces/Lyrics";
+import { ILyrics, IOrder } from "@/interfaces/Lyrics";
 
 interface ISimplifiedSection {
   [key: string]: {
@@ -76,13 +76,11 @@ const darkHallow: ILyricsExampleData = {
     { sectionName: "verse1" },
     { sectionName: "chorus" },
     { sectionName: "verse2" },
-    { sectionName: "chorus", isRepeated: true },
+    { sectionName: "chorus", showSectionTitleOnly: true, repeatCount: 2 },
   ],
 };
 
-export const darkHallowLyrics = getLyrics(darkHallow);
-
-export function getLyrics(song: ILyricsExampleData) {
+export function getLyrics(song: ILyricsExampleData): ILyrics {
   let lyrics: ILyrics = {
     order: song.order,
     title: song.title,
@@ -99,4 +97,8 @@ export function getLyrics(song: ILyricsExampleData) {
       title: section.title,
     };
   }
+
+  return lyrics;
 }
+
+export const darkHallowLyrics = getLyrics(darkHallow);

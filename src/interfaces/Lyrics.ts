@@ -14,19 +14,20 @@ export interface IChord {
   extension: string;
 }
 
-export interface ISections {
+export interface ISection {
   lines: ILine[];
   title: string;
 }
 
 export interface IOrder {
   sectionName: string;
-  isRepeated?: boolean;
+  showSectionTitleOnly?: boolean;
+  repeatCount?: number;
 }
 export interface ILyrics {
   title: string;
   order: IOrder[];
   sections: {
-    [key: string]: ISections;
+    [key: string]: ISection;
   };
 }

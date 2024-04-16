@@ -1,26 +1,39 @@
 "use client"
 
-import { ILyrics } from "@/interfaces/Lyrics";
-import { useState } from "react";
+import { ILine, ILyrics, ISection } from "@/interfaces/Lyrics";
+
+const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
+  return showSectionTitleOnly ? `[${title}]` : title;
+}
+
+function Line({ line }: { line: ILine }) {
+  return (
+    <p className="text-black whitespace-pre-line text-center leading-10">
+      {line.words.map(word => word.text).join(' ')}
+    </p>
+  )
+}
+
+function Section({ section, showSectionTitleOnly, repeatCount }: { section: ISection, showSectionTitleOnly: boolean, repeatCount?: number }) {
+  return (
+    <div className="lyric-section">
+      <h3 className="text-black text-lg font-bold text-center mt-5 mb-3">{getSectionTitle(section.title, !!showSectionTitleOnly)} {repeatCount && `[x${repeatCount}]`}</h3>
+      {!showSectionTitleOnly && section.lines?.length && section.lines.map((line, i) => <Line line={line} key={i} />)}
+    </div>
+  )
+}
 
 export default function LyricEditor({ lyrics }: { lyrics: ILyrics }) {
-  const getSectionTitle = (title: string, isRepeated: boolean) => {
-    return isRepeated ? `[${title}]` : title;
-  }
   return (
     <div className="lyric-editor-container w-full max-w-96 p-25">
       <h2 className="text-black text-2xl font-bold text-center">{lyrics.title}</h2>
-      {lyrics?.order?.length && lyrics.order.map((lyricSection, i) => {
-        const section = lyrics?.sections?.[lyricSection?.sectionName];
+      {lyrics?.order?.length && lyrics.order.map((order) => {
+        const section = lyrics?.sections?.[order?.sectionName];
         if (!section) return null;
 
-        return (
-          <div className="lyric-section" key={i}>
-            <h3 className="text-black text-lg font-bold text-center mt-5 mb-3">{getSectionTitle(section.title, !!lyricSection.isRepeated)}</h3>
-            {!lyricSection?.isRepeated && <p className="text-black whitespace-pre-line text-center leading-10">{section?.words ?? ''}</p>}
-          </div>
-        );
+        return <Section section={section} showSectionTitleOnly={!!order.showSectionTitleOnly} key={order.sectionName} repeatCount={order?.repeatCount} />
       })}
     </div>
   );
 }
+
