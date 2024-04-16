@@ -56,7 +56,20 @@ const darkHallow: ILyricsExampleData = {
     },
     chorus: {
       title: "Chorus",
-      words: `So blow your whistle freight train\nCarry me further on down the track\nI’m going away I’m leaving today\nI’m going but I ain’t coming back`,
+      lines: [
+        {
+          words: "So blow your whistle freight train",
+        },
+        {
+          words: "Carry me further on down the track",
+        },
+        {
+          words: "I’m going away I’m leaving today",
+        },
+        {
+          words: "I’m going but I ain’t coming back",
+        },
+      ],
     },
   },
   order: [
