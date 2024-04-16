@@ -1,15 +1,58 @@
-import { ILyrics } from "@/interfaces/Lyrics";
+import { ILyrics, IOrder, IWord } from "@/interfaces/Lyrics";
 
-export const darkHallowLyrics: ILyrics = {
+interface ISimplifiedSection {
+  [key: string]: {
+    title: string;
+    lines: ILineSimplified[];
+  };
+}
+
+interface ILineSimplified {
+  words: string;
+}
+
+interface ILyricsExampleData {
+  order: IOrder[];
+  title: string;
+  sections: ISimplifiedSection;
+}
+
+const darkHallow: ILyricsExampleData = {
   title: "Dark Hollow",
   sections: {
     verse1: {
       title: "Verse 1",
-      words: `I’d rather be in some dark hollow\nWhere the sun don’t ever shine\nThan to be home alone knowing that you’re gone\nWould cause me to lose my mind`,
+      lines: [
+        {
+          words: "I’d rather be in some dark hollow",
+        },
+        {
+          words: "Where the sun don’t ever shine",
+        },
+        {
+          words: "Than to be home alone knowing that you’re gone",
+        },
+        {
+          words: "Would cause me to lose my mind",
+        },
+      ],
     },
     verse2: {
       title: "Verse 2",
-      words: `I’d rather be in some dark hollow\nWhere the sun don’t ever shine\nThan to be in some big city\nIn a small room with you love on my mind`,
+      lines: [
+        {
+          words: "In a small room with you love on my mind",
+        },
+        {
+          words: "Than to be in some big city",
+        },
+        {
+          words: "Where the sun don’t ever shine",
+        },
+        {
+          words: "I’d rather be in some dark hollow",
+        },
+      ],
     },
     chorus: {
       title: "Chorus",
@@ -23,3 +66,24 @@ export const darkHallowLyrics: ILyrics = {
     { sectionName: "chorus", isRepeated: true },
   ],
 };
+
+export const darkHallowLyrics = getLyrics(darkHallow);
+
+export function getLyrics(song: ILyricsExampleData) {
+  let lyrics: ILyrics = {
+    order: song.order,
+    title: song.title,
+    sections: {},
+  };
+
+  for (const sectionKey in song.sections) {
+    const section = song.sections[sectionKey];
+
+    lyrics.sections[sectionKey] = {
+      lines: section.lines.map((line) => ({
+        words: line.words.split(" ").map((word) => ({ text: word })),
+      })),
+      title: section.title,
+    };
+  }
+}
