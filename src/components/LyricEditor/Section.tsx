@@ -18,7 +18,7 @@ export default function Section({
 }) {
   return (
     <div className="lyric-section">
-      <h3 className="text-black text-lg font-bold text-center mt-5 mb-3">
+      <h3 className="text-white text-lg font-bold text-center mt-5 mb-3">
         {getSectionTitle(section.title, !!showSectionTitleOnly)} {repeatCount && `[x${repeatCount}]`}
       </h3>
       {!showSectionTitleOnly && section.lines?.length && section.lines.map((line, i) => <Line line={line} key={i} />)}

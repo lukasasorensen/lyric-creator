@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-around p-24 bg-slate-700">
       <h1 className="text-center text-4xl font-bold mb-10">Lyric Creator</h1>
-      <div className="lyrics-editor-outer-container container mx-auto bg-white flex justify-center py-10">
+      <div className="lyrics-editor-outer-container container mx-auto bg-stone-800 flex justify-center py-10 rounded-2xl">
         {lyrics && <LyricEditor lyrics={lyrics} />}
       </div>
     </main>
