@@ -5,8 +5,12 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 export interface IWordProps {
   word: IWord;
+  mode: WordModes;
+  index: number;
   onWordChange?: (word: IWord) => void;
-  onNextWord?: () => void;
+  onNextWord?: (index: number) => void;
+  onBlur?: () => void;
+  onClick?: (index: number) => void;
 }
 
 export enum WordModes {
@@ -15,21 +19,16 @@ export enum WordModes {
   READONLY = "readonly",
 }
 
-export default function Word({ word, onWordChange, onNextWord }: IWordProps) {
-  const [mode, setMode] = useState(WordModes.VIEW);
+export default function Word({
+  word,
+  mode,
+  index,
+  onWordChange,
+  onNextWord,
+  onClick,
+  onBlur,
+}: IWordProps) {
   const [wordState, setWord] = useState(word);
-
-  const onWordContainerClick = () => {
-    if (mode === WordModes.READONLY) return;
-    if (mode === WordModes.VIEW) setMode(WordModes.EDIT);
-  };
-
-  const onWordContainerDoubleClick = () => {
-    if (mode === WordModes.READONLY) return;
-    if (mode === WordModes.VIEW) setMode(WordModes.EDIT);
-    wordState.text = "";
-    setWord({ ...wordState });
-  };
 
   const onWordTextChange = (text: string) => {
     wordState.text = text;
@@ -37,19 +36,25 @@ export default function Word({ word, onWordChange, onNextWord }: IWordProps) {
     onWordChange?.(wordState);
   };
 
-  const onBlur = () => {
-    setMode(WordModes.VIEW);
+  const onWordEditBlur = () => {
+    onBlur?.();
   };
 
   const goToNextWord = () => {
-    setMode(WordModes.VIEW);
-    onNextWord?.();
+    onNextWord?.(index);
+  };
+
+  const onWordContainerDoubleClick = () => {
+    if (mode === WordModes.READONLY) return;
+    wordState.text = "";
+    setWord({ ...wordState });
+    onClick?.(index);
   };
 
   return (
     <div
       className="word-container inline-block"
-      onClick={onWordContainerClick}
+      onClick={() => onClick?.(index)}
       onDoubleClick={onWordContainerDoubleClick}
     >
       {(mode === WordModes.VIEW || mode === WordModes.READONLY) && <WordView word={wordState} />}
@@ -57,7 +62,7 @@ export default function Word({ word, onWordChange, onNextWord }: IWordProps) {
         <WordEdit
           initialWord={wordState}
           onTextChange={onWordTextChange}
-          onBlur={onBlur}
+          onBlur={onWordEditBlur}
           goToNextWord={goToNextWord}
         />
       )}
