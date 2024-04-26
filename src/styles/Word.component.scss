@@ -1,0 +1,40 @@
+.word-container {
+  margin-left: -5px;
+  .word {
+    color: #fff;
+    display: inline-block;
+    padding: 1px 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: 1px solid transparent;
+    user-select: none;
+
+    &:hover,
+    &.selected {
+      background-color: rgb(30 41 59); // slate-800
+      border: 1px solid #525252;
+      border-radius: 7px;
+    }
+  }
+  .word-input {
+    background-color: rgb(30 41 59); // slate-800
+    border: 1px solid #525252;
+    border-radius: 7px;
+  }
+  .text-cursor {
+    animation: 1.2s infinite blink linear;
+    animation-direction: both;
+    display: inline-block;
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+}
