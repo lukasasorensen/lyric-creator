@@ -12,7 +12,7 @@ const getSectionFromOrder = (order: IOrder, lyrics: ILyrics, index: number) => {
 
 export default function LyricEditor({ lyrics }: { lyrics: ILyrics }) {
   return (
-    <div className="lyric-editor-container w-full max-w-96 p-25">
+    <div className="lyric-editor-container w-full p-25">
       <h2 className="text-white text-2xl font-bold text-center">{lyrics.title}</h2>
       {lyrics?.order?.length && lyrics.order.map((order, i) => getSectionFromOrder(order, lyrics, i))}
     </div>
