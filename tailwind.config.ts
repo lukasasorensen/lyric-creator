@@ -28,5 +28,6 @@ const config: Config = {
     ...reduceClasses(TailWindColorThemeClasses.light),
   ],
   plugins: [],
+  darkMode: 'selector',
 };
 export default config;

@@ -30,20 +30,3 @@ export function ThemedButton({
     </button>
   );
 }
-
-interface IThemedPargraphProps extends HTMLAttributes<HTMLParagraphElement> {
-  color?: "primary" | "secondary";
-}
-export function Paragraph({
-  color,
-  children,
-  className,
-  ...props
-}: IThemedPargraphProps) {
-  const { twColorClasses } = useThemeContext();
-  return (
-    <p {...props} className={`${className} ${twColorClasses.TEXT_PRIMARY}`}>
-      {children}
-    </p>
-  );
-}

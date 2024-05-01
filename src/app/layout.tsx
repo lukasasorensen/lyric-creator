@@ -4,6 +4,7 @@ import "./globals.css";
 import "../styles/index.scss";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import NavBar from "@/components/NavBar";
+import { Body } from "@/components/Body";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <ThemeProvider>
         <body className={inter.className}>
-          <NavBar />
-          {children}
+          <Body>
+            <NavBar />
+            {children}
+          </Body>
         </body>
       </ThemeProvider>
     </html>

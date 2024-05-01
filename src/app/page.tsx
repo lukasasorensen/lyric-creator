@@ -11,7 +11,11 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-around ${twColorClasses.BG_PRIMARY} p-24`}
     >
-      <h1 className="mb-10 text-center text-4xl font-bold">Lyrical</h1>
+      <h1
+        className={`mb-10 text-center text-4xl font-bold ${twColorClasses.TEXT_SECONDARY}`}
+      >
+        Lyrical
+      </h1>
       <ThemedButton
         text="Lyric Editor"
         color="primary"

@@ -8,11 +8,9 @@ export default function EditLyricWords({ lyrics }: { lyrics: ILyrics }) {
     return getWordsFromLyrics(lyrics);
   }, [lyrics]);
 
-  const { twColorClasses } = useThemeContext();
-
   return (
     <div className="p-25 container w-full">
-      <h2 className={`text-center text-2xl font-bold ${twColorClasses.TEXT_PRIMARY}`}>
+      <h2 className={`text-center text-2xl font-bold`}>
         {lyrics.title}
       </h2>
       <textarea>{words}</textarea>
