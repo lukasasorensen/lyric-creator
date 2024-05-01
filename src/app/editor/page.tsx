@@ -15,7 +15,7 @@ export default function Editor() {
     <main
       className={`flex min-h-screen flex-col items-center justify-around ${twColorClasses.BG_PRIMARY} p-24`}
     >
-      <h1 className="mb-10 text-center text-4xl font-bold">Lyric Creator</h1>
+      <h1 className={`mb-10 text-center text-4xl font-bold ${twColorClasses.TEXT_PRIMARY}`}>Lyric Creator</h1>
       <div
         className={`lyrics-editor-outer-container container mx-auto flex flex-col justify-center rounded-2xl ${twColorClasses.BG_SECONDARY} py-10`}
       >

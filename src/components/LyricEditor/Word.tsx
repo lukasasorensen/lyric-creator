@@ -1,5 +1,6 @@
 "use client";
 import { IWord } from "@/interfaces/Lyrics";
+import { useThemeContext } from "@/providers/ThemeProvider";
 import keyboardKey from "keyboard-key";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
@@ -57,7 +58,9 @@ export default function Word({
       onClick={() => onClick?.(index)}
       onDoubleClick={onWordContainerDoubleClick}
     >
-      {(mode === WordModes.VIEW || mode === WordModes.READONLY) && <WordView word={wordState} />}
+      {(mode === WordModes.VIEW || mode === WordModes.READONLY) && (
+        <WordView word={wordState} />
+      )}
       {mode === WordModes.EDIT && (
         <WordEdit
           initialWord={wordState}
@@ -71,7 +74,8 @@ export default function Word({
 }
 
 function WordView({ word }: { word: IWord }) {
-  return <div className="word">{word.text} </div>;
+  const { twColorClasses} = useThemeContext()
+  return <div className={`word ${twColorClasses.TEXT_PRIMARY}`}>{word.text} </div>;
 }
 
 function WordEdit({

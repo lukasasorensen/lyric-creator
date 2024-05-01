@@ -1,13 +1,19 @@
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getButtonThemeClasses } from "@/utils/ThemeUtil";
-import { ButtonHTMLAttributes, useMemo } from "react";
+import { ButtonHTMLAttributes, HTMLAttributes, useMemo } from "react";
 
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   title?: string;
   color?: "primary" | "secondary" | "warn" | "danger" | "none";
 }
-export function ThemedButton({ title, text, color, ...props }: IThemedButtonProps) {
+export function ThemedButton({
+  title,
+  text,
+  color,
+  className,
+  ...props
+}: IThemedButtonProps) {
   const { twColorClasses } = useThemeContext();
 
   const buttonThemeClasses = useMemo<string>(() => {
@@ -17,10 +23,27 @@ export function ThemedButton({ title, text, color, ...props }: IThemedButtonProp
   return (
     <button
       {...props}
-      className={`w-fit min-w-24 rounded-md px-5 py-1.5 text-center ${buttonThemeClasses}`}
+      className={`w-fit min-w-24 rounded-md px-5 py-1.5 text-center ${buttonThemeClasses} ${className}`}
       title={title ?? text}
     >
       {text}
     </button>
+  );
+}
+
+interface IThemedPargraphProps extends HTMLAttributes<HTMLParagraphElement> {
+  color?: "primary" | "secondary";
+}
+export function Paragraph({
+  color,
+  children,
+  className,
+  ...props
+}: IThemedPargraphProps) {
+  const { twColorClasses } = useThemeContext();
+  return (
+    <p {...props} className={`${className} ${twColorClasses.TEXT_PRIMARY}`}>
+      {children}
+    </p>
   );
 }

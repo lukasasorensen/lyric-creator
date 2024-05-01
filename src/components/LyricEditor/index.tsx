@@ -1,6 +1,7 @@
 "use client";
 import { ILyrics, IOrder } from "@/interfaces/Lyrics";
 import Section from "./Section";
+import { useThemeContext } from "@/providers/ThemeProvider";
 
 const getSectionFromOrder = (order: IOrder, lyrics: ILyrics, index: number) => {
   const section = lyrics?.sections?.[order?.sectionName];
@@ -17,9 +18,12 @@ const getSectionFromOrder = (order: IOrder, lyrics: ILyrics, index: number) => {
 };
 
 export default function LyricEditor({ lyrics }: { lyrics: ILyrics }) {
+  const { twColorClasses } = useThemeContext();
   return (
     <div className="lyric-editor-container p-25 w-full">
-      <h2 className="text-center text-2xl font-bold text-white">{lyrics.title}</h2>
+      <h2 className={`${twColorClasses.TEXT_PRIMARY} text-2xl font-bold text-center`}>
+        {lyrics.title}
+      </h2>
       {lyrics?.order?.length &&
         lyrics.order.map((order, i) => getSectionFromOrder(order, lyrics, i))}
     </div>

@@ -2,8 +2,15 @@
 import { ILine } from "@/interfaces/Lyrics";
 import Word, { WordModes } from "./Word";
 import { useState } from "react";
+import { useThemeContext } from "@/providers/ThemeProvider";
 
-export default function Line({ line, onNextLine }: { line: ILine; onNextLine?: () => void }) {
+export default function Line({
+  line,
+  onNextLine,
+}: {
+  line: ILine;
+  onNextLine?: () => void;
+}) {
   const [lineState, setLineState] = useState(line);
   const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
   const onWordContainerClick = (index: number) => {
@@ -31,8 +38,12 @@ export default function Line({ line, onNextLine }: { line: ILine; onNextLine?: (
     setSelectedWordIndex(null);
   };
 
+  const { twColorClasses } = useThemeContext();
+
   return (
-    <div className="whitespace-pre-line text-center leading-10 text-white">
+    <div
+      className={`whitespace-pre-line text-center leading-10 ${twColorClasses.TEXT_PRIMARY}`}
+    >
       {lineState.words.map((word, i) => (
         <Word
           mode={selectedWordIndex === i ? WordModes.EDIT : WordModes.VIEW}
