@@ -24,6 +24,7 @@ export interface IOrder {
   showSectionTitleOnly?: boolean;
   repeatCount?: number;
 }
+
 export interface ILyrics {
   title: string;
   order: IOrder[];

@@ -1,4 +1,12 @@
+import { TailWindColorThemeClasses } from "./src/constants/ColorTheme";
 import type { Config } from "tailwindcss";
+
+const reduceClasses = (obj: { [key: string]: string }) => {
+  return Object.values(obj).reduce((acc: string[], curr: string) => {
+    acc.push(...curr.split(" "));
+    return acc;
+  }, []);
+};
 
 const config: Config = {
   content: [
@@ -15,6 +23,10 @@ const config: Config = {
       },
     },
   },
+  safelist: [
+    ...reduceClasses(TailWindColorThemeClasses.dark),
+    ...reduceClasses(TailWindColorThemeClasses.light),
+  ],
   plugins: [],
 };
 export default config;
