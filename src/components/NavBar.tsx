@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import ThemeSwitchButton from "./ThemeSwitchButton";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -90,6 +91,9 @@ export default function NavBar() {
                   Editor
                 </Link>
               </div>
+            </div>
+            <div className="absolute right-0">
+              <ThemeSwitchButton />
             </div>
           </div>
         </div>
