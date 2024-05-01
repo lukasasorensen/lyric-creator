@@ -1,9 +1,14 @@
-import { TailWindColorThemeClasses } from "@/constants/ColorTheme";
+"use client";
+import {
+  ITailWindColorThemeClasses,
+  TailWindColorThemeClasses,
+} from "@/constants/ColorTheme";
 import { ReactNode, createContext, useContext, useState } from "react";
 
 export const ThemeContext = createContext({
   theme: "dark",
   twColorClasses: TailWindColorThemeClasses.dark,
+  switchTheme: () => {},
 });
 
 export function useThemeContext() {
@@ -13,16 +18,17 @@ export function useThemeContext() {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState("dark");
-  const [tailWindColorThemeClasses, setTailWindColorThemeClasses] = useState(
-    TailWindColorThemeClasses.dark,
-  );
+  const [tailWindColorThemeClasses, setTailWindColorThemeClasses] =
+    useState<ITailWindColorThemeClasses>(TailWindColorThemeClasses.dark);
 
   const value = {
     theme,
     twColorClasses: tailWindColorThemeClasses,
-    setTheme: (theme: "dark" | "light") => {
-      setTheme(theme);
-      setTailWindColorThemeClasses(TailWindColorThemeClasses[theme]);
+    switchTheme: () => {
+      console.log("wtfffff");
+      const newTheme = theme === "dark" ? "light" : "dark";
+      setTheme(newTheme);
+      setTailWindColorThemeClasses(TailWindColorThemeClasses[newTheme]);
     },
   };
 

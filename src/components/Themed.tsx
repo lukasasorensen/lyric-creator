@@ -7,7 +7,7 @@ interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   title?: string;
   color?: "primary" | "secondary" | "warn" | "danger" | "none";
 }
-export function ThemedButton({ title, text, color }: IThemedButtonProps) {
+export function ThemedButton({ title, text, color, ...props }: IThemedButtonProps) {
   const { twColorClasses } = useThemeContext();
 
   const buttonThemeClasses = useMemo<string>(() => {
@@ -16,6 +16,7 @@ export function ThemedButton({ title, text, color }: IThemedButtonProps) {
 
   return (
     <button
+      {...props}
       className={`w-fit min-w-24 rounded-md px-5 py-1.5 text-center ${buttonThemeClasses}`}
       title={title ?? text}
     >

@@ -10,12 +10,15 @@ export interface ITailWindColorThemeClasses {
   BTN_NONE: string;
 }
 
-export const TailWindColorThemeClasses = {
+export const TailWindColorThemeClasses: {
+  light: ITailWindColorThemeClasses;
+  dark: ITailWindColorThemeClasses;
+} = {
   light: {
     TEXT_PRIMARY: "text-slate-950",
     TEXT_SECONDARY: "text-cyan-800",
-    BG_PRIMARY: "bg-slate-700",
-    BG_SECONDARY: "bg-stone-800",
+    BG_PRIMARY: "bg-slate-300",
+    BG_SECONDARY: "bg-slate-100",
     BTN_PRIMARY: "bg-cyan-900 text-white",
     BTN_SECONDARY: "bg-slate-100 text-slate-950",
     BTN_DANGER: "bg-cyan-900 text-white",
