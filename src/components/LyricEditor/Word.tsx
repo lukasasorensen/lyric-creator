@@ -15,7 +15,7 @@ export interface IWordProps {
 }
 
 export enum WordModes {
-  EDIT = "edit",
+  EDIT_TEXT = "edit-text",
   VIEW = "view",
   READONLY = "readonly",
 }
@@ -61,7 +61,7 @@ export default function Word({
       {(mode === WordModes.VIEW || mode === WordModes.READONLY) && (
         <WordView word={wordState} />
       )}
-      {mode === WordModes.EDIT && (
+      {mode === WordModes.EDIT_TEXT && (
         <WordEdit
           initialWord={wordState}
           onTextChange={onWordTextChange}
@@ -74,7 +74,7 @@ export default function Word({
 }
 
 function WordView({ word }: { word: IWord }) {
-  const { twColorClasses} = useThemeContext()
+  const { twColorClasses } = useThemeContext();
   return <div className={`word ${twColorClasses.TEXT_PRIMARY}`}>{word.text} </div>;
 }
 
