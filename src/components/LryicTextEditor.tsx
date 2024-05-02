@@ -1,10 +1,15 @@
 import { ILyrics, ISection } from "@/interfaces/Lyrics";
 import { useThemeContext } from "@/providers/ThemeProvider";
-import { getWordsFromLyrics, getWordsFromSection } from "@/utils/LyricsUtil";
-import { useEffect, useMemo, useRef } from "react";
+import { getWordsFromSection } from "@/utils/LyricsUtil";
+import { Enter, getCode } from "keyboard-key";
+import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 
 export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
   const { twColorClasses } = useThemeContext();
+  const [isAddingNewSection, setIsAddingNewSection] = useState(false);
+  const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [lyricsUpdate, setLyrics] = useState(lyrics);
 
   const auto_grow = (element: HTMLElement) => {
     element.style.height = "5px";
@@ -16,15 +21,32 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
     auto_grow(e.target);
   };
 
+  const onAddSectionButtonClick = () => {
+    setIsAddingNewSection(true);
+  };
+
+  const onNewSectionTitleInputKeyDown = (e: KeyboardEvent) => {
+    if (!newSectionTitle) return;
+
+    if (getCode(e) === Enter) {
+      lyricsUpdate.sections[newSectionTitle] = { title: newSectionTitle, lines: [] };
+      setLyrics({
+        ...lyricsUpdate,
+      });
+      setNewSectionTitle("");
+      setIsAddingNewSection(false);
+    }
+  };
+
   useEffect(() => {
     const textAreas = document.getElementsByClassName("section-input");
-    Array.from(textAreas).forEach((el) => auto_grow(el));
+    Array.from(textAreas).forEach((el) => auto_grow(el as HTMLElement));
   }, []);
 
   return (
     <div className="container w-full px-24">
-      <h2 className="mb-10 text-center text-2xl font-bold">{lyrics.title}</h2>
-      {Object.values(lyrics.sections).map((section: ISection, i: number) => (
+      <h2 className="mb-10 text-center text-2xl font-bold">{lyricsUpdate.title}</h2>
+      {Object.values(lyricsUpdate.sections).map((section: ISection, i: number) => (
         <div className="mb-10" key={i + "-section"}>
           <h2 className="mb-5 text-center">{section.title}</h2>
           <textarea
@@ -34,6 +56,28 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
           ></textarea>
         </div>
       ))}
+      <div className="container flex justify-center">
+        {!isAddingNewSection && (
+          <button
+            onClick={onAddSectionButtonClick}
+            className={`rounded-full p-2 ${twColorClasses.BTN_PRIMARY}`}
+          >
+            <FaPlus />
+          </button>
+        )}
+        {isAddingNewSection && (
+          <div className="flex flex-col">
+            <h3 className="mb-2 text-center">Section Name</h3>
+            <input
+              value={newSectionTitle}
+              autoFocus
+              className={`block w-full max-w-60 rounded-md border border-gray-800 p-2 text-center focus:border-blue-500 focus:ring-blue-500 ${twColorClasses.TEXT_PRIMARY} ${twColorClasses.BG_PRIMARY}`}
+              onChange={(e) => setNewSectionTitle(e.target.value)}
+              onKeyDown={onNewSectionTitleInputKeyDown}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
