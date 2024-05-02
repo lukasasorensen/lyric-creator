@@ -1,5 +1,6 @@
 "use client";
-import LyricEditor from "@/components/LyricEditor/index";
+import LyricTextEditor from "@/components/LryicTextEditor";
+import LyricChordEditor from "@/components/LyricChordEditor/index";
 import { ThemedButton } from "@/components/Themed";
 import { darkHallowLyrics } from "@/example-data/ExampleLyrics";
 import { ILyrics } from "@/interfaces/Lyrics";
@@ -8,7 +9,7 @@ import { useState } from "react";
 
 export default function Editor() {
   const [lyrics, setLyrics] = useState<ILyrics | null>(darkHallowLyrics);
-  const [mode, setMode] = useState<"edit" | "view">("view");
+  const [mode, setMode] = useState<"edit-text" | "edit-chords" | "view">("edit-chords");
   const { twColorClasses } = useThemeContext();
 
   return (
@@ -24,23 +25,24 @@ export default function Editor() {
         className={`lyrics-editor-outer-container container mx-auto flex flex-col justify-center rounded-2xl ${twColorClasses.BG_SECONDARY} py-10`}
       >
         <div className="container mb-10 flex w-full flex-row justify-center gap-5">
-          {mode === "edit" && (
+          {mode === "edit-text" && (
             <ThemedButton
               text="Done"
               color="primary"
-              onClick={() => setMode("view")}
+              onClick={() => setMode("edit-chords")}
             ></ThemedButton>
           )}
-          {mode === "view" && (
+          {mode === "edit-chords" && (
             <ThemedButton
-              text="Edit"
-              color="primary"
-              onClick={() => setMode("edit")}
+              text="Edit Text"
+              color="secondary"
+              onClick={() => setMode("edit-text")}
             ></ThemedButton>
           )}
         </div>
         <div className="lyrics-container">
-          {lyrics && <LyricEditor lyrics={lyrics} />}
+          {lyrics && mode === "edit-chords" && <LyricChordEditor lyrics={lyrics} />}
+          {lyrics && mode === "edit-text" && <LyricTextEditor lyrics={lyrics} />}
         </div>
       </div>
     </main>

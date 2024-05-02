@@ -9,11 +9,20 @@ export function getWordsFromLyrics(lyrics: ILyrics): string {
 
       if (!section?.lines?.length) return;
 
-      section.lines.map((line) => {
-        return line.words.join(" ");
-      });
+      return getWordsFromSection(section);
     })
-    .join("\\n");
+    .join("\n\n");
 
+  return words;
+}
+
+export function getWordsFromSection(section: ISection) {
+  if (!section?.lines?.length) return "";
+
+  const words: string = section.lines
+    .map((line) => {
+      return line.words.map((w) => w.text).join(" ");
+    })
+    .join("\n");
   return words;
 }

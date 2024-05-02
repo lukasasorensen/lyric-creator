@@ -17,7 +17,7 @@ const getSectionFromOrder = (order: IOrder, lyrics: ILyrics, index: number) => {
   );
 };
 
-export default function LyricEditor({ lyrics }: { lyrics: ILyrics }) {
+export default function LyricChordEditor({ lyrics }: { lyrics: ILyrics }) {
   return (
     <div className="lyric-editor-container p-25 w-full">
       <h2 className="text-center text-2xl font-bold">{lyrics.title}</h2>
