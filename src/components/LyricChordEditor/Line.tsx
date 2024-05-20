@@ -1,7 +1,6 @@
 "use client";
 import { ILine } from "@/interfaces/Lyrics";
 import Word, { WordModes } from "./Word";
-import { useState } from "react";
 
 export default function Line({
   line,
