@@ -1,6 +1,6 @@
 "use client";
 import LyricTextEditor from "@/components/LyricTextEditor";
-import LyricChordEditor from "@/components/LyricChordEditor/index";
+import LyricChordEditor from "@/components/Lyrics/index";
 import { ThemedButton } from "@/components/Themed";
 import { darkHallowLyrics } from "@/example-data/ExampleLyrics";
 import { ILyrics } from "@/interfaces/Lyrics";
