@@ -4,6 +4,7 @@ import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { CirclePlusButton } from "./common/CirclePlusButton";
 
 export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
   const { twColorClasses } = useThemeContext();
@@ -58,12 +59,7 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
       ))}
       <div className="container flex justify-center">
         {!isAddingNewSection && (
-          <button
-            onClick={onAddSectionButtonClick}
-            className={`rounded-full p-2 ${twColorClasses.BTN_PRIMARY}`}
-          >
-            <FaPlus />
-          </button>
+          <CirclePlusButton onClick={onAddSectionButtonClick} />
         )}
         {isAddingNewSection && (
           <div className="flex flex-col">
