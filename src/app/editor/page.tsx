@@ -1,6 +1,6 @@
 "use client";
 import LyricTextEditor from "@/components/LyricTextEditor";
-import LyricChordEditor from "@/components/Lyrics/index";
+import LyricEditor from "@/components/Lyrics/LyricEditor";
 import { ThemedButton } from "@/components/Themed";
 import { darkHallowLyrics } from "@/example-data/ExampleLyrics";
 import { ILyrics } from "@/interfaces/Lyrics";
@@ -41,8 +41,7 @@ export default function Editor() {
           )}
         </div>
         <div className="lyrics-container">
-          {lyrics && mode === "edit-chords" && <LyricChordEditor lyrics={lyrics} />}
-          {lyrics && mode === "edit-text" && <LyricTextEditor lyrics={lyrics} />}
+          {lyrics && <LyricEditor lyrics={lyrics} />}
         </div>
       </div>
     </main>

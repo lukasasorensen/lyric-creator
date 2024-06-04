@@ -58,9 +58,7 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
         </div>
       ))}
       <div className="container flex justify-center">
-        {!isAddingNewSection && (
-          <CirclePlusButton onClick={onAddSectionButtonClick} />
-        )}
+        {!isAddingNewSection && <CirclePlusButton onClick={onAddSectionButtonClick} />}
         {isAddingNewSection && (
           <div className="flex flex-col">
             <h3 className="mb-2 text-center">Section Name</h3>

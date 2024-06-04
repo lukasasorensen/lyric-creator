@@ -1,15 +1,22 @@
 "use client";
-import { ILyrics, IOrder, ISection } from "@/interfaces/Lyrics";
-import Section from "./Section";
-import { useThemeContext } from "@/providers/ThemeProvider";
-import { FaPlus } from "react-icons/fa";
-import { PopoverList, PopoverListItemButton } from "../common/Popover";
-import { useEffect, useRef, useState } from "react";
-import { getWordsFromSection } from "@/utils/LyricsUtil";
-import { ThemedButton } from "../Themed";
-import { FaPencil } from "react-icons/fa6";
 
-function GetSectionFromOrder({ order, lyrics }: { order: IOrder; lyrics: ILyrics }) {
+import { ILyrics, IOrder, ISection } from "@/interfaces/Lyrics";
+import { useThemeContext } from "@/providers/ThemeProvider";
+import { getWordsFromSection } from "@/utils/LyricsUtil";
+import { useRef, useState } from "react";
+import { FaPencil } from "react-icons/fa6";
+import Section from "./Section";
+import { ThemedButton } from "../Themed";
+
+export default function EditSection({
+  order,
+  lyrics,
+  onSectionChange,
+}: {
+  order: IOrder;
+  lyrics: ILyrics;
+  onSectionChange?: (section: ISection) => void;
+}) {
   const section = lyrics?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(false);
   const [isPencilShown, setIsPencilShown] = useState(false);
@@ -18,9 +25,11 @@ function GetSectionFromOrder({ order, lyrics }: { order: IOrder; lyrics: ILyrics
 
   const onEditButtonClick = (element: HTMLElement) => {
     setIsEditing(true);
-    if (inputRef.current) {
-      auto_grow(inputRef.current);
-    }
+    setTimeout(() => {
+      if (inputRef.current) {
+        auto_grow(inputRef.current);
+      }
+    }, 1);
   };
 
   const auto_grow = (element: HTMLElement) => {
@@ -31,6 +40,12 @@ function GetSectionFromOrder({ order, lyrics }: { order: IOrder; lyrics: ILyrics
   const onTextChange = (section: ISection, e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!e.target) return;
     auto_grow(e.target);
+    onSectionChange?.(section);
+  };
+
+  const done = () => {
+    setIsEditing(false);
+    // post to db
   };
 
   return (
@@ -39,10 +54,14 @@ function GetSectionFromOrder({ order, lyrics }: { order: IOrder; lyrics: ILyrics
         {isEditing && (
           <div className="mb-10">
             <h2 className="mb-5 text-center">{section.title}</h2>
+            <div className="flex w-full">
+              <ThemedButton className="ml-auto" text="Done" onClick={() => done()} />
+            </div>
             <textarea
               className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${twColorClasses.TEXT_PRIMARY} ${twColorClasses.BG_PRIMARY}`}
               defaultValue={getWordsFromSection(section)}
               onChange={(e) => onTextChange(section, e)}
+              ref={inputRef}
             ></textarea>
           </div>
         )}
@@ -67,34 +86,6 @@ function GetSectionFromOrder({ order, lyrics }: { order: IOrder; lyrics: ILyrics
             />
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-export default function LyricChordEditor({ lyrics }: { lyrics: ILyrics }) {
-  const addNewSection = () => {};
-
-  const showSectionSelector = () => {};
-
-  return (
-    <div className="lyric-editor-container p-25 w-full">
-      <h2 className="mb-5 text-center text-2xl font-bold">{lyrics.title}</h2>
-      {lyrics?.order?.length &&
-        lyrics.order.map((order, i) => (
-          <GetSectionFromOrder key={i} order={order} lyrics={lyrics} index={i} />
-        ))}
-      <div className="flex w-full justify-center">
-        <PopoverList>
-          <PopoverListItemButton
-            text="Add New Section"
-            onClick={addNewSection}
-          ></PopoverListItemButton>
-          <PopoverListItemButton
-            text="Repeat Section"
-            onClick={showSectionSelector}
-          ></PopoverListItemButton>
-        </PopoverList>
       </div>
     </div>
   );
