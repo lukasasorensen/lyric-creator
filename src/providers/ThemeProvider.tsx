@@ -25,7 +25,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     theme,
     twColorClasses: tailWindColorThemeClasses,
     switchTheme: () => {
-      console.log("wtfffff");
       const newTheme = theme === "dark" ? "light" : "dark";
       setTheme(newTheme);
       setTailWindColorThemeClasses(TailWindColorThemeClasses[newTheme]);

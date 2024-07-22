@@ -1,8 +1,10 @@
+import { getLyrics } from "@/clients/lyricClient";
 import LyricEditor from "@/components/Lyrics/LyricEditor";
-import { darkHallowLyrics } from "@/example-data/ExampleLyrics";
+import { darkHallowLyrics, populateLyricSections } from "@/example-data/ExampleLyrics";
 
-export default function Editor() {
-  const lyrics = darkHallowLyrics;
+export default async function Editor() {
+  const allLyrics = await getLyrics();
+  const lyrics = populateLyricSections(allLyrics?.[0]);
 
   return (
     <main className="lyrics-container">{lyrics && <LyricEditor lyrics={lyrics} />}</main>
