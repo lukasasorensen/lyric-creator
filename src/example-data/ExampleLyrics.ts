@@ -80,7 +80,7 @@ const darkHallow: ILyricsExampleData = {
   ],
 };
 
-export function getLyrics(song: ILyricsExampleData): ILyrics {
+export function populateLyricSections(song: ILyricsExampleData): ILyrics {
   let lyrics: ILyrics = {
     order: song.order,
     title: song.title,
@@ -101,4 +101,4 @@ export function getLyrics(song: ILyricsExampleData): ILyrics {
   return lyrics;
 }
 
-export const darkHallowLyrics = getLyrics(darkHallow);
+export const darkHallowLyrics = populateLyricSections(darkHallow);
