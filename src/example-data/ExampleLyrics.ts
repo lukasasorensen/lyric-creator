@@ -1,4 +1,4 @@
-import { ILyrics, IOrder } from "@/interfaces/Lyrics";
+import { ILyrics, IOrder } from "@/interfaces/ui/Lyrics";
 
 interface ISimplifiedSection {
   [key: string]: {

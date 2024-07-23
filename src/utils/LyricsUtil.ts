@@ -1,4 +1,4 @@
-import { ILyrics, IOrder, ISection } from "@/interfaces/Lyrics";
+import { ILyrics, IOrder, ISection } from "@/interfaces/ui/Lyrics";
 
 export function getWordsFromLyrics(lyrics: ILyrics): string {
   if (!lyrics?.order?.length) return "";

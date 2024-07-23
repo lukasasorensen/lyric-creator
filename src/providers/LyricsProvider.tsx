@@ -1,5 +1,5 @@
 "use client";
-import { ILyrics } from "@/interfaces/Lyrics";
+import { ILyrics } from "@/interfaces/ui/Lyrics";
 import { ReactNode, createContext, useReducer } from "react";
 
 export const LyricsContext = createContext(null);

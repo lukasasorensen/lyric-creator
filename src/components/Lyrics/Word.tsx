@@ -1,5 +1,5 @@
 "use client";
-import { IWord } from "@/interfaces/Lyrics";
+import { IWord } from "@/interfaces/ui/Lyrics";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import keyboardKey from "keyboard-key";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";

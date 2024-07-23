@@ -1,6 +1,6 @@
 "use client";
 
-import { ILyrics, IOrder, ISection } from "@/interfaces/Lyrics";
+import { ILyrics, IOrder, ISection } from "@/interfaces/ui/Lyrics";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { useRef, useState } from "react";

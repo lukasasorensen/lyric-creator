@@ -1,5 +1,5 @@
 "use client";
-import { ISection } from "@/interfaces/Lyrics";
+import { ISection } from "@/interfaces/ui/Lyrics";
 import Line from "./Line";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {

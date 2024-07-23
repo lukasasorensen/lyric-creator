@@ -1,4 +1,4 @@
-import { ILyrics, ISection } from "@/interfaces/Lyrics";
+import { ILyrics, ISection } from "@/interfaces/ui/Lyrics";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";

@@ -1,5 +1,5 @@
 "use client";
-import { ILine } from "@/interfaces/Lyrics";
+import { ILine } from "@/interfaces/ui/Lyrics";
 import Word, { WordModes } from "./Word";
 
 export default function Line({
