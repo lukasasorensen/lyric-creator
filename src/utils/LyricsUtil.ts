@@ -1,7 +1,7 @@
-import { ILineDb, ILyricsDb } from "@/interfaces/db/Lyrics";
-import { ILyrics, IOrder, ISection } from "@/interfaces/ui/Lyrics";
+import { ILineDb, ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { ILyricsUi, IOrder, ISection } from "@/interfaces/ui/ILyricsUi";
 
-export function getWordsFromLyrics(lyrics: ILyrics): string {
+export function getWordsFromLyrics(lyrics: ILyricsUi): string {
   if (!lyrics?.order?.length) return "";
 
   const words: string = lyrics.order
@@ -28,8 +28,8 @@ export function getWordsFromSection(section: ISection) {
   return words;
 }
 
-export function populateLyricSections(song: ILyricsDb): ILyrics {
-  let lyrics: ILyrics = {
+export function populateLyricSections(song: ILyricsDb): ILyricsUi {
+  let lyrics: ILyricsUi = {
     order: song.order,
     title: song.title,
     sections: {},

@@ -1,11 +1,11 @@
-import { ILyrics, ISection } from "@/interfaces/ui/Lyrics";
+import { ILyricsUi, ISection } from "@/interfaces/ui/ILyricsUi";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";
 import { useEffect, useState } from "react";
 import { CirclePlusButton } from "./common/CirclePlusButton";
 
-export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
+export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsUi }) {
   const { twColorClasses } = useThemeContext();
   const [isAddingNewSection, setIsAddingNewSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");

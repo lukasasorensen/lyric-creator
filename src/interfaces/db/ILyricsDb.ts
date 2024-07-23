@@ -16,6 +16,7 @@ export interface ILineDb {
 }
 
 export interface ILyricsDb {
+  _id: string;
   order: IOrderDb[];
   title: string;
   sections: ISectionDb;

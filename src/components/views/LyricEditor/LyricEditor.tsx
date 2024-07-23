@@ -1,10 +1,10 @@
 "use client";
-import { ILyrics } from "@/interfaces/ui/Lyrics";
+import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { useThemeContext } from "@/providers/ThemeProvider";
 
-export default function LyricEditor({ lyrics }: { lyrics: ILyrics }) {
+export default function LyricEditor({ lyrics }: { lyrics: ILyricsUi }) {
   const { twColorClasses } = useThemeContext();
   const addNewSection = () => {};
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { ILyrics, IOrder, ISection } from "@/interfaces/ui/Lyrics";
+import { ILyricsUi, IOrder, ISection } from "@/interfaces/ui/ILyricsUi";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { useRef, useState } from "react";
@@ -14,7 +14,7 @@ export default function EditSection({
   onSectionChange,
 }: {
   order: IOrder;
-  lyrics: ILyrics;
+  lyrics: ILyricsUi;
   onSectionChange?: (section: ISection) => void;
 }) {
   const section = lyrics?.sections?.[order?.sectionName];

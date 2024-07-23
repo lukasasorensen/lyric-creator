@@ -26,6 +26,7 @@ export interface IOrder {
 }
 
 export interface ILyrics {
+  _id: string;
   title: string;
   order: IOrder[];
   sections: {

@@ -1,4 +1,4 @@
-import { ILyrics, IOrder } from "@/interfaces/ui/Lyrics";
+import { ILyricsUi, IOrder } from "@/interfaces/ui/ILyricsUi";
 import { populateLyricSections } from "@/utils/LyricsUtil";
 
 interface ISimplifiedSection {
