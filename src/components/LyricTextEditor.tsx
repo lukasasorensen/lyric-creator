@@ -3,7 +3,6 @@ import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import { CirclePlusButton } from "./common/CirclePlusButton";
 
 export default function LyricTextEditor({ lyrics }: { lyrics: ILyrics }) {
