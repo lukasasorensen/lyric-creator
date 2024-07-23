@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import ThemeSwitchButton from "./ThemeSwitchButton";
+import ThemeSwitchButton from "@/components/ThemeSwitchButton";
 
 export default function NavBar() {
   const pathname = usePathname();

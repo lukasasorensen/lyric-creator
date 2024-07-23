@@ -1,6 +1,6 @@
 "use client";
 import { ILyrics } from "@/interfaces/ui/Lyrics";
-import { PopoverList, PopoverListItemButton } from "../common/Popover";
+import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { useThemeContext } from "@/providers/ThemeProvider";
 

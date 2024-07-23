@@ -1,5 +1,5 @@
 import { getLyrics } from "@/clients/lyricClient";
-import LyricEditor from "@/components/Lyrics/LyricEditor";
+import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
 import { ILyrics } from "@/interfaces/ui/Lyrics";
 
 export default async function Editor() {

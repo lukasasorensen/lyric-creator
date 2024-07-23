@@ -6,7 +6,7 @@ import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import Section from "./Section";
-import { ThemedButton } from "../Themed";
+import { ThemedButton } from "@/components/Themed";
 
 export default function EditSection({
   order,
