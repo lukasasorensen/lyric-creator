@@ -1,15 +1,13 @@
 import { getLyrics } from "@/clients/lyricClient";
-import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
+import LyricSelector from "@/components/views/LyricSelector/LyricSelector";
 import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
 
-export default async function Editor() {
+export default async function LyricEditorSelector() {
   const allLyrics: ILyricsUi[] = await getLyrics();
-  const lyrics = allLyrics?.[0];
 
   return (
     <main className="lyrics-container">
-      {!lyrics && allLyrics?.length && <></>}
-      {lyrics && <LyricEditor lyrics={lyrics} />}
+      {allLyrics?.length && <LyricSelector lyrics={allLyrics} />}
     </main>
   );
 }
