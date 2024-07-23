@@ -4,14 +4,14 @@ export interface IOrderDb {
   repeatCount?: number;
 }
 
-interface ISectionDb {
+export interface ISectionDb {
   [key: string]: {
     title: string;
     lines: ILineDb[];
   };
 }
 
-interface ILineDb {
+export interface ILineDb {
   words: string;
 }
 

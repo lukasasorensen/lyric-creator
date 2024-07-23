@@ -1,4 +1,5 @@
 import { ILyrics, IOrder } from "@/interfaces/ui/Lyrics";
+import { populateLyricSections } from "@/utils/LyricsUtil";
 
 interface ISimplifiedSection {
   [key: string]: {
@@ -79,26 +80,5 @@ const darkHallow: ILyricsExampleData = {
     { sectionName: "chorus", showSectionTitleOnly: true, repeatCount: 2 },
   ],
 };
-
-export function populateLyricSections(song: ILyricsExampleData): ILyrics {
-  let lyrics: ILyrics = {
-    order: song.order,
-    title: song.title,
-    sections: {},
-  };
-
-  for (const sectionKey in song.sections) {
-    const section = song.sections[sectionKey];
-
-    lyrics.sections[sectionKey] = {
-      lines: section.lines.map((line) => ({
-        words: line.words.split(" ").map((word) => ({ text: word })),
-      })),
-      title: section.title,
-    };
-  }
-
-  return lyrics;
-}
 
 export const darkHallowLyrics = populateLyricSections(darkHallow);

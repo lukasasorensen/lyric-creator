@@ -1,3 +1,4 @@
+import { ILineDb, ILyricsDb } from "@/interfaces/db/Lyrics";
 import { ILyrics, IOrder, ISection } from "@/interfaces/ui/Lyrics";
 
 export function getWordsFromLyrics(lyrics: ILyrics): string {
@@ -25,4 +26,25 @@ export function getWordsFromSection(section: ISection) {
     })
     .join("\n");
   return words;
+}
+
+export function populateLyricSections(song: ILyricsDb): ILyrics {
+  let lyrics: ILyrics = {
+    order: song.order,
+    title: song.title,
+    sections: {},
+  };
+
+  for (const sectionKey in song.sections) {
+    const section = song.sections[sectionKey];
+
+    lyrics.sections[sectionKey] = {
+      lines: section.lines.map((line: ILineDb) => ({
+        words: line.words.split(" ").map((word: string) => ({ text: word })),
+      })),
+      title: section.title,
+    };
+  }
+
+  return lyrics;
 }
