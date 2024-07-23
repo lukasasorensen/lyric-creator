@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import Section from "./Section";
 import { ThemedButton } from "@/components/Themed";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function EditSection({
   order,
@@ -20,7 +21,7 @@ export default function EditSection({
   const section = lyrics?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(false);
   const [isPencilShown, setIsPencilShown] = useState(false);
-  const { twColorClasses } = useThemeContext();
+  
   const inputRef = useRef(null);
 
   const onEditButtonClick = (element: HTMLElement) => {
@@ -58,7 +59,7 @@ export default function EditSection({
               <ThemedButton className="ml-auto" text="Done" onClick={() => done()} />
             </div>
             <textarea
-              className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${twColorClasses.TEXT_PRIMARY} ${twColorClasses.BG_PRIMARY}`}
+              className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
               defaultValue={getWordsFromSection(section)}
               onChange={(e) => onTextChange(section, e)}
               ref={inputRef}

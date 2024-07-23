@@ -22,14 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ThemeProvider>
-        <LyricsProvider>
           <body className={inter.className}>
             <Body>
               <NavBar />
               {children}
             </Body>
           </body>
-        </LyricsProvider>
       </ThemeProvider>
     </html>
   );

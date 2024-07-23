@@ -1,8 +1,8 @@
 "use client";
-import { IWord } from "@/interfaces/ui/Lyrics";
-import { useThemeContext } from "@/providers/ThemeProvider";
+import { IWord } from "@/interfaces/ui/ILyricsUi";
 import keyboardKey from "keyboard-key";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export interface IWordProps {
   word: IWord;
@@ -74,8 +74,8 @@ export default function Word({
 }
 
 function WordView({ word }: { word: IWord }) {
-  const { twColorClasses } = useThemeContext();
-  return <div className={`word ${twColorClasses.TEXT_PRIMARY}`}>{word.text} </div>;
+  
+  return <div className={`word ${tw.TEXT_PRIMARY}`}>{word.text} </div>;
 }
 
 function WordEdit({

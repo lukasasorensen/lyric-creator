@@ -4,9 +4,10 @@ import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";
 import { useEffect, useState } from "react";
 import { CirclePlusButton } from "./common/CirclePlusButton";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsUi }) {
-  const { twColorClasses } = useThemeContext();
+  
   const [isAddingNewSection, setIsAddingNewSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [lyricsUpdate, setLyrics] = useState(lyrics);
@@ -50,7 +51,7 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsUi }) {
         <div className="mb-10" key={i + "-section"}>
           <h2 className="mb-5 text-center">{section.title}</h2>
           <textarea
-            className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${twColorClasses.TEXT_PRIMARY} ${twColorClasses.BG_PRIMARY}`}
+            className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
             defaultValue={getWordsFromSection(section)}
             onChange={(e) => onTextChange(section, e)}
           ></textarea>
@@ -64,7 +65,7 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsUi }) {
             <input
               value={newSectionTitle}
               autoFocus
-              className={`block w-full max-w-60 rounded-md border border-gray-800 p-2 text-center focus:border-blue-500 focus:ring-blue-500 ${twColorClasses.TEXT_PRIMARY} ${twColorClasses.BG_PRIMARY}`}
+              className={`block w-full max-w-60 rounded-md border border-gray-800 p-2 text-center focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
               onChange={(e) => setNewSectionTitle(e.target.value)}
               onKeyDown={onNewSectionTitleInputKeyDown}
             />

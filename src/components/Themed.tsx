@@ -1,6 +1,7 @@
-import { useThemeContext } from "@/providers/ThemeProvider";
 import { getButtonThemeClasses } from "@/utils/ThemeUtil";
-import { ButtonHTMLAttributes, HTMLAttributes, useMemo } from "react";
+import { ButtonHTMLAttributes, useMemo } from "react";
+import { TailWindColorThemeClasses as twColorClasses } from "@/constants/ColorTheme";
+
 
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
@@ -14,11 +15,11 @@ export function ThemedButton({
   className,
   ...props
 }: IThemedButtonProps) {
-  const { twColorClasses } = useThemeContext();
+  
 
   const buttonThemeClasses = useMemo<string>(() => {
     return getButtonThemeClasses(color || "none", twColorClasses);
-  }, [color, twColorClasses]);
+  }, [color]);
 
   return (
     <button
