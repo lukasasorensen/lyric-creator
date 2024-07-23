@@ -2,7 +2,7 @@ import { ILyrics } from "@/interfaces/ui/ILyricsUi";
 
 export function LyricListItem({ lyrics }: { lyrics: ILyrics }) {
   return (
-    <li className={`flex justify-between gap-x-6 py-5`}>
+    <li className={`flex justify-between gap-x-6 py-5`} key={lyrics._id}>
       <div className={`flex min-w-0 gap-x-4`}>
         <div className={`min-w-0 flex-auto`}>
           <p className={`text-sm font-semibold leading-6 text-gray-900`}>

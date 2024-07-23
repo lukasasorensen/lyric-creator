@@ -30,6 +30,7 @@ export function getWordsFromSection(section: ISection) {
 
 export function populateLyricSections(song: ILyricsDb): ILyricsUi {
   let lyrics: ILyricsUi = {
+    _id: song._id,
     order: song.order,
     title: song.title,
     sections: {},

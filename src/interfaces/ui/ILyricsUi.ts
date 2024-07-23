@@ -25,7 +25,7 @@ export interface IOrder {
   repeatCount?: number;
 }
 
-export interface ILyrics {
+export interface ILyricsUi {
   _id: string;
   title: string;
   order: IOrder[];
