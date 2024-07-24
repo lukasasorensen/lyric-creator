@@ -1,16 +1,16 @@
-import { ILyricsDb, ISection } from "@/interfaces/db/ILyricsDb";
+import { ISongDb, ISection } from "@/interfaces/db/ISongDb";
 import { useThemeContext } from "@/providers/ThemeProvider";
-import { getWordsFromSection } from "@/utils/LyricsUtil";
+import { getWordsFromSection } from "@/utils/SongUtil";
 import { Enter, getCode } from "keyboard-key";
 import { useEffect, useState } from "react";
 import { CirclePlusButton } from "./common/CirclePlusButton";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
-export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsDb }) {
+export default function LyricTextEditor({ song }: { song: ISongDb }) {
   
   const [isAddingNewSection, setIsAddingNewSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
-  const [lyricsUpdate, setLyrics] = useState(lyrics);
+  const [songUpdate, setSong] = useState(song);
 
   const auto_grow = (element: HTMLElement) => {
     element.style.height = "5px";
@@ -30,9 +30,9 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsDb }) {
     if (!newSectionTitle) return;
 
     if (getCode(e) === Enter) {
-      lyricsUpdate.sections[newSectionTitle] = { title: newSectionTitle, lines: [] };
-      setLyrics({
-        ...lyricsUpdate,
+      songUpdate.sections[newSectionTitle] = { title: newSectionTitle, lines: [] };
+      setSong({
+        ...songUpdate,
       });
       setNewSectionTitle("");
       setIsAddingNewSection(false);
@@ -46,8 +46,8 @@ export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsDb }) {
 
   return (
     <div className="container w-full px-24">
-      <h2 className="mb-10 text-center text-2xl font-bold">{lyricsUpdate.title}</h2>
-      {Object.values(lyricsUpdate.sections).map((section: ISection, i: number) => (
+      <h2 className="mb-10 text-center text-2xl font-bold">{songUpdate.title}</h2>
+      {Object.values(songUpdate.sections).map((section: ISection, i: number) => (
         <div className="mb-10" key={i + "-section"}>
           <h2 className="mb-5 text-center">{section.title}</h2>
           <textarea

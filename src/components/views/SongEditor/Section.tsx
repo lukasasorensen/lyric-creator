@@ -1,5 +1,5 @@
 "use client";
-import { ISection } from "@/interfaces/ui/Lyrics";
+import { ISection } from "@/interfaces/ui/Song";
 import Line from "./Line";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
@@ -16,7 +16,7 @@ export default function Section({
   repeatCount?: number;
 }) {
   return (
-    <div className="lyric-section">
+    <div className="song-section">
       <h3 className="mb-3 mt-5 text-center text-lg font-bold">
         {getSectionTitle(section.title, !!showSectionTitleOnly)}{" "}
         {repeatCount && `[x${repeatCount}]`}

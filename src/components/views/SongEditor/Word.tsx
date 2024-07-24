@@ -1,5 +1,5 @@
 "use client";
-import { IWord } from "@/interfaces/db/ILyricsDb";
+import { IWord } from "@/interfaces/db/ISongDb";
 import keyboardKey from "keyboard-key";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";

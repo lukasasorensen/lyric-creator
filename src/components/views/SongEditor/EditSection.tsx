@@ -1,23 +1,23 @@
 "use client";
-import { ILyricsDb, IOrder, ISection } from "@/interfaces/db/ILyricsDb";
-import { updateLyricSectionFromText, getWordsFromSection } from "@/utils/LyricsUtil";
+import { ISongDb, IOrder, ISection } from "@/interfaces/db/ISongDb";
+import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil";
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import Section from "./Section";
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { updateLyricById } from "@/clients/lyricClient";
+import { updateSongById } from "@/clients/songClient";
 
 export default function EditSection({
   order,
-  lyrics,
+  song,
   onSectionChange,
 }: {
   order: IOrder;
-  lyrics: ILyricsDb;
+  song: ISongDb;
   onSectionChange?: (section: ISection) => void;
 }) {
-  const section = lyrics?.sections?.[order?.sectionName];
+  const section = song?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState('');
   const [isPencilShown, setIsPencilShown] = useState(false);
@@ -46,13 +46,13 @@ export default function EditSection({
   };
 
   const done = () => {
-    let section = lyrics.sections[order.sectionName];
-    section = updateLyricSectionFromText(editText, section);
-    lyrics.sections[order.sectionName] = section;
+    let section = song.sections[order.sectionName];
+    section = updateSongSectionFromText(editText, section);
+    song.sections[order.sectionName] = section;
     setIsEditing(false);
     // post to db
-    console.log('lyrics POST - ', lyrics);
-    updateLyricById(lyrics._id, lyrics);
+    console.log('song POST - ', song);
+    updateSongById(song._id, song);
   };
 
   return (

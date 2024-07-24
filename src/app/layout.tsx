@@ -5,7 +5,7 @@ import "../styles/index.scss";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import NavBar from "@/components/ui/NavBar";
 import { Body } from "@/components/views/Body";
-import LyricsProvider from "@/providers/LyricsProvider";
+import SongProvider from "@/providers/SongProvider";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 const inter = Inter({ subsets: ["latin"] });

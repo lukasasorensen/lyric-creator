@@ -1,36 +1,36 @@
 "use client";
 
-import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { ISongDb } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import LyricsList from "./LyricList";
+import SongList from "./SongList";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { CirclePlusButton } from "@/components/common/CirclePlusButton";
-export interface ILyricSelectorProps {
-  songs: ILyricsDb[];
+export interface ISongSelectorProps {
+  songs: ISongDb[];
   isLoading: boolean;
 }
 
-export function LyricListItem({
-  lyrics,
+export function SongListItem({
+  song,
   loading,
 }: {
-  lyrics?: ILyricsDb;
+  song?: ISongDb;
   loading?: boolean;
 }) {
   return (
-    <Link href={`/editor/${lyrics?._id}`}>
+    <Link href={`/editor/${song?._id}`}>
       <li
         className={`mb-2 flex justify-between gap-x-6 rounded-md px-10 py-5 ${tw.BG_SECONDARY}`}
-        key={lyrics?._id}
+        key={song?._id}
       >
         <div className={`flex min-w-0 gap-x-4`}>
           <div className={`min-w-0 flex-auto`}>
             <p className={`text-sm font-semibold leading-6 ${tw.TEXT_PRIMARY}`}>
-              {loading ? <Skeleton width={100} /> : lyrics?.title}
+              {loading ? <Skeleton width={100} /> : song?.title}
             </p>
             <p className={`mt-1 truncate text-xs leading-5 ${tw.TEXT_SECONDARY}`}>
-              {loading ? <Skeleton width={80} /> : lyrics?.artist}
+              {loading ? <Skeleton width={80} /> : song?.artist}
             </p>
           </div>
         </div>
@@ -39,7 +39,7 @@ export function LyricListItem({
             {loading ? (
               <Skeleton width={100} />
             ) : (
-              new Date(lyrics?.createdAt).toDateString()
+              !!song?.createdAt && new Date(song?.createdAt).toDateString()
             )}
           </p>
         </div>
@@ -48,14 +48,14 @@ export function LyricListItem({
   );
 }
 
-export default function LyricSelector(props: ILyricSelectorProps) {
+export default function SongSelector(props: ISongSelectorProps) {
   return (
-    <div className={`lyric-selector w-full max-w-screen-lg p-5`}>
-      {props.isLoading && <LyricListItem loading={true} />}
+    <div className={`song-selector w-full max-w-screen-lg p-5`}>
+      {props.isLoading && <SongListItem loading={true} />}
       <ul role="list" className={`divide-y divide-gray-100`}>
         {!!props.songs?.length &&
-          props.songs.map((lyrics) => (
-            <LyricListItem lyrics={lyrics} key={lyrics._id} />
+          props.songs.map((song) => (
+            <SongListItem song={song} key={song._id} />
           ))}
       </ul>
     </div>

@@ -27,7 +27,7 @@ export interface IOrder {
   repeatCount?: number;
 }
 
-export interface ILyricsDb extends IDbDocumentDefault {
+export interface ISongDb extends IDbDocumentDefault {
   title: string;
   artist: string;
   order: IOrder[];

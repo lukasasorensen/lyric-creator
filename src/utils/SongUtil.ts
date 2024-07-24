@@ -1,11 +1,11 @@
-import { ILyricsDb, IOrder, ISection, ILine } from "@/interfaces/db/ILyricsDb";
+import { ISongDb, IOrder, ISection, ILine } from "@/interfaces/db/ISongDb";
 
-export function getWordsFromLyrics(lyrics: ILyricsDb): string {
-  if (!lyrics?.order?.length) return "";
+export function getWordsFromSong(song: ISongDb): string {
+  if (!song?.order?.length) return "";
 
-  const words: string = lyrics.order
+  const words: string = song.order
     .map((orderItem: IOrder) => {
-      const section: ISection = lyrics.sections[orderItem?.sectionName];
+      const section: ISection = song.sections[orderItem?.sectionName];
 
       if (!section?.lines?.length) return;
 
@@ -36,7 +36,7 @@ export function getWordsFromSection(section: ISection) {
  * @param {ISection} section - section to aplly
  * @return {*}  {ILine[]}
  */
-export function updateLyricSectionFromText(text: string, section: ISection): ISection {
+export function updateSongSectionFromText(text: string, section: ISection): ISection {
   const newLines = text
     .split("\n")
     .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));

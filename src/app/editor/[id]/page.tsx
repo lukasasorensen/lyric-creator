@@ -1,35 +1,35 @@
 "use client";
-import { getLyricById, getLyrics } from "@/clients/lyricClient";
+import { getSongById, getSong } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
-import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
-import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import SongEditor from "@/components/views/SongEditor/SongEditor";
+import { ISongDb } from "@/interfaces/db/ISongDb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function LyricEditorView() {
+export default function SongEditorView() {
   const params = useParams();
-  const lyricId = params?.id as string;
-  const [lyrics, setLyrics] = useState({} as ILyricsDb);
+  const songId = params?.id as string;
+  const [song, setSong] = useState({} as ISongDb);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      const getLyrics: ILyricsDb = await getLyricById(lyricId);
-      setLyrics(getLyrics);
+      const getSong: ISongDb = await getSongById(songId);
+      setSong(getSong);
       setIsLoading(false);
     };
 
     init();
-  }, [lyricId, setLyrics]);
+  }, [songId, setSong]);
 
   if (isLoading) {
     return <LoadingDisplay text="Loading..." />
   }
 
   return (
-    <main className="lyrics-container w-full">
-      <LyricEditor lyrics={lyrics}  />
-      {!isLoading && !lyrics && <h1>No Lyrics Found</h1>}
+    <main className="song-container w-full">
+      <SongEditor song={song}  />
+      {!isLoading && !song && <h1>No Song Found</h1>}
     </main>
   );
 }

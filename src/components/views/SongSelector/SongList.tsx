@@ -1,14 +1,14 @@
-import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { ISongDb } from "@/interfaces/db/ISongDb";
 import Link from "next/link";
 
-export function LyricListItem({ lyrics }: { lyrics: ILyricsDb }) {
+export function SongListItem({ song }: { song: ISongDb }) {
   return (
-    <Link href={`/editor/${lyrics._id}`}>
-      <li className={`flex justify-between gap-x-6 py-5`} key={lyrics._id}>
+    <Link href={`/editor/${song._id}`}>
+      <li className={`flex justify-between gap-x-6 py-5`} key={song._id}>
         <div className={`flex min-w-0 gap-x-4`}>
           <div className={`min-w-0 flex-auto`}>
             <p className={`text-sm font-semibold leading-6 text-gray-900`}>
-              {lyrics.title}
+              {song.title}
             </p>
             <p className={`mt-1 truncate text-xs leading-5 text-gray-500`}>
               Created by Lukas
@@ -23,11 +23,11 @@ export function LyricListItem({ lyrics }: { lyrics: ILyricsDb }) {
   );
 }
 
-export default function LyricsList({ lyricsResults }: { lyricsResults: ILyricsDb[] }) {
+export default function SongList({ songResults }: { songResults: ISongDb[] }) {
   return (
     <ul role="list" className={`divide-y divide-gray-100`}>
-      {lyricsResults?.length &&
-        lyricsResults.map((lyrics) => <LyricListItem lyrics={lyrics} key={lyrics._id} />)}
+      {songResults?.length &&
+        songResults.map((song) => <SongListItem song={song} key={song._id} />)}
     </ul>
   );
 }

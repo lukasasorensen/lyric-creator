@@ -1,26 +1,26 @@
 "use client";
-import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { ISongDb } from "@/interfaces/db/ISongDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton } from "@/components/Themed";
-import { updateLyricById } from "@/clients/lyricClient";
+import { updateSongById } from "@/clients/songClient";
 
-export default function LyricEditor({ lyrics }: { lyrics: ILyricsDb }) {
+export default function SongEditor({ song }: { song: ISongDb }) {
   const addNewSection = () => {};
 
   const showSectionSelector = () => {};
 
   return (
     <div
-      className={`lyrics-editor-outer-container container max-w-screen-lg mx-auto flex flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
+      className={`song-editor-outer-container container max-w-screen-lg mx-auto flex flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
     >
-      <div className="lyrics-container">
-        <div className="lyric-editor-container p-25 w-full">
-          <h2 className="mb-5 text-center text-2xl font-bold">{lyrics.title}</h2>
-          {lyrics?.order?.length &&
-            lyrics.order.map((order, i) => (
-              <EditSection key={i} order={order} lyrics={lyrics} />
+      <div className="song-container">
+        <div className="song-editor-container p-25 w-full">
+          <h2 className="mb-5 text-center text-2xl font-bold">{song.title}</h2>
+          {song?.order?.length &&
+            song.order.map((order, i) => (
+              <EditSection key={i} order={order} song={song} />
             ))}
           <div className="flex w-full justify-center">
             <PopoverList>

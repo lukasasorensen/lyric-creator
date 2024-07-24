@@ -1,17 +1,17 @@
 "use client";
-import { getLyrics } from "@/clients/lyricClient";
-import LyricSelector from "@/components/views/LyricSelector/LyricSelector";
-import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { getSong } from "@/clients/songClient";
+import SongSelector from "@/components/views/SongSelector/SongSelector";
+import { ISongDb } from "@/interfaces/db/ISongDb";
 import { useEffect, useState } from "react";
 
-export default function LyricEditorSelector() {
-  const [songs, setSongs] = useState<ILyricsDb[]>([]);
+export default function SongListView() {
+  const [songs, setSongs] = useState<ISongDb[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      const allLyrics: ILyricsDb[] = await getLyrics();
-      setSongs(allLyrics);
+      const allSong: ISongDb[] = await getSong();
+      setSongs(allSong);
       setIsLoading(false);
     };
 
@@ -19,9 +19,9 @@ export default function LyricEditorSelector() {
   });
 
   return (
-    <main className="lyrics-container flex w-full justify-center">
-      <LyricSelector isLoading={isLoading} songs={songs} />
-      {!isLoading && !songs?.length && <h1>No Lyrics Found</h1>}
+    <main className="song-container flex w-full justify-center">
+      <SongSelector isLoading={isLoading} songs={songs} />
+      {!isLoading && !songs?.length && <h1>No Song Found</h1>}
     </main>
   );
 }
