@@ -5,13 +5,13 @@ import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { useEffect, useState } from "react";
 
 export default function LyricEditorSelector() {
-  const [lyricsList, setLyricsList] = useState<ILyricsDb[]>([]);
+  const [songs, setSongs] = useState<ILyricsDb[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
       const allLyrics: ILyricsDb[] = await getLyrics();
-      setLyricsList(allLyrics);
+      setSongs(allLyrics);
       setIsLoading(false);
     };
 
@@ -20,8 +20,8 @@ export default function LyricEditorSelector() {
 
   return (
     <main className="lyrics-container flex w-full justify-center">
-      <LyricSelector isLoading={isLoading} lyrics={lyricsList} />
-      {!isLoading && !lyricsList?.length && <h1>No Lyrics Found</h1>}
+      <LyricSelector isLoading={isLoading} songs={songs} />
+      {!isLoading && !songs?.length && <h1>No Lyrics Found</h1>}
     </main>
   );
 }

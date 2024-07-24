@@ -5,8 +5,9 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import LyricsList from "./LyricList";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
+import { CirclePlusButton } from "@/components/common/CirclePlusButton";
 export interface ILyricSelectorProps {
-  lyrics: ILyricsDb[];
+  songs: ILyricsDb[];
   isLoading: boolean;
 }
 
@@ -52,8 +53,8 @@ export default function LyricSelector(props: ILyricSelectorProps) {
     <div className={`lyric-selector w-full max-w-screen-lg p-5`}>
       {props.isLoading && <LyricListItem loading={true} />}
       <ul role="list" className={`divide-y divide-gray-100`}>
-        {!!props.lyrics?.length &&
-          props.lyrics.map((lyrics) => (
+        {!!props.songs?.length &&
+          props.songs.map((lyrics) => (
             <LyricListItem lyrics={lyrics} key={lyrics._id} />
           ))}
       </ul>
