@@ -6,7 +6,7 @@ export default async function LyricEditorSelector() {
   const allLyrics: ILyricsDb[] = await getLyrics();
 
   return (
-    <main className="lyrics-container">
+    <main className="lyrics-container w-full flex justify-center">
       {allLyrics?.length && <LyricSelector lyrics={allLyrics} />}
     </main>
   );

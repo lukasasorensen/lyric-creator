@@ -1,3 +1,5 @@
+import { IDbDocumentDefault } from "./defaultDbProperties";
+
 export interface IWord {
   text: string;
   chord?: IChord;
@@ -25,9 +27,9 @@ export interface IOrder {
   repeatCount?: number;
 }
 
-export interface ILyricsDb{
-  _id: string;
+export interface ILyricsDb extends IDbDocumentDefault {
   title: string;
+  artist: string;
   order: IOrder[];
   sections: {
     [key: string]: ISection;

@@ -26,7 +26,7 @@ export default function LyricEditorView() {
   if (!lyrics?._id?.length) throw new Error("No lyrics");
 
   return (
-    <main className="lyrics-container">
+    <main className="lyrics-container w-full">
       {lyrics?._id && <LyricEditor lyrics={lyrics} />}
     </main>
   );
