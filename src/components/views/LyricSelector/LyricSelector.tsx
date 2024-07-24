@@ -3,28 +3,38 @@
 import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import LyricsList from "./LyricList";
-
+import Link from "next/link";
 export interface ILyricSelectorProps {
   lyrics: ILyricsUi[];
 }
 
-export default function LyricSelector(props: ILyricSelectorProps) {
-  
-
+export function LyricListItem({ lyrics }: { lyrics: ILyricsUi }) {
   return (
-    <div
-      className={`flex min-h-screen flex-col items-center justify-around ${tw.BG_PRIMARY} p-24`}
-    >
-      <h1
-        className={`mb-10 text-center text-4xl font-bold ${tw.TEXT_SECONDARY}`}
-      >
-        Lyric Creator
-      </h1>
-      <div
-        className={`lyrics-editor-outer-container container mx-auto flex flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
-      >
-        <LyricsList lyricsResults={props.lyrics} />
-      </div>
-    </div>
+    <Link href={`/editor/${lyrics._id}`}>
+      <li className={`flex justify-between gap-x-6 py-5`} key={lyrics._id}>
+        <div className={`flex min-w-0 gap-x-4`}>
+          <div className={`min-w-0 flex-auto`}>
+            <p className={`text-sm font-semibold leading-6 text-gray-900`}>
+              {lyrics.title}
+            </p>
+            <p className={`mt-1 truncate text-xs leading-5 text-gray-500`}>
+              Created by Lukas
+            </p>
+          </div>
+        </div>
+        <div className={`hidden shrink-0 sm:flex sm:flex-col sm:items-end`}>
+          <p className={`mt-1 text-xs leading-5 text-gray-500`}>12-1-2024</p>
+        </div>
+      </li>
+    </Link>
+  );
+}
+
+export default function LyricSelector(props: ILyricSelectorProps) {
+  return (
+    <ul role="list" className={`divide-y divide-gray-100`}>
+      {props.lyrics?.length &&
+        props.lyrics.map((lyrics) => <LyricListItem lyrics={lyrics} key={lyrics._id} />)}
+    </ul>
   );
 }
