@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 export default function LyricEditorView() {
   const params = useParams();
   const lyricId = params?.id as string;
-  const [lyrics, setLyrics] = useState({} as ILyricsUi)<ILyricsUi>;
+  const [lyrics, setLyrics] = useState({} as ILyricsUi);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function LyricEditorView() {
 
   // todo loading component
   if (isLoading) return <h1>Loading</h1>;
-  if (!lyrics?._id?.length) return <h1>Not Found</h1>;
+  if (!lyrics?._id?.length) throw new Error("No lyrics");
 
   return (
     <main className="lyrics-container">
