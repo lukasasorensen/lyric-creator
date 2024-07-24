@@ -5,8 +5,6 @@ import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaSpinner } from "react-icons/fa";
-import Skeleton from "react-loading-skeleton";
 
 export default function LyricEditorView() {
   const params = useParams();

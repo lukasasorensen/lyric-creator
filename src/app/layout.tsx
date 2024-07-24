@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import NavBar from "@/components/ui/NavBar";
 import { Body } from "@/components/views/Body";
 import LyricsProvider from "@/providers/LyricsProvider";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,12 +23,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ThemeProvider>
+        <SkeletonTheme
+          baseColor="#334155"
+          highlightColor="#64748B"
+          borderRadius="0.5rem"
+          duration={4}
+        >
           <body className={inter.className}>
             <Body>
               <NavBar />
               {children}
             </Body>
           </body>
+        </SkeletonTheme>
       </ThemeProvider>
     </html>
   );
