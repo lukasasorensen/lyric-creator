@@ -4,8 +4,10 @@ import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import LyricsList from "./LyricList";
 import Link from "next/link";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
+import { populateLyricSections } from "@/utils/LyricsUtil";
 export interface ILyricSelectorProps {
-  lyrics: ILyricsUi[];
+  lyrics: ILyricsDb[];
 }
 
 export function LyricListItem({ lyrics }: { lyrics: ILyricsUi }) {
@@ -34,7 +36,9 @@ export default function LyricSelector(props: ILyricSelectorProps) {
   return (
     <ul role="list" className={`divide-y divide-gray-100`}>
       {props.lyrics?.length &&
-        props.lyrics.map((lyrics) => <LyricListItem lyrics={lyrics} key={lyrics._id} />)}
+        props.lyrics.map((lyrics) => (
+          <LyricListItem lyrics={populateLyricSections(lyrics)} key={lyrics._id} />
+        ))}
     </ul>
   );
 }

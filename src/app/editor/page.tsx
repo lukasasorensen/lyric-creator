@@ -1,9 +1,9 @@
 import { getLyrics } from "@/clients/lyricClient";
 import LyricSelector from "@/components/views/LyricSelector/LyricSelector";
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 
 export default async function LyricEditorSelector() {
-  const allLyrics: ILyricsUi[] = await getLyrics();
+  const allLyrics: ILyricsDb[] = await getLyrics();
 
   return (
     <main className="lyrics-container">

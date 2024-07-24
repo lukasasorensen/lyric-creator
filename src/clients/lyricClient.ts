@@ -1,8 +1,7 @@
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
-import { populateLyricSections } from "@/utils/LyricsUtil";
 
-export async function getLyrics(): Promise<ILyricsUi[]> {
+export async function getLyrics(): Promise<ILyricsDb[]> {
   try {
     const res = await fetch("http://localhost:3000/api/lyrics");
     let results = await res.json();
@@ -11,14 +10,14 @@ export async function getLyrics(): Promise<ILyricsUi[]> {
       throw new Error("Not Found");
     }
 
-    return results.map((result: ILyricsDb): ILyricsUi => populateLyricSections(result));
+    return results;
   } catch (err) {
     console.error("LyricClient.getLyrics ERROR - ", err);
     throw err;
   }
 }
 
-export async function getLyricById(id: string): Promise<ILyricsUi> {
+export async function getLyricById(id: string): Promise<ILyricsDb> {
   try {
     const res = await fetch("http://localhost:3000/api/lyrics/" + id);
     let results = await res.json();
@@ -27,7 +26,7 @@ export async function getLyricById(id: string): Promise<ILyricsUi> {
       throw new Error("Not Found");
     }
 
-    return populateLyricSections(results);
+    return results;
   } catch (err) {
     console.error("LyricClient.getLyricById ERROR - ", err);
     throw err;
