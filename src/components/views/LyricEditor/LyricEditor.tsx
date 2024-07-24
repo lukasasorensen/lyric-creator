@@ -11,12 +11,6 @@ export default function LyricEditor({ lyrics }: { lyrics: ILyricsDb }) {
 
   const showSectionSelector = () => {};
 
-  const save = async () => {
-    console.log(lyrics);
-    return;
-    // await updateLyricById(lyrics._id, lyrics);
-  };
-
   return (
     <div
       className={`lyrics-editor-outer-container container max-w-screen-lg mx-auto flex flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
@@ -40,7 +34,6 @@ export default function LyricEditor({ lyrics }: { lyrics: ILyricsDb }) {
               ></PopoverListItemButton>
             </PopoverList>
           </div>
-          <ThemedButton text="Save" onClick={save}></ThemedButton>
         </div>
       </div>
     </div>

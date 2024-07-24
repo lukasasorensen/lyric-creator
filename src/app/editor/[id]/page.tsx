@@ -1,9 +1,12 @@
 "use client";
 import { getLyricById, getLyrics } from "@/clients/lyricClient";
+import LoadingDisplay from "@/components/common/LoadingDisplay";
 import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 
 export default function LyricEditorView() {
   const params = useParams();
@@ -21,13 +24,14 @@ export default function LyricEditorView() {
     init();
   }, [lyricId, setLyrics]);
 
-  // todo loading component
-  if (isLoading) return <h1>Loading</h1>;
-  if (!lyrics?._id?.length) throw new Error("No lyrics");
+  if (isLoading) {
+    return <LoadingDisplay text="Loading..." />
+  }
 
   return (
     <main className="lyrics-container w-full">
-      {lyrics?._id && <LyricEditor lyrics={lyrics} />}
+      <LyricEditor lyrics={lyrics}  />
+      {!isLoading && !lyrics && <h1>No Lyrics Found</h1>}
     </main>
   );
 }
