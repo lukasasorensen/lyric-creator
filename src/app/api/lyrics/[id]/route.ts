@@ -5,9 +5,9 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const client = await clientPromise;
-    const db = client.db("lukasasorensen");
+    const db = client.db("lyrical");
     const lyrics = await db
-      .collection("lyrics")
+      .collection("songs")
       .findOne({ _id: new ObjectId(params.id) });
 
     if (!lyrics) {
@@ -24,19 +24,20 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const updateObject = request.json();
+    const updateObject = await request.json();
+    delete updateObject._id;
     const client = await clientPromise;
-    const db = client.db("lukasasorensen");
-    const lyrics = await db
-      .collection("lyrics")
-      .findOneAndUpdate({ _id: new ObjectId(params.id) }, updateObject);
+    const db = client.db("lyrical");
+    const results = await db
+      .collection("songs")
+      .updateOne({ _id: new ObjectId(params.id) }, { $set: updateObject });
 
-    if (!lyrics) {
+    if (!results.matchedCount) {
       // todo
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
 
-    return Response.json(lyrics);
+    return Response.json(results);
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: e }, { status: 500 });

@@ -1,16 +1,15 @@
 "use client";
 
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import LyricsList from "./LyricList";
 import Link from "next/link";
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
-import { populateLyricSections } from "@/utils/LyricsUtil";
 export interface ILyricSelectorProps {
   lyrics: ILyricsDb[];
 }
 
-export function LyricListItem({ lyrics }: { lyrics: ILyricsUi }) {
+export function LyricListItem({ lyrics }: { lyrics: ILyricsDb }) {
   return (
     <Link href={`/editor/${lyrics._id}`}>
       <li className={`flex justify-between gap-x-6 py-5`} key={lyrics._id}>
@@ -37,7 +36,7 @@ export default function LyricSelector(props: ILyricSelectorProps) {
     <ul role="list" className={`divide-y divide-gray-100`}>
       {props.lyrics?.length &&
         props.lyrics.map((lyrics) => (
-          <LyricListItem lyrics={populateLyricSections(lyrics)} key={lyrics._id} />
+          <LyricListItem lyrics={lyrics} key={lyrics._id} />
         ))}
     </ul>
   );

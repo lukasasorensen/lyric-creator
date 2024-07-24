@@ -1,13 +1,12 @@
 "use client";
-
-import { ILyricsUi, IOrder, ISection } from "@/interfaces/ui/ILyricsUi";
-import { useThemeContext } from "@/providers/ThemeProvider";
-import { getWordsFromSection } from "@/utils/LyricsUtil";
+import { ILyricsDb, IOrder, ISection } from "@/interfaces/db/ILyricsDb";
+import { updateLyricSectionFromText, getWordsFromSection } from "@/utils/LyricsUtil";
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import Section from "./Section";
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import { updateLyricById } from "@/clients/lyricClient";
 
 export default function EditSection({
   order,
@@ -15,11 +14,12 @@ export default function EditSection({
   onSectionChange,
 }: {
   order: IOrder;
-  lyrics: ILyricsUi;
+  lyrics: ILyricsDb;
   onSectionChange?: (section: ISection) => void;
 }) {
   const section = lyrics?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState('');
   const [isPencilShown, setIsPencilShown] = useState(false);
   
   const inputRef = useRef(null);
@@ -41,12 +41,18 @@ export default function EditSection({
   const onTextChange = (section: ISection, e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!e.target) return;
     auto_grow(e.target);
+    setEditText(e.target.value);
     onSectionChange?.(section);
   };
 
   const done = () => {
+    let section = lyrics.sections[order.sectionName];
+    section = updateLyricSectionFromText(editText, section);
+    lyrics.sections[order.sectionName] = section;
     setIsEditing(false);
     // post to db
+    console.log('lyrics POST - ', lyrics);
+    updateLyricById(lyrics._id, lyrics);
   };
 
   return (

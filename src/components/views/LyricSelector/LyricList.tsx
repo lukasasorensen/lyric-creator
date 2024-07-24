@@ -1,7 +1,7 @@
-import { ILyrics } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import Link from "next/link";
 
-export function LyricListItem({ lyrics }: { lyrics: ILyrics }) {
+export function LyricListItem({ lyrics }: { lyrics: ILyricsDb }) {
   return (
     <Link href={`/editor/${lyrics._id}`}>
       <li className={`flex justify-between gap-x-6 py-5`} key={lyrics._id}>
@@ -23,7 +23,7 @@ export function LyricListItem({ lyrics }: { lyrics: ILyrics }) {
   );
 }
 
-export default function LyricsList({ lyricsResults }: { lyricsResults: ILyrics[] }) {
+export default function LyricsList({ lyricsResults }: { lyricsResults: ILyricsDb[] }) {
   return (
     <ul role="list" className={`divide-y divide-gray-100`}>
       {lyricsResults?.length &&

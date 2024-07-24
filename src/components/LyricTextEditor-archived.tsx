@@ -1,4 +1,4 @@
-import { ILyricsUi, ISection } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb, ISection } from "@/interfaces/db/ILyricsDb";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { getWordsFromSection } from "@/utils/LyricsUtil";
 import { Enter, getCode } from "keyboard-key";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { CirclePlusButton } from "./common/CirclePlusButton";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
-export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsUi }) {
+export default function LyricTextEditor({ lyrics }: { lyrics: ILyricsDb }) {
   
   const [isAddingNewSection, setIsAddingNewSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");

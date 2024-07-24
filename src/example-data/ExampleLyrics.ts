@@ -1,5 +1,26 @@
-import { ILyricsUi, IOrder } from "@/interfaces/ui/ILyricsUi";
-import { populateLyricSections } from "@/utils/LyricsUtil";
+import { ILyricsDb, IOrder } from "@/interfaces/db/ILyricsDb";
+
+export function populateLyricSections(song: ILyricsExampleData): ILyricsDb {
+  let lyrics: ILyricsDb = {
+    _id: 'fakeid6373u',
+    order: song.order,
+    title: song.title,
+    sections: {},
+  };
+
+  for (const sectionKey in song.sections) {
+    const section = song.sections[sectionKey];
+
+    lyrics.sections[sectionKey] = {
+      lines: section.lines.map((line: ILineSimplified) => ({
+        words: line.words.split(" ").map((word: string) => ({ text: word })),
+      })),
+      title: section.title,
+    };
+  }
+
+  return lyrics;
+}
 
 interface ISimplifiedSection {
   [key: string]: {

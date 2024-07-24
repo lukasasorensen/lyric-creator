@@ -1,5 +1,4 @@
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
 
 export async function getLyrics(): Promise<ILyricsDb[]> {
   try {
@@ -37,15 +36,15 @@ export async function updateLyricById(id: string, updateObject: Partial<ILyricsD
   try {
     const res = await fetch("http://localhost:3000/api/lyrics/" + id, {
       body: JSON.stringify(updateObject),
-      method: 'PUT'
+      method: "PUT",
     });
-    
+
     let results = await res.json();
 
-    if (!results?._id) {
-      throw new Error("Not Found");
+    if (results.error) {
+      throw new Error(results.error);
     }
-
+    
   } catch (err) {
     console.error("LyricClient.updateLyricById ERROR - ", err);
     throw err;

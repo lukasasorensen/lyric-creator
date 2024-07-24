@@ -1,12 +1,12 @@
 "use client";
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { ReactNode, createContext, useReducer } from "react";
 
 export const LyricsContext = createContext(null);
 export const LyricsDispatchContext = createContext(null);
 
 export default function LyricsProvider({ children }: { children: ReactNode }) {
-  const [lyrics, dispatch] = useReducer(lyricsReducer, {} as ILyricsUi);
+  const [lyrics, dispatch] = useReducer(lyricsReducer, {} as ILyricsDb);
 
   return (
     <LyricsContext.Provider value={lyrics}>
@@ -17,7 +17,7 @@ export default function LyricsProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function lyricsReducer(lyrics: ILyricsUi, action: any) {
+function lyricsReducer(lyrics: ILyricsDb, action: any) {
   switch (action.type) {
     case "updateSectionByName": {
       if (lyrics.sections[action.sectionName]) {

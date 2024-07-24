@@ -1,23 +1,35 @@
-export interface IOrderDb {
+export interface IWord {
+  text: string;
+  chord?: IChord;
+  hasChord?: boolean;
+}
+
+export interface ILine {
+  words: IWord[];
+}
+
+export interface IChord {
+  letter: string;
+  quality: string;
+  extension: string;
+}
+
+export interface ISection {
+  lines: ILine[];
+  title: string;
+}
+
+export interface IOrder {
   sectionName: string;
   showSectionTitleOnly?: boolean;
   repeatCount?: number;
 }
 
-export interface ISectionDb {
-  [key: string]: {
-    title: string;
-    lines: ILineDb[];
-  };
-}
-
-export interface ILineDb {
-  words: string;
-}
-
-export interface ILyricsDb {
+export interface ILyricsDb{
   _id: string;
-  order: IOrderDb[];
   title: string;
-  sections: ISectionDb;
+  order: IOrder[];
+  sections: {
+    [key: string]: ISection;
+  };
 }

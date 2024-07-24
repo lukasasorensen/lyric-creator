@@ -2,22 +2,19 @@
 import { getLyricById, getLyrics } from "@/clients/lyricClient";
 import LyricEditor from "@/components/views/LyricEditor/LyricEditor";
 import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
-import { populateLyricSections } from "@/utils/LyricsUtil";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LyricEditorView() {
   const params = useParams();
   const lyricId = params?.id as string;
-  const [lyrics, setLyrics] = useState({} as ILyricsUi);
+  const [lyrics, setLyrics] = useState({} as ILyricsDb);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
       const getLyrics: ILyricsDb = await getLyricById(lyricId);
-      const _lyrics = populateLyricSections(getLyrics);
-      setLyrics(_lyrics);
+      setLyrics(getLyrics);
       setIsLoading(false);
     };
 

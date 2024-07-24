@@ -1,13 +1,21 @@
 "use client";
-import { ILyricsUi } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb } from "@/interfaces/db/ILyricsDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import { ThemedButton } from "@/components/Themed";
+import { updateLyricById } from "@/clients/lyricClient";
 
-export default function LyricEditor({ lyrics }: { lyrics: ILyricsUi }) {
+export default function LyricEditor({ lyrics }: { lyrics: ILyricsDb }) {
   const addNewSection = () => {};
 
   const showSectionSelector = () => {};
+
+  const save = async () => {
+    console.log(lyrics);
+    return;
+    // await updateLyricById(lyrics._id, lyrics);
+  }
 
   return (
     <div className="lyrics-container">
@@ -29,6 +37,7 @@ export default function LyricEditor({ lyrics }: { lyrics: ILyricsUi }) {
             ></PopoverListItemButton>
           </PopoverList>
         </div>
+        <ThemedButton text="Save" onClick={save}></ThemedButton>
       </div>
     </div>
   );

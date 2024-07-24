@@ -1,7 +1,6 @@
-import { ILineDb, ILyricsDb } from "@/interfaces/db/ILyricsDb";
-import { ILyricsUi, IOrder, ISection } from "@/interfaces/ui/ILyricsUi";
+import { ILyricsDb, IOrder, ISection, ILine } from "@/interfaces/db/ILyricsDb";
 
-export function getWordsFromLyrics(lyrics: ILyricsUi): string {
+export function getWordsFromLyrics(lyrics: ILyricsDb): string {
   if (!lyrics?.order?.length) return "";
 
   const words: string = lyrics.order
@@ -28,24 +27,29 @@ export function getWordsFromSection(section: ISection) {
   return words;
 }
 
-export function populateLyricSections(song: ILyricsDb): ILyricsUi {
-  let lyrics: ILyricsUi = {
-    _id: song._id,
-    order: song.order,
-    title: song.title,
-    sections: {},
-  };
+/**
+ * This method takes a text string from an input and converts the string to lyric section model
+ * for db and attempts to apply word metadata to the words array created by splitting the text by array index
+ *
+ * @export
+ * @param {string} text
+ * @param {ISection} section - section to aplly
+ * @return {*}  {ILine[]}
+ */
+export function updateLyricSectionFromText(text: string, section: ISection): ISection {
+  const newLines = text
+    .split("\n")
+    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
 
-  for (const sectionKey in song.sections) {
-    const section = song.sections[sectionKey];
-
-    lyrics.sections[sectionKey] = {
-      lines: section.lines.map((line: ILineDb) => ({
-        words: line.words.split(" ").map((word: string) => ({ text: word })),
+  const updatedLines = newLines.map((line, lineIndex) => {
+    return {
+      words: line.words.map((word, wordIndex) => ({
+        ...section.lines?.[lineIndex]?.words?.[wordIndex],
+        text: word.text,
       })),
-      title: section.title,
     };
-  }
+  });
 
-  return lyrics;
+  section.lines = updatedLines;
+  return section;
 }
