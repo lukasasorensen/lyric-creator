@@ -128,7 +128,7 @@ export default function SongEditor({ song }: { song: ISongDb }) {
               </div>
             )}
             {!showRepeatSectionSelector && !showNewSectionInput && (
-              <div className="flex w-full justify-center">
+              <div className="mt-10 flex w-full justify-center">
                 <PopoverList>
                   <PopoverListItemButton
                     text="Add New Section"

@@ -5,7 +5,14 @@ import { TailWindColorThemeClasses as twColorClasses } from "@/constants/ColorTh
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   title?: string;
-  color?: "primary" | "secondary" | "warn" | "danger" | "none";
+  color?:
+    | "primary"
+    | "secondary"
+    | "warn"
+    | "warn-secondary"
+    | "danger"
+    | "danger-secondary"
+    | "none";
 }
 export function ThemedButton({
   title,

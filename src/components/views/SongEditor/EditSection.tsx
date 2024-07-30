@@ -23,13 +23,13 @@ export default function EditSection({
   const section = song?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(!!edit);
   const [editText, setEditText] = useState(getWordsFromSection(section));
-  const [editTitleText, setEditTitleText] = useState(section.title);
+  const [editTitleText, setEditTitleText] = useState(section?.title ?? "");
   const [isPencilShown, setIsPencilShown] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const inputRef = useRef(null);
 
-  const onEditButtonClick = (element: HTMLElement) => {
+  const onEditButtonClick = () => {
     setIsEditing(true);
     setTimeout(() => {
       if (inputRef.current) {
@@ -56,22 +56,34 @@ export default function EditSection({
   };
 
   const done = async () => {
+    let section = song.sections[order.sectionName];
+    section = updateSongSectionFromText(editText, section);
+    section.title = editTitleText;
+    song.sections[order.sectionName] = section;
+    await updateSong(song);
+  };
+
+  const updateSong = async (song: ISongDb) => {
     try {
-      let section = song.sections[order.sectionName];
-      section = updateSongSectionFromText(editText, section);
-      section.title = editTitleText;
-      song.sections[order.sectionName] = section;
-      setIsEditing(false);
-      // post to db
-      console.log("song POST - ", song);
       setIsSaving(true);
       await updateSongById(song._id, song);
     } catch (error) {
       console.error("error updating section", error);
       throw error;
     } finally {
+      setIsEditing(false);
       setIsSaving(false);
     }
+  };
+
+  const deleteSection = async (sectionKey: string) => {
+    if (!song.sections[sectionKey]) {
+      console.error("Error Deleting Section - section not found", { sectionKey, song });
+      throw new Error("Error Deleting Section - section not found");
+    }
+    delete song.sections[sectionKey];
+    song.order = song.order.filter((o) => o.sectionName !== sectionKey);
+    await updateSong(song);
   };
 
   return (
@@ -81,22 +93,44 @@ export default function EditSection({
         <div className="container max-w-2xl">
           {isEditing && (
             <div className="mb-10">
-              <div className="flex w-full">
-                <ThemedButton className="ml-auto" text="Done" onClick={() => done()} />
+              {!!order?.showSectionTitleOnly && (
+                <h3 className="mb-3 mt-5 text-center text-lg font-bold">
+                  {section.title}
+                  {!!order.repeatCount && `[x${order.repeatCount}]`}
+                </h3>
+              )}
+              {!order?.showSectionTitleOnly && (
+                <>
+                  <ThemedTextInput
+                    className="text-center"
+                    placeholder="Section Title"
+                    onChange={(e) => {
+                      onSectionTitleChange(section, e.target.value);
+                    }}
+                    value={editTitleText}
+                  />
+                  <textarea
+                    className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                    value={editText}
+                    onChange={(e) => onTextChange(section, e)}
+                    ref={inputRef}
+                  ></textarea>
+                </>
+              )}
+              <div className="flex w-full justify-end p-2">
+                <ThemedButton
+                  className=""
+                  text="Delete"
+                  color="danger-secondary"
+                  onClick={() => deleteSection(order.sectionName)}
+                />
+                <ThemedButton
+                  className=""
+                  color="primary"
+                  text="Done"
+                  onClick={() => done()}
+                />
               </div>
-              <ThemedTextInput
-                placeholder="Section Title"
-                onChange={(e) => {
-                  onSectionTitleChange(section, e.target.value);
-                }}
-                value={editTitleText}
-              />
-              <textarea
-                className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                value={editText}
-                onChange={(e) => onTextChange(section, e)}
-                ref={inputRef}
-              ></textarea>
             </div>
           )}
           {!isEditing && (
@@ -106,10 +140,7 @@ export default function EditSection({
               onMouseLeave={() => setIsPencilShown(false)}
             >
               {isPencilShown && (
-                <button
-                  className="absolute right-5"
-                  onClick={(e) => onEditButtonClick(e.target)}
-                >
+                <button className="absolute right-5" onClick={() => onEditButtonClick()}>
                   <FaPencil />
                 </button>
               )}
