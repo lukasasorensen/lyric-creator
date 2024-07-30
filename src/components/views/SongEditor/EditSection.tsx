@@ -13,13 +13,15 @@ export default function EditSection({
   order,
   song,
   onSectionChange,
+  edit,
 }: {
+  edit?: boolean;
   order: IOrder;
   song: ISongDb;
   onSectionChange?: (section: ISection) => void;
 }) {
   const section = song?.sections?.[order?.sectionName];
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(!!edit);
   const [editText, setEditText] = useState(getWordsFromSection(section));
   const [editTitleText, setEditTitleText] = useState(section.title);
   const [isPencilShown, setIsPencilShown] = useState(false);

@@ -22,7 +22,7 @@ export default function Section({
         {repeatCount && `[x${repeatCount}]`}
       </h3>
       {!showSectionTitleOnly &&
-        section.lines?.length &&
+        !!section.lines?.length &&
         section.lines.map((line, i) => <Line line={line} key={i} />)}
     </div>
   );
