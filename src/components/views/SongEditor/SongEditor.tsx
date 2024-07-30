@@ -7,13 +7,15 @@ import { ThemedButton } from "@/components/Themed";
 import { updateSongById } from "@/clients/songClient";
 
 export default function SongEditor({ song }: { song: ISongDb }) {
-  const addNewSection = () => {};
+  const addNewSection = () => {
+    debugger;
+  };
 
   const showSectionSelector = () => {};
 
   return (
     <div
-      className={`song-editor-outer-container container max-w-screen-lg mx-auto flex flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
+      className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
     >
       <div className="song-container">
         <div className="song-editor-container p-25 w-full">

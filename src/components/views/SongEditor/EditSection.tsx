@@ -4,9 +4,10 @@ import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import Section from "./Section";
-import { ThemedButton } from "@/components/Themed";
+import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { updateSongById } from "@/clients/songClient";
+import LoadingDisplay from "@/components/common/LoadingDisplay";
 
 export default function EditSection({
   order,
@@ -19,9 +20,11 @@ export default function EditSection({
 }) {
   const section = song?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState('');
+  const [editText, setEditText] = useState(getWordsFromSection(section));
+  const [editTitleText, setEditTitleText] = useState(section.title);
   const [isPencilShown, setIsPencilShown] = useState(false);
-  
+  const [isSaving, setIsSaving] = useState(false);
+
   const inputRef = useRef(null);
 
   const onEditButtonClick = (element: HTMLElement) => {
@@ -45,55 +48,78 @@ export default function EditSection({
     onSectionChange?.(section);
   };
 
-  const done = () => {
-    let section = song.sections[order.sectionName];
-    section = updateSongSectionFromText(editText, section);
-    song.sections[order.sectionName] = section;
-    setIsEditing(false);
-    // post to db
-    console.log('song POST - ', song);
-    updateSongById(song._id, song);
+  const onSectionTitleChange = (section: ISection, value: string) => {
+    setEditTitleText(value);
+    onSectionChange?.(section);
+  };
+
+  const done = async () => {
+    try {
+      let section = song.sections[order.sectionName];
+      section = updateSongSectionFromText(editText, section);
+      section.title = editTitleText;
+      song.sections[order.sectionName] = section;
+      setIsEditing(false);
+      // post to db
+      console.log("song POST - ", song);
+      setIsSaving(true);
+      await updateSongById(song._id, song);
+    } catch (error) {
+      console.error("error updating section", error);
+      throw error;
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="flex justify-center">
-      <div className="container max-w-2xl">
-        {isEditing && (
-          <div className="mb-10">
-            <h2 className="mb-5 text-center">{section.title}</h2>
-            <div className="flex w-full">
-              <ThemedButton className="ml-auto" text="Done" onClick={() => done()} />
+      {isSaving && <LoadingDisplay text="Saving..." />}
+      {!isSaving && (
+        <div className="container max-w-2xl">
+          {isEditing && (
+            <div className="mb-10">
+              <div className="flex w-full">
+                <ThemedButton className="ml-auto" text="Done" onClick={() => done()} />
+              </div>
+              <ThemedTextInput
+                placeholder="Section Title"
+                onChange={(e) => {
+                  onSectionTitleChange(section, e.target.value);
+                }}
+                value={editTitleText}
+              />
+              <textarea
+                className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                value={editText}
+                onChange={(e) => onTextChange(section, e)}
+                ref={inputRef}
+              ></textarea>
             </div>
-            <textarea
-              className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-              defaultValue={getWordsFromSection(section)}
-              onChange={(e) => onTextChange(section, e)}
-              ref={inputRef}
-            ></textarea>
-          </div>
-        )}
-        {!isEditing && (
-          <div
-            className="container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10"
-            onMouseEnter={() => setIsPencilShown(true)}
-            onMouseLeave={() => setIsPencilShown(false)}
-          >
-            {isPencilShown && (
-              <button
-                className="absolute right-5"
-                onClick={(e) => onEditButtonClick(e.target)}
-              >
-                <FaPencil />
-              </button>
-            )}
-            <Section
-              section={section}
-              showSectionTitleOnly={!!order.showSectionTitleOnly}
-              repeatCount={order?.repeatCount}
-            />
-          </div>
-        )}
-      </div>
+          )}
+          {!isEditing && (
+            <div
+              className="container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10"
+              onMouseEnter={() => setIsPencilShown(true)}
+              onMouseLeave={() => setIsPencilShown(false)}
+            >
+              {isPencilShown && (
+                <button
+                  className="absolute right-5"
+                  onClick={(e) => onEditButtonClick(e.target)}
+                >
+                  <FaPencil />
+                </button>
+              )}
+              <Section
+                section={section}
+                showSectionTitleOnly={!!order.showSectionTitleOnly}
+                repeatCount={order?.repeatCount}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

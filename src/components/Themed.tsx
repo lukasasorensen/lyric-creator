@@ -1,7 +1,6 @@
 import { getButtonThemeClasses } from "@/utils/ThemeUtil";
-import { ButtonHTMLAttributes, useMemo } from "react";
+import { ButtonHTMLAttributes, InputHTMLAttributes, useMemo } from "react";
 import { TailWindColorThemeClasses as twColorClasses } from "@/constants/ColorTheme";
-
 
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
@@ -15,8 +14,6 @@ export function ThemedButton({
   className,
   ...props
 }: IThemedButtonProps) {
-  
-
   const buttonThemeClasses = useMemo<string>(() => {
     return getButtonThemeClasses(color || "none", twColorClasses);
   }, [color]);
@@ -29,5 +26,17 @@ export function ThemedButton({
     >
       {text}
     </button>
+  );
+}
+
+interface IThemedTextInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+
+export function ThemedTextInput(props: IThemedTextInputProps) {
+  return (
+    <input
+      {...props}
+      type="text"
+      className={`block w-full rounded-lg border border-gray-300 ${twColorClasses.BG_SECONDARY} ${twColorClasses.TEXT_PRIMARY} p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${props?.className}`}
+    />
   );
 }
