@@ -1,6 +1,7 @@
 "use client";
 import { ISection } from "@/interfaces/ui/Song";
 import Line from "./Line";
+import { ILine } from "@/interfaces/db/ISongDb";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
   return showSectionTitleOnly ? `[${title}]` : title;
@@ -23,7 +24,7 @@ export default function Section({
       </h3>
       {!showSectionTitleOnly &&
         !!section.lines?.length &&
-        section.lines.map((line, i) => <Line line={line} key={i} />)}
+        section.lines.map((line: ILine, i: number) => <Line line={line} key={i} />)}
     </div>
   );
 }
