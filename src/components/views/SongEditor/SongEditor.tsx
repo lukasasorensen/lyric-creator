@@ -93,7 +93,7 @@ export default function SongEditor({ song }: { song: ISongDb }) {
             <h2 className="mb-5 text-center text-2xl font-bold">{song.title}</h2>
             {song?.order?.length &&
               song.order.map((order, i) => (
-                <EditSection key={i} order={order} song={song} />
+                <EditSection key={i} index={i} order={order} song={song} />
               ))}
             {showNewSectionInput && (
               <div className="container mb-8 flex justify-center">

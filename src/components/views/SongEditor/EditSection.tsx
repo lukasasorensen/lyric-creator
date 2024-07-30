@@ -14,11 +14,15 @@ export default function EditSection({
   song,
   onSectionChange,
   edit,
+  index,
+  onDelete,
 }: {
   edit?: boolean;
   order: IOrder;
   song: ISongDb;
+  index: number;
   onSectionChange?: (section: ISection) => void;
+  onDelete?: (order: IOrder, section: ISection) => void;
 }) {
   const section = song?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(!!edit);
@@ -76,14 +80,19 @@ export default function EditSection({
     }
   };
 
-  const deleteSection = async (sectionKey: string) => {
+  const deleteSection = async (sectionKey: string, orderIndex) => {
     if (!song.sections[sectionKey]) {
       console.error("Error Deleting Section - section not found", { sectionKey, song });
       throw new Error("Error Deleting Section - section not found");
     }
-    delete song.sections[sectionKey];
-    song.order = song.order.filter((o) => o.sectionName !== sectionKey);
+    if (!order.showSectionTitleOnly) {
+      delete song.sections[sectionKey];
+      song.order = song.order.filter((o) => o.sectionName !== sectionKey);
+    } else {
+      song.order.splice(index, 1);
+    }
     await updateSong(song);
+    onDelete?.(order, section);
   };
 
   return (
@@ -122,7 +131,7 @@ export default function EditSection({
                   className=""
                   text="Delete"
                   color="danger-secondary"
-                  onClick={() => deleteSection(order.sectionName)}
+                  onClick={() => deleteSection(order.sectionName, index)}
                 />
                 <ThemedButton
                   className=""
