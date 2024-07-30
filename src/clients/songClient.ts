@@ -50,3 +50,22 @@ export async function updateSongById(id: string, updateObject: Partial<ISongDb>)
     throw err;
   }
 }
+
+export async function createSong(song: Partial<ISongDb>) {
+  try {
+    const res = await fetch("http://localhost:3000/api/songs/", {
+      body: JSON.stringify(song),
+      method: "POST",
+    });
+
+    let results = await res.json();
+
+    if (results.error) {
+      throw new Error(results.error);
+    }
+    
+  } catch (err) {
+    console.error("SongClient.createSong ERROR - ", err);
+    throw err;
+  }
+}
