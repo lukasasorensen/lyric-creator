@@ -1,5 +1,5 @@
 "use client";
-import { getSong } from "@/clients/songClient";
+import { getSongs } from "@/clients/songClient";
 import SongSelector from "@/components/views/SongSelector/SongSelector";
 import { ISongDb } from "@/interfaces/db/ISongDb";
 import { useEffect, useState } from "react";
@@ -10,13 +10,13 @@ export default function SongListView() {
 
   useEffect(() => {
     const init = async () => {
-      const allSong: ISongDb[] = await getSong();
+      const allSong: ISongDb[] = await getSongs();
       setSongs(allSong);
       setIsLoading(false);
     };
 
     init();
-  });
+  }, []);
 
   return (
     <main className="song-container flex w-full justify-center">

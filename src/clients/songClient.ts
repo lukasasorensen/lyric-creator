@@ -1,6 +1,6 @@
 import { ISongDb } from "@/interfaces/db/ISongDb";
 
-export async function getSong(): Promise<ISongDb[]> {
+export async function getSongs(): Promise<ISongDb[]> {
   try {
     const res = await fetch("http://localhost:3000/api/songs");
     let results = await res.json();
