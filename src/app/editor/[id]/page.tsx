@@ -1,5 +1,5 @@
 "use client";
-import { getSongById, getSong } from "@/clients/songClient";
+import { getSongById } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import SongEditor from "@/components/views/SongEditor/SongEditor";
 import { ISongDb } from "@/interfaces/db/ISongDb";

@@ -12,8 +12,10 @@ import LoadingDisplay from "@/components/common/LoadingDisplay";
 export default function SongEditor({ song }: { song: ISongDb }) {
   const [isSaving, setIsSaving] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [editSongTitleText, setEditSongTitleText] = useState(song?.title);
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
+  const [isEditingSongTitle, setIsEditingSongTitle] = useState(false);
 
   const addNewSection = async () => {
     const sectionKey = createKebabFromText(newSectionTitle);
@@ -82,6 +84,10 @@ export default function SongEditor({ song }: { song: ISongDb }) {
     setShowRepeatSectionSelector(false);
   };
 
+  const showEditSongTitleInput = () => {
+    setIsEditingSongTitle(true);
+  };
+
   return (
     <div
       className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
@@ -90,7 +96,22 @@ export default function SongEditor({ song }: { song: ISongDb }) {
       {!isSaving && (
         <div className="song-container mt-10">
           <div className="song-editor-container p-25 w-full">
-            <h2 className="mb-5 text-center text-2xl font-bold">{song.title}</h2>
+            {!isEditingSongTitle && (
+              <h2
+                className="mb-5 text-center text-2xl font-bold"
+                onClick={showEditSongTitleInput}
+              >
+                {song.title}
+              </h2>
+            )}
+            {isEditingSongTitle && (
+              <ThemedTextInput
+                className="max-w-64 text-center"
+                defaultValue={song.title}
+                onChange={(e) => setEditSongTitleText(e.target.value)}
+                autoFocus
+              />
+            )}
             {song?.order?.length &&
               song.order.map((order, i) => (
                 <EditSection key={i} index={i} order={order} song={song} />
