@@ -88,6 +88,11 @@ export default function SongEditor({ song }: { song: ISongDb }) {
     setIsEditingSongTitle(true);
   };
 
+  const saveEditTitleText = async () => {
+    song.title = editSongTitleText;
+    await updateSongById(song._id, song);
+  }
+
   return (
     <div
       className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
@@ -105,12 +110,14 @@ export default function SongEditor({ song }: { song: ISongDb }) {
               </h2>
             )}
             {isEditingSongTitle && (
-              <ThemedTextInput
-                className="max-w-64 text-center"
-                defaultValue={song.title}
-                onChange={(e) => setEditSongTitleText(e.target.value)}
-                autoFocus
-              />
+              <form onSubmit={saveEditTitleText} className="container flex justify-center">
+                <ThemedTextInput
+                  className="max-w-64 text-center text-2xl"
+                  defaultValue={song.title}
+                  onChange={(e) => setEditSongTitleText(e.target.value)}
+                  autoFocus
+                />
+              </form>
             )}
             {song?.order?.length &&
               song.order.map((order, i) => (
