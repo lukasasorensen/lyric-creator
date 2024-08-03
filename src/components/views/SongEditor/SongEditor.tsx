@@ -4,7 +4,7 @@ import { PopoverList, PopoverListItemButton } from "@/components/common/Popover"
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
-import { getSongById, updateSongById } from "@/clients/songClient";
+import { deleteSongById, getSongById, updateSongById } from "@/clients/songClient";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
@@ -12,8 +12,10 @@ import { useSongContext } from "@/providers/SongProvider";
 import EditSongTitle from "./EditSongTitle";
 import { getLinesFromText } from "@/utils/SongUtil";
 import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
+import { useRouter } from "next/navigation";
 
 export default function SongEditor({ songId }: { songId: string }) {
+  const router = useRouter();
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,7 @@ export default function SongEditor({ songId }: { songId: string }) {
   const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -95,6 +98,20 @@ export default function SongEditor({ songId }: { songId: string }) {
     setShowRepeatSectionSelector(false);
   };
 
+  const deleteSong = async () => {
+    try {
+      setIsLoading(true);
+      await deleteSongById(songId);
+    } catch (error) {
+      // todo error handle
+      console.error(error);
+      throw new Error("Error Deleting Song");
+    } finally {
+      router.push("/editor");
+      setIsLoading(false);
+    }
+  };
+
   const onNewSectionWordsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     autoResizeInputToFitText(e.target);
     setNewSectionWords(e.target.value);
@@ -118,87 +135,118 @@ export default function SongEditor({ songId }: { songId: string }) {
     return <h1>Not Found 😔</h1>;
   }
 
-  return (
-    <div
-      className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
-    >
-      {isSaving && <LoadingDisplay text="Saving..." />}
-      {!isSaving && (
-        <div className="song-container mt-10 p-10">
-          <div className="song-editor-container p-25 w-full">
-            <EditSongTitle />
-            {!!song?.order?.length &&
-              song.order.map((order, i) => (
-                <EditSection key={i} index={i} order={order} />
-              ))}
-            {showNewSectionInput && (
-              <div className="container mb-8 flex justify-center">
-                <div className="container">
-                  <ThemedTextInput
-                    className="text-center"
-                    autoFocus
-                    onChange={(e) => setNewSectionTitle(e.target.value)}
-                    placeholder="New Section Name"
-                  />
-                  <textarea
-                    className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                    onChange={(e) => onNewSectionWordsChange(e)}
-                    placeholder="New Section Words"
-                    ref={inputRef}
-                  ></textarea>
-                  <div className="flex w-full justify-end p-2">
-                    <ThemedButton
-                      className="mr-5"
-                      text="Cancel"
-                      color="warn"
-                      onClick={() => setShowNewSectionInput(false)}
-                    />
-                    <ThemedButton
-                      color="primary"
-                      text="Done"
-                      onClick={() => addNewSection()}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            {showRepeatSectionSelector && (
-              <div className={`container mb-8 mt-10 flex justify-center`}>
-                <div
-                  className={`container mb-8 w-fit rounded-md p-5 text-center ${tw.BG_TERTIARY}`}
-                >
-                  <h2 className={`${tw.TEXT_PRIMARY} mb-5`}>Select Section To Repeat</h2>
-                  <div className="flex justify-center gap-5">
-                    {!!song?.sections &&
-                      Object.keys(song?.sections).map((sectionKey: string) => (
-                        <ThemedButton
-                          color="secondary"
-                          key={sectionKey}
-                          text={song?.sections[sectionKey]?.title ?? ""}
-                          onClick={() => repeatSection(sectionKey)}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            {!showRepeatSectionSelector && !showNewSectionInput && (
-              <div className="mt-10 flex w-full justify-center">
-                <PopoverList>
-                  <PopoverListItemButton
-                    text="Add New Section"
-                    onClick={() => setShowNewSectionInput(true)}
-                  ></PopoverListItemButton>
-                  <PopoverListItemButton
-                    text="Repeat Section"
-                    onClick={() => setShowRepeatSectionSelector(true)}
-                  ></PopoverListItemButton>
-                </PopoverList>
-              </div>
-            )}
-          </div>
+  if (showDeleteWarning) {
+    return (
+      <div className="container p-24 text-center">
+        <h2 className={`${tw.TEXT_PRIMARY} text-lg`}>
+          Are you sure you want to DELETE your song,{" "}
+          <strong className={tw.TEXT_SECONDARY}>{song?.title}</strong>?
+        </h2>
+        <div className="mt-10 flex w-full justify-center gap-5">
+          <ThemedButton
+            text="No, Cancel"
+            color="secondary"
+            onClick={() => setShowDeleteWarning(false)}
+          />
+          <ThemedButton text="Yes, Delete" color="danger" onClick={() => deleteSong()} />
         </div>
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div
+        className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
+      >
+        {isSaving && <LoadingDisplay text="Saving..." />}
+        {!isSaving && (
+          <div className="song-container mt-10 p-10">
+            <div className="song-editor-container p-25 w-full">
+              <EditSongTitle />
+              {!!song?.order?.length &&
+                song.order.map((order, i) => (
+                  <EditSection key={i} index={i} order={order} />
+                ))}
+              {showNewSectionInput && (
+                <div className="container mb-8 flex justify-center">
+                  <div className="container">
+                    <ThemedTextInput
+                      className="text-center"
+                      autoFocus
+                      onChange={(e) => setNewSectionTitle(e.target.value)}
+                      placeholder="New Section Name"
+                    />
+                    <textarea
+                      className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                      onChange={(e) => onNewSectionWordsChange(e)}
+                      placeholder="New Section Words"
+                      ref={inputRef}
+                    ></textarea>
+                    <div className="flex w-full justify-end p-2">
+                      <ThemedButton
+                        className="mr-5"
+                        text="Cancel"
+                        color="warn"
+                        onClick={() => setShowNewSectionInput(false)}
+                      />
+                      <ThemedButton
+                        color="primary"
+                        text="Done"
+                        onClick={() => addNewSection()}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+              {showRepeatSectionSelector && (
+                <div className={`container mb-8 mt-10 flex justify-center`}>
+                  <div
+                    className={`container mb-8 w-fit rounded-md p-5 text-center ${tw.BG_TERTIARY}`}
+                  >
+                    <h2 className={`${tw.TEXT_PRIMARY} mb-5`}>
+                      Select Section To Repeat
+                    </h2>
+                    <div className="flex justify-center gap-5">
+                      {!!song?.sections &&
+                        Object.keys(song?.sections).map((sectionKey: string) => (
+                          <ThemedButton
+                            color="secondary"
+                            key={sectionKey}
+                            text={song?.sections[sectionKey]?.title ?? ""}
+                            onClick={() => repeatSection(sectionKey)}
+                          />
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {!showRepeatSectionSelector && !showNewSectionInput && (
+                <div className="mt-10 flex w-full justify-center">
+                  <PopoverList>
+                    <PopoverListItemButton
+                      text="Add New Section"
+                      onClick={() => setShowNewSectionInput(true)}
+                    ></PopoverListItemButton>
+                    <PopoverListItemButton
+                      text="Repeat Section"
+                      onClick={() => setShowRepeatSectionSelector(true)}
+                    ></PopoverListItemButton>
+                  </PopoverList>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="container">
+        <ThemedButton
+          className="float-right mt-5"
+          text="Delete"
+          color="danger-secondary"
+          onClick={() => setShowDeleteWarning(true)}
+        />
+      </div>
+    </>
   );
 }

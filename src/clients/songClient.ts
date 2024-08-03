@@ -72,3 +72,22 @@ export async function createSong(song: Partial<ISongDb>): Promise<InsertOneResul
     throw err;
   }
 }
+
+export async function deleteSongById(id: string) {
+  try {
+    const res = await fetch("http://localhost:3000/api/songs/" + id, {
+      method: "DELETE",
+    });
+
+    let results = await res.json();
+
+    if (results.error) {
+      throw new Error(results.error);
+    }
+
+    return results;
+  } catch (err) {
+    console.error("SongClient.deleteSongById ERROR - ", err);
+    throw err;
+  }
+}
