@@ -1,26 +1,31 @@
 "use client";
-import { ISongDb } from "@/interfaces/db/ISongDb";
+import { ISongDb, IWord } from "@/interfaces/db/ISongDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { getSongById, updateSongById } from "@/clients/songClient";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import EditSongTitle from "./EditSongTitle";
+import { text } from "stream/consumers";
+import { getLinesFromText } from "@/utils/SongUtil";
 
 export default function SongEditor({ songId }: { songId: string }) {
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
 
+  const inputRef = useRef(null);
+
   const addNewSection = async () => {
-    if (!song) return;
+    if (!song || !newSectionTitle?.length) return;
 
     const sectionKey = createKebabFromText(newSectionTitle);
     if (!!song?.sections[sectionKey]) {
@@ -28,11 +33,12 @@ export default function SongEditor({ songId }: { songId: string }) {
       console.error("Section with this name already exists");
       throw new Error("Cannot create section, section with this name already exists");
     }
+
     song.sections = {
       ...song.sections,
       [sectionKey]: {
         title: newSectionTitle,
-        lines: [],
+        lines: getLinesFromText(newSectionWords)
       },
     };
 
@@ -113,7 +119,7 @@ export default function SongEditor({ songId }: { songId: string }) {
     >
       {isSaving && <LoadingDisplay text="Saving..." />}
       {!isSaving && (
-        <div className="song-container mt-10">
+        <div className="song-container mt-10 p-10">
           <div className="song-editor-container p-25 w-full">
             <EditSongTitle />
             {!!song?.order?.length &&
@@ -122,14 +128,34 @@ export default function SongEditor({ songId }: { songId: string }) {
               ))}
             {showNewSectionInput && (
               <div className="container mb-8 flex justify-center">
-                <form onSubmit={addNewSection} className="container max-w-64">
+                <div className="container">
                   <ThemedTextInput
                     className="text-center"
                     autoFocus
                     onChange={(e) => setNewSectionTitle(e.target.value)}
                     placeholder="New Section Name"
                   />
-                </form>
+                  <textarea
+                    className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                    onChange={(e) => setNewSectionWords(e.target.value)}
+                    placeholder="New Section Words"
+                    ref={inputRef}
+                  ></textarea>
+                  <div className="flex w-full justify-end p-2">
+                    <ThemedButton
+                      className="mr-5"
+                      text="Cancel"
+                      color="warn"
+                      onClick={() => setShowRepeatSectionSelector(false)}
+                    />
+                    <ThemedButton
+                      className=""
+                      color="primary"
+                      text="Done"
+                      onClick={() => addNewSection()}
+                    />
+                  </div>
+                </div>
               </div>
             )}
             {showRepeatSectionSelector && (

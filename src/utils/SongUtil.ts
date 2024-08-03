@@ -27,6 +27,12 @@ export function getWordsFromSection(section: ISection | null | undefined) {
   return words;
 }
 
+export function getLinesFromText(text: string): ILine[] {
+  return text
+    .split("\n")
+    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
+}
+
 /**
  * This method takes a text string from an input and converts the string to lyric section model
  * for db and attempts to apply word metadata to the words array created by splitting the text by array index
@@ -37,9 +43,7 @@ export function getWordsFromSection(section: ISection | null | undefined) {
  * @return {*}  {ILine[]}
  */
 export function updateSongSectionFromText(text: string, section: ISection): ISection {
-  const newLines = text
-    .split("\n")
-    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
+  const newLines = getLinesFromText(text);
 
   const updatedLines = newLines.map((line, lineIndex) => {
     return {

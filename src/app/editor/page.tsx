@@ -45,7 +45,7 @@ export default function SongListView() {
         <SongSelector isLoading={isLoading} songs={songs} />
         {!isLoading && !songs?.length && <h1>No Song Found</h1>}
       </div>
-      <div className="container mt-14 flex justify-center">
+      <div className="container mt-8 flex justify-center">
         <CirclePlusButton onClick={addNewSong} />
       </div>
     </main>
