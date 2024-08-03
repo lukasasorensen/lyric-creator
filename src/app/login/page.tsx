@@ -1,5 +1,6 @@
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import Link from "next/link";
 
 export default function LoginPage() {
   return (
@@ -81,12 +82,12 @@ export default function LoginPage() {
 
           <p className={`mt-10 text-center text-sm text-gray-500`}>
             Not a member?{" "}
-            <a
-              href="#"
+            <Link
+              href="/login/register"
               className={`font-semibold leading-6 ${tw.TEXT_TERTIARY} hover:text-indigo-500`}
             >
               Register
-            </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import Link from "next/link";
 export default function NewUserRegistrationPage() {
   return (
     <div className={`flex w-full flex-1 flex-col justify-center px-6 py-12 lg:px-8`}>
@@ -63,6 +64,15 @@ export default function NewUserRegistrationPage() {
             />
           </div>
         </form>
+        <p className={`mt-10 text-center text-sm text-gray-500`}>
+            Already a member?{" "}
+            <Link
+              href="/login"
+              className={`font-semibold leading-6 ${tw.TEXT_TERTIARY} hover:text-indigo-500`}
+            >
+              Go to sign in
+            </Link>
+          </p>
       </div>
     </div>
   );
