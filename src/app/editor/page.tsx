@@ -6,6 +6,7 @@ import defaultNewSong from "@/constants/defaultNewSong";
 import { ISongDb } from "@/interfaces/db/ISongDb";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function SongListView() {
   const router = useRouter();
@@ -37,6 +38,9 @@ export default function SongListView() {
 
   return (
     <main className="song-container flex w-full flex-col justify-center">
+      <h1 className={`mb-10 text-center text-4xl font-bold ${tw.TEXT_SECONDARY}`}>
+        Your Songs
+      </h1>
       <div className="flex w-full justify-center">
         <SongSelector isLoading={isLoading} songs={songs} />
         {!isLoading && !songs?.length && <h1>No Song Found</h1>}
