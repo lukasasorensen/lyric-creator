@@ -4,13 +4,16 @@ import { PopoverList, PopoverListItemButton } from "@/components/common/Popover"
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
-import { updateSongById } from "@/clients/songClient";
-import { useState } from "react";
+import { getSongById, updateSongById } from "@/clients/songClient";
+import { useEffect, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
+import { useSongContext } from "@/providers/SongProvider";
 
-export default function SongEditor({ song }: { song: ISongDb }) {
+export default function SongEditor({ songId }: { songId: string }) {
+  const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [editSongTitleText, setEditSongTitleText] = useState(song?.title);
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
@@ -18,8 +21,10 @@ export default function SongEditor({ song }: { song: ISongDb }) {
   const [isEditingSongTitle, setIsEditingSongTitle] = useState(false);
 
   const addNewSection = async () => {
+    if (!song) return;
+
     const sectionKey = createKebabFromText(newSectionTitle);
-    if (!!song.sections[sectionKey]) {
+    if (!!song?.sections[sectionKey]) {
       // todo handle this better
       console.error("Section with this name already exists");
       throw new Error("Cannot create section, section with this name already exists");
@@ -48,6 +53,7 @@ export default function SongEditor({ song }: { song: ISongDb }) {
   const updateSong = async (song: ISongDb) => {
     try {
       setIsSaving(true);
+      setSong(song);
       await updateSongById(song._id, song);
     } catch (error) {
       console.error("addNewSection - error updating song by id", error);
@@ -89,8 +95,27 @@ export default function SongEditor({ song }: { song: ISongDb }) {
   };
 
   const saveEditTitleText = async () => {
-    song.title = editSongTitleText;
+    if (!song) return;
+    song.title = editSongTitleText ?? "";
     await updateSongById(song._id, song);
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      const getSong: ISongDb = await getSongById(songId);
+      setSong(getSong);
+      setIsLoading(false);
+    };
+
+    init();
+  }, [songId, setSong]);
+
+  if (isLoading) {
+    return <LoadingDisplay text="Loading..." />;
+  }
+
+  if (!isLoading && !song) {
+    return <h1>Not Found 😔</h1>;
   }
 
   return (
@@ -106,14 +131,17 @@ export default function SongEditor({ song }: { song: ISongDb }) {
                 className="mb-5 text-center text-2xl font-bold"
                 onClick={showEditSongTitleInput}
               >
-                {song.title}
+                {song?.title}
               </h2>
             )}
             {isEditingSongTitle && (
-              <form onSubmit={saveEditTitleText} className="container flex justify-center">
+              <form
+                onSubmit={saveEditTitleText}
+                className="container flex justify-center"
+              >
                 <ThemedTextInput
                   className="max-w-64 text-center text-2xl"
-                  defaultValue={song.title}
+                  defaultValue={song?.title}
                   onChange={(e) => setEditSongTitleText(e.target.value)}
                   autoFocus
                 />
@@ -121,7 +149,7 @@ export default function SongEditor({ song }: { song: ISongDb }) {
             )}
             {song?.order?.length &&
               song.order.map((order, i) => (
-                <EditSection key={i} index={i} order={order} song={song} />
+                <EditSection key={i} index={i} order={order} />
               ))}
             {showNewSectionInput && (
               <div className="container mb-8 flex justify-center">
@@ -142,12 +170,12 @@ export default function SongEditor({ song }: { song: ISongDb }) {
                 >
                   <h2 className={`${tw.TEXT_PRIMARY} mb-5`}>Select Section To Repeat</h2>
                   <div className="flex justify-center gap-5">
-                    {!!song.sections &&
-                      Object.keys(song.sections).map((sectionKey: string) => (
+                    {!!song?.sections &&
+                      Object.keys(song?.sections).map((sectionKey: string) => (
                         <ThemedButton
                           color="secondary"
                           key={sectionKey}
-                          text={song.sections[sectionKey].title}
+                          text={song?.sections[sectionKey]?.title ?? ""}
                           onClick={() => repeatSection(sectionKey)}
                         />
                       ))}

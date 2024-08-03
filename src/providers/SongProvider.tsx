@@ -1,30 +1,27 @@
 "use client";
 import { ISongDb } from "@/interfaces/db/ISongDb";
-import { ReactNode, createContext, useReducer } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 
-export const SongContext = createContext(null);
-export const SongDispatchContext = createContext(null);
+export const SongContext = createContext<{
+  song: ISongDb | null;
+  setSong: (song: ISongDb) => void;
+}>({
+  song: null,
+  setSong: (newSong: ISongDb) => {},
+});
 
-export default function SongProvider({ children }: { children: ReactNode }) {
-  const [song, dispatch] = useReducer(songReducer, {} as ISongDb);
-
-  return (
-    <SongContext.Provider value={song}>
-      <SongDispatchContext.Provider value={dispatch}>
-        {children}
-      </SongDispatchContext.Provider>
-    </SongContext.Provider>
-  );
+export function useSongContext() {
+  const value = useContext(SongContext);
+  return value;
 }
 
-function songReducer(song: ISongDb, action: any) {
-  switch (action.type) {
-    case "updateSectionByName": {
-      if (song.sections[action.sectionName]) {
-        song.sections[action.sectionName] = action.section;
-      }
+export function SongProvider({ children }: { children: ReactNode }) {
+  const [song, setSong] = useState<ISongDb | null>(null);
 
-      return song;
-    }
-  }
+  const value = {
+    song,
+    setSong: setSong,
+  };
+
+  return <SongContext.Provider value={value}>{children}</SongContext.Provider>;
 }

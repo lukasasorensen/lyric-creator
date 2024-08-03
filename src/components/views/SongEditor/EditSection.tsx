@@ -8,10 +8,10 @@ import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { updateSongById } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
+import { useSongContext } from "@/providers/SongProvider";
 
 export default function EditSection({
   order,
-  song,
   onSectionChange,
   edit,
   index,
@@ -19,11 +19,11 @@ export default function EditSection({
 }: {
   edit?: boolean;
   order: IOrder;
-  song: ISongDb;
   index: number;
-  onSectionChange?: (section: ISection) => void;
-  onDelete?: (order: IOrder, section: ISection) => void;
+  onSectionChange?: (section: ISection | null | undefined) => void;
+  onDelete?: (order: IOrder, section: ISection | null | undefined) => void;
 }) {
+  const { song, setSong } = useSongContext();
   const section = song?.sections?.[order?.sectionName];
   const [isEditing, setIsEditing] = useState(!!edit);
   const [editText, setEditText] = useState(getWordsFromSection(section));
@@ -47,19 +47,23 @@ export default function EditSection({
     element.style.height = element.scrollHeight + 5 + "px";
   };
 
-  const onTextChange = (section: ISection, e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onTextChange = (
+    section: ISection | null | undefined,
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     if (!e.target) return;
     auto_grow(e.target);
     setEditText(e.target.value);
     onSectionChange?.(section);
   };
 
-  const onSectionTitleChange = (section: ISection, value: string) => {
+  const onSectionTitleChange = (section: ISection | null | undefined, value: string) => {
     setEditTitleText(value);
     onSectionChange?.(section);
   };
 
   const done = async () => {
+    if (!song) return;
     let section = song.sections[order.sectionName];
     section = updateSongSectionFromText(editText, section);
     section.title = editTitleText;
@@ -70,6 +74,7 @@ export default function EditSection({
   const updateSong = async (song: ISongDb) => {
     try {
       setIsSaving(true);
+      setSong(song);
       await updateSongById(song._id, song);
     } catch (error) {
       console.error("error updating section", error);
@@ -80,7 +85,8 @@ export default function EditSection({
     }
   };
 
-  const deleteSection = async (sectionKey: string, orderIndex) => {
+  const deleteSection = async (sectionKey: string, orderIndex: number) => {
+    if (!song) return;
     if (!song.sections[sectionKey]) {
       console.error("Error Deleting Section - section not found", { sectionKey, song });
       throw new Error("Error Deleting Section - section not found");
@@ -89,7 +95,7 @@ export default function EditSection({
       delete song.sections[sectionKey];
       song.order = song.order.filter((o) => o.sectionName !== sectionKey);
     } else {
-      song.order.splice(index, 1);
+      song.order.splice(orderIndex, 1);
     }
     await updateSong(song);
     onDelete?.(order, section);
@@ -104,8 +110,8 @@ export default function EditSection({
             <div className="mb-10">
               {!!order?.showSectionTitleOnly && (
                 <h3 className="mb-3 mt-5 text-center text-lg font-bold">
-                  {section.title}
-                  {!!order.repeatCount && `[x${order.repeatCount}]`}
+                  {section?.title}
+                  {!!order?.repeatCount && `[x${order.repeatCount}]`}
                 </h3>
               )}
               {!order?.showSectionTitleOnly && (

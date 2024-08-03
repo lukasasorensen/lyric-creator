@@ -16,7 +16,7 @@ export function getWordsFromSong(song: ISongDb): string {
   return words;
 }
 
-export function getWordsFromSection(section: ISection) {
+export function getWordsFromSection(section: ISection | null | undefined) {
   if (!section?.lines?.length) return "";
 
   const words: string = section.lines
