@@ -5,13 +5,13 @@ import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { getSongById, updateSongById } from "@/clients/songClient";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import EditSongTitle from "./EditSongTitle";
-import { text } from "stream/consumers";
 import { getLinesFromText } from "@/utils/SongUtil";
+import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 
 export default function SongEditor({ songId }: { songId: string }) {
   const { song, setSong } = useSongContext();
@@ -38,7 +38,7 @@ export default function SongEditor({ songId }: { songId: string }) {
       ...song.sections,
       [sectionKey]: {
         title: newSectionTitle,
-        lines: getLinesFromText(newSectionWords)
+        lines: getLinesFromText(newSectionWords),
       },
     };
 
@@ -95,6 +95,11 @@ export default function SongEditor({ songId }: { songId: string }) {
     setShowRepeatSectionSelector(false);
   };
 
+  const onNewSectionWordsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    autoResizeInputToFitText(e.target);
+    setNewSectionWords(e.target.value);
+  };
+
   useEffect(() => {
     const init = async () => {
       const getSong: ISongDb = await getSongById(songId);
@@ -137,7 +142,7 @@ export default function SongEditor({ songId }: { songId: string }) {
                   />
                   <textarea
                     className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                    onChange={(e) => setNewSectionWords(e.target.value)}
+                    onChange={(e) => onNewSectionWordsChange(e)}
                     placeholder="New Section Words"
                     ref={inputRef}
                   ></textarea>
@@ -146,10 +151,9 @@ export default function SongEditor({ songId }: { songId: string }) {
                       className="mr-5"
                       text="Cancel"
                       color="warn"
-                      onClick={() => setShowRepeatSectionSelector(false)}
+                      onClick={() => setShowNewSectionInput(false)}
                     />
                     <ThemedButton
-                      className=""
                       color="primary"
                       text="Done"
                       onClick={() => addNewSection()}

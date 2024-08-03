@@ -27,7 +27,7 @@ export const TailWindColorThemeClasses: ITailWindColorThemeClasses = {
     "bg-cyan-900 text-white dark:bg-cyan-900 dark:text-white dark:hover:bg-violet-500",
   BTN_DANGER: "bg-rose-700 text-white",
   BTN_DANGER_SECONDARY: "text-rose-700 bg-transparent",
-  BTN_WARN: "bg-yellow-500 text-white dark:bg-orange-500 dark:text-white",
+  BTN_WARN: "bg-amber-400 text-white dark:bg-orange-400 dark:text-white",
   BTN_WARN_SECONDARY: "text-yellow-500 dark:text-orange-500 bg-transparent",
   BTN_NONE: "bg-transparent text-slate-950 dark:bg-transparent dark:text-white",
 };

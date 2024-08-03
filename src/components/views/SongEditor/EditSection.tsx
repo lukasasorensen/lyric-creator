@@ -9,6 +9,7 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { updateSongById } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
+import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 
 export default function EditSection({
   order,
@@ -37,14 +38,9 @@ export default function EditSection({
     setIsEditing(true);
     setTimeout(() => {
       if (inputRef.current) {
-        auto_grow(inputRef.current);
+        autoResizeInputToFitText(inputRef.current);
       }
     }, 1);
-  };
-
-  const auto_grow = (element: HTMLElement) => {
-    element.style.height = "5px";
-    element.style.height = element.scrollHeight + 5 + "px";
   };
 
   const onTextChange = (
@@ -52,7 +48,7 @@ export default function EditSection({
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (!e.target) return;
-    auto_grow(e.target);
+    autoResizeInputToFitText(e.target);
     setEditText(e.target.value);
     onSectionChange?.(section);
   };
