@@ -7,11 +7,8 @@ export default function EditorLayout({
 }>) {
   return (
     <div
-      className={`flex min-h-screen flex-col items-center justify-around ${tw.BG_PRIMARY} p-24 w-full`}
+      className={`flex min-h-screen flex-col items-center ${tw.BG_PRIMARY} w-full p-24`}
     >
-      <h1 className={`mb-10 text-center text-4xl font-bold ${tw.TEXT_SECONDARY}`}>
-        Lyric Creator
-      </h1>
       {children}
     </div>
   );

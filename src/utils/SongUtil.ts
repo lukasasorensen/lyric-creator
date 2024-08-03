@@ -16,7 +16,7 @@ export function getWordsFromSong(song: ISongDb): string {
   return words;
 }
 
-export function getWordsFromSection(section: ISection) {
+export function getWordsFromSection(section: ISection | null | undefined) {
   if (!section?.lines?.length) return "";
 
   const words: string = section.lines
@@ -25,6 +25,12 @@ export function getWordsFromSection(section: ISection) {
     })
     .join("\n");
   return words;
+}
+
+export function getLinesFromText(text: string): ILine[] {
+  return text
+    .split("\n")
+    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
 }
 
 /**
@@ -37,9 +43,7 @@ export function getWordsFromSection(section: ISection) {
  * @return {*}  {ILine[]}
  */
 export function updateSongSectionFromText(text: string, section: ISection): ISection {
-  const newLines = text
-    .split("\n")
-    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
+  const newLines = getLinesFromText(text);
 
   const updatedLines = newLines.map((line, lineIndex) => {
     return {
