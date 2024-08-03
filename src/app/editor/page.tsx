@@ -4,17 +4,19 @@ import { CirclePlusButton } from "@/components/common/CirclePlusButton";
 import SongSelector from "@/components/views/SongSelector/SongSelector";
 import defaultNewSong from "@/constants/defaultNewSong";
 import { ISongDb } from "@/interfaces/db/ISongDb";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SongListView() {
+  const router = useRouter();
   const [songs, setSongs] = useState<ISongDb[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const addNewSong = async () => {
     try {
       setIsLoading(true);
-      await createSong(defaultNewSong);
-      await getAllSongs();
+      const { insertedId } = await createSong(defaultNewSong);
+      router.push(`/editor/${insertedId}`);
     } catch (error) {
       // todo fix
       throw error;

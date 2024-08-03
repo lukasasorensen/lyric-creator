@@ -1,4 +1,5 @@
 import { ISongDb } from "@/interfaces/db/ISongDb";
+import { InsertOneResult } from "mongodb";
 
 export async function getSongs(): Promise<ISongDb[]> {
   try {
@@ -50,7 +51,7 @@ export async function updateSongById(id: string, updateObject: Partial<ISongDb>)
   }
 }
 
-export async function createSong(song: Partial<ISongDb>) {
+export async function createSong(song: Partial<ISongDb>): Promise<InsertOneResult> {
   try {
     song.createdAt = new Date();
     song.isDeleted = false;
@@ -64,6 +65,8 @@ export async function createSong(song: Partial<ISongDb>) {
     if (results.error) {
       throw new Error(results.error);
     }
+
+    return results;
   } catch (err) {
     console.error("SongClient.createSong ERROR - ", err);
     throw err;
