@@ -7,6 +7,7 @@ import NavBar from "@/components/ui/NavBar";
 import { Body } from "@/components/views/Body";
 import SongProvider from "@/providers/SongProvider";
 import { SkeletonTheme } from "react-loading-skeleton";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,7 @@ export default function RootLayout({
           borderRadius="0.5rem"
           duration={4}
         >
-          <body className={inter.className}>
+          <body className={inter.className + " " + tw.BG_PRIMARY}>
             <Body>
               <NavBar />
               {children}
