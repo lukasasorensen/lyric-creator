@@ -9,16 +9,15 @@ import { useEffect, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
+import EditSongTitle from "./EditSongTitle";
 
 export default function SongEditor({ songId }: { songId: string }) {
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [newSectionTitle, setNewSectionTitle] = useState("");
-  const [editSongTitleText, setEditSongTitleText] = useState(song?.title);
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
-  const [isEditingSongTitle, setIsEditingSongTitle] = useState(false);
 
   const addNewSection = async () => {
     if (!song) return;
@@ -90,16 +89,6 @@ export default function SongEditor({ songId }: { songId: string }) {
     setShowRepeatSectionSelector(false);
   };
 
-  const showEditSongTitleInput = () => {
-    setIsEditingSongTitle(true);
-  };
-
-  const saveEditTitleText = async () => {
-    if (!song) return;
-    song.title = editSongTitleText ?? "";
-    await updateSongById(song._id, song);
-  };
-
   useEffect(() => {
     const init = async () => {
       const getSong: ISongDb = await getSongById(songId);
@@ -126,27 +115,7 @@ export default function SongEditor({ songId }: { songId: string }) {
       {!isSaving && (
         <div className="song-container mt-10">
           <div className="song-editor-container p-25 w-full">
-            {!isEditingSongTitle && (
-              <h2
-                className="mb-5 text-center text-2xl font-bold"
-                onClick={showEditSongTitleInput}
-              >
-                {song?.title}
-              </h2>
-            )}
-            {isEditingSongTitle && (
-              <form
-                onSubmit={saveEditTitleText}
-                className="container flex justify-center"
-              >
-                <ThemedTextInput
-                  className="max-w-64 text-center text-2xl"
-                  defaultValue={song?.title}
-                  onChange={(e) => setEditSongTitleText(e.target.value)}
-                  autoFocus
-                />
-              </form>
-            )}
+            <EditSongTitle />
             {song?.order?.length &&
               song.order.map((order, i) => (
                 <EditSection key={i} index={i} order={order} />
