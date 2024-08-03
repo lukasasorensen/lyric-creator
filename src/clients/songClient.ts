@@ -44,7 +44,6 @@ export async function updateSongById(id: string, updateObject: Partial<ISongDb>)
     if (results.error) {
       throw new Error(results.error);
     }
-    
   } catch (err) {
     console.error("SongClient.updateSongById ERROR - ", err);
     throw err;
@@ -53,6 +52,8 @@ export async function updateSongById(id: string, updateObject: Partial<ISongDb>)
 
 export async function createSong(song: Partial<ISongDb>) {
   try {
+    song.createdAt = new Date();
+    song.isDeleted = false;
     const res = await fetch("http://localhost:3000/api/songs/", {
       body: JSON.stringify(song),
       method: "POST",
@@ -63,7 +64,6 @@ export async function createSong(song: Partial<ISongDb>) {
     if (results.error) {
       throw new Error(results.error);
     }
-    
   } catch (err) {
     console.error("SongClient.createSong ERROR - ", err);
     throw err;

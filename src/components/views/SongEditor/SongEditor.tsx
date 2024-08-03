@@ -116,7 +116,7 @@ export default function SongEditor({ songId }: { songId: string }) {
         <div className="song-container mt-10">
           <div className="song-editor-container p-25 w-full">
             <EditSongTitle />
-            {song?.order?.length &&
+            {!!song?.order?.length &&
               song.order.map((order, i) => (
                 <EditSection key={i} index={i} order={order} />
               ))}
