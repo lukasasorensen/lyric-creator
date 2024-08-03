@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     return Response.json(songs);
   } catch (e) {
     console.error(e);
+    return Response.json({ error: e }, { status: 500 });
   }
 }
 
@@ -20,5 +21,6 @@ export async function POST(request: Request) {
     return Response.json(createdSong);
   } catch (e) {
     console.error(e);
+    return Response.json({ error: e }, { status: 500 });
   }
 }
