@@ -2,6 +2,8 @@ export interface ITailWindColorThemeClasses {
   TEXT_PRIMARY: string;
   TEXT_SECONDARY: string;
   TEXT_TERTIARY: string;
+  TEXT_DANGER: string;
+  TEXT_WARN: string;
   BG_PRIMARY: string;
   BG_SECONDARY: string;
   BG_TERTIARY: string;
@@ -18,6 +20,8 @@ export const TailWindColorThemeClasses: ITailWindColorThemeClasses = {
   TEXT_PRIMARY: "text-slate-950 dark:text-white",
   TEXT_SECONDARY: "text-cyan-800 dark:text-cyan-600",
   TEXT_TERTIARY: "text-violet-800 dark:text-violet-500",
+  TEXT_DANGER: "text-rose-700",
+  TEXT_WARN: "text-amber-400 dark:text-orange-400",
   BG_PRIMARY: "bg-slate-300 dark:bg-slate-700",
   BG_SECONDARY: "bg-slate-500 dark:bg-gray-800",
   BG_TERTIARY: "bg-violet-600 dark:bg-violet-600",

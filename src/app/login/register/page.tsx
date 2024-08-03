@@ -6,10 +6,16 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import IUserDb from "@/interfaces/db/IUserDb";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 export default function NewUserRegistrationPage() {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const isPasswordsMatching = useMemo(() => {
+    return password === confirmPassword;
+  }, [password, confirmPassword]);
+
   const onRegisterFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -35,6 +41,8 @@ export default function NewUserRegistrationPage() {
       password,
     } as Partial<IUserDb>;
 
+    console.log("Create New Users POST", newUser);
+
     try {
       setIsSaving(true);
       await createUser(newUser);
@@ -43,7 +51,7 @@ export default function NewUserRegistrationPage() {
       throw new Error("Error registering new user");
     } finally {
       setIsSaving(false);
-      router.push('/editor');
+      router.push("/editor");
     }
   };
 
@@ -64,7 +72,8 @@ export default function NewUserRegistrationPage() {
             <ThemedTextInput
               id="firstName"
               name="firstName"
-              type="firstName"
+              type="text"
+              minLength={2}
               placeholder="First Name"
               required
               autoComplete="firstName"
@@ -72,7 +81,7 @@ export default function NewUserRegistrationPage() {
             <ThemedTextInput
               id="lastName"
               name="lastName"
-              type="lastName"
+              type="text"
               placeholder="Last Name"
               required
               autoComplete="lastName"
@@ -93,20 +102,24 @@ export default function NewUserRegistrationPage() {
               id="password"
               name="password"
               type="password"
+              minLength={8}
               placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
             />
           </div>
           <div className={`mt-2`}>
             <ThemedTextInput
               id="confirm-password"
               name="confirm-password"
-              type="confirm-password"
+              type="password"
               placeholder="Confirm Password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              autoComplete="confirm-password"
             />
+            {confirmPassword && !isPasswordsMatching && (
+              <p className={`mt-2 text-sm ${tw.TEXT_DANGER}`}>Passwords do not match.</p>
+            )}
           </div>
           <div>
             <ThemedButton

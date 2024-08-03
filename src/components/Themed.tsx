@@ -42,7 +42,6 @@ export function ThemedTextInput(props: IThemedTextInputProps) {
   return (
     <input
       {...props}
-      type="text"
       className={`block w-full rounded-lg border border-gray-300 ${twColorClasses.BG_SECONDARY} ${twColorClasses.TEXT_PRIMARY} bg-white p-2.5 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${props?.className}`}
     />
   );
