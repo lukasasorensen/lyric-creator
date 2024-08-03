@@ -25,6 +25,7 @@ export interface IOrder {
   sectionName: string;
   showSectionTitleOnly?: boolean;
   repeatCount?: number;
+  isRepeat?: boolean;
 }
 
 export interface ISongDb extends IDbDocumentDefault {

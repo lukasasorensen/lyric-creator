@@ -93,7 +93,7 @@ export default function EditSection({
     }
     if (!order.showSectionTitleOnly) {
       delete song.sections[sectionKey];
-      song.order = song.order.filter((o) => o.sectionName !== sectionKey);
+      song.order = song.order.filter((o) => o.sectionName !== sectionKey && !o.isRepeat);
     } else {
       song.order.splice(orderIndex, 1);
     }
