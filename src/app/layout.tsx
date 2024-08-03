@@ -30,7 +30,7 @@ export default function RootLayout({
           borderRadius="0.5rem"
           duration={4}
         >
-          <body className={inter.className + " " + tw.BG_PRIMARY}>
+          <body className={inter.className}>
             <Body>
               <NavBar />
               {children}
