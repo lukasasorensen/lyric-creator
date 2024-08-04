@@ -13,7 +13,7 @@ export default function LoginLayout({
 }>) {
   return (
     <main
-      className={`flex h-full flex-col items-center ${tw.BG_PRIMARY} w-full p-24`}
+      className={`flex h-full flex-col items-center ${tw.BG_PRIMARY} w-full p-5 md:p-12 lg:p-24`}
     >
       {children}
     </main>

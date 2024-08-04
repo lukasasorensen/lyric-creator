@@ -64,7 +64,9 @@ export default function NewUserRegistrationPage() {
   }
 
   return (
-    <div className={`flex w-full flex-1 flex-col justify-center px-6 py-12 lg:px-8`}>
+    <div
+      className={`flex w-full flex-1 flex-col justify-center px-1 py-12 md:px-6 lg:px-8`}
+    >
       <h2 className={`${tw.TEXT_PRIMARY} text-center text-2xl`}>Create Your Account</h2>
       <div className={`mt-10 sm:mx-auto sm:w-full sm:max-w-sm`}>
         <form onSubmit={onRegisterFormSubmit} className={`space-y-6`}>
