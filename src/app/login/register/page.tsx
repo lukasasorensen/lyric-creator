@@ -27,7 +27,7 @@ export default function NewUserRegistrationPage() {
     const password = formData.get("password");
     const confirmPassword = formData.get("confirm-password");
 
-    if (!email || !firstName || !firstName) {
+    if (!email || !firstName || !lastName) {
       throw new Error("Register new user error - missing form values");
     }
     if (password !== confirmPassword) {
@@ -51,7 +51,7 @@ export default function NewUserRegistrationPage() {
       throw new Error("Error registering new user");
     } finally {
       setIsSaving(false);
-      router.push("/editor");
+      router.push("/login");
     }
   };
 

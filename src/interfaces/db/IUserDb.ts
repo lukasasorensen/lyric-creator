@@ -7,3 +7,11 @@ export default interface IUserDb extends IDbDocumentDefault {
     password?: string;
     photo?: string;
 }
+
+export interface INewUserPost {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    confirmPassword?: string;
+}

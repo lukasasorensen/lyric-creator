@@ -1,8 +1,39 @@
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import Link from "next/link";
+import { FormEvent } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const onLoginFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    if (!email || !password) {
+      throw new Error("Register new user error - missing form values");
+    }
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      throw new Error(res.error);
+    }
+    if (res?.ok) {
+      return router.push("/");
+    }
+  };
+
   return (
     <>
       {/*
@@ -13,7 +44,7 @@ export default function LoginPage() {
           <body class="h-full">
           ```
         */}
-      <div className={`w-full flex flex-1 flex-col justify-center px-6 py-12 lg:px-8`}>
+      <div className={`flex w-full flex-1 flex-col justify-center px-6 py-12 lg:px-8`}>
         <div className={`sm:mx-auto sm:w-full sm:max-w-sm`}>
           <img
             alt="Your Company"
@@ -28,7 +59,7 @@ export default function LoginPage() {
         </div>
 
         <div className={`mt-10 sm:mx-auto sm:w-full sm:max-w-sm`}>
-          <form action="#" method="POST" className={`space-y-6`}>
+          <form onSubmit={onLoginFormSubmit} className={`space-y-6`}>
             <div>
               <label
                 htmlFor="email"
@@ -76,7 +107,12 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <ThemedButton text="Sign In" type="submit" className="flex w-full justify-center" color="primary" />
+              <ThemedButton
+                text="Sign In"
+                type="submit"
+                className="flex w-full justify-center"
+                color="primary"
+              />
             </div>
           </form>
 
