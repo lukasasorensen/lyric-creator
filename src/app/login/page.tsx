@@ -1,3 +1,4 @@
+"use client";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import Link from "next/link";
