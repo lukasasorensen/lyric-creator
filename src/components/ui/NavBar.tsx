@@ -3,8 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeSwitchButton from "@/components/ThemeSwitchButton";
+import { signOut, useSession } from "next-auth/react";
 
 export default function NavBar() {
+  const { status } = useSession();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -92,8 +94,31 @@ export default function NavBar() {
                 </Link>
               </div>
             </div>
-            <div className="absolute right-0">
-              <ThemeSwitchButton />
+            <div className="absolute right-0 hidden flex-1 items-center justify-center sm:flex">
+              {status === "authenticated" ? (
+                <button
+                  type="button"
+                  className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  aria-controls="mobile-menu"
+                  aria-expanded="false"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  href="/login/register"
+                  aria-current="page"
+                  className={
+                    pathname === "/login/register"
+                      ? activeLinkClasses
+                      : nonActiveLinkClasses
+                  }
+                >
+                  Sign in
+                </Link>
+              )}
+              <ThemeSwitchButton className="ml-5" />
             </div>
           </div>
         </div>
@@ -123,6 +148,28 @@ export default function NavBar() {
             >
               Editor
             </Link>
+            {status === "authenticated" ? (
+              <button
+                type="button"
+                className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                aria-controls="mobile-menu"
+                aria-expanded="false"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </button>
+            ) : (
+              <Link
+                href="/login/register"
+                className={
+                  pathname === "/login/register"
+                    ? mobileActiveLinkClasses
+                    : mobileNonActiveLinkClasse
+                }
+              >
+                Sign in
+              </Link>
+            )}
           </div>
         </div>
       )}

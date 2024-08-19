@@ -1,7 +1,11 @@
-import { TailWindColorThemeClasses } from "./src/constants/ColorTheme";
+import {
+  ITailWindColorThemeClasses,
+  TailWindColorThemeClasses,
+} from "./src/constants/ColorTheme";
 import type { Config } from "tailwindcss";
+import tailwindcssforms from "@tailwindcss/forms";
 
-const reduceClasses = (obj: { [key: string]: string }) => {
+const reduceClasses = (obj: ITailWindColorThemeClasses) => {
   return Object.values(obj).reduce((acc: string[], curr: string) => {
     acc.push(...curr.split(" "));
     return acc;
@@ -24,7 +28,7 @@ const config: Config = {
     },
   },
   safelist: [...reduceClasses(TailWindColorThemeClasses)],
-  plugins: [],
+  plugins: [tailwindcssforms],
   darkMode: "selector",
 };
 export default config;
