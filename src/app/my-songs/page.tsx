@@ -17,7 +17,7 @@ export default function SongListView() {
     try {
       setIsLoading(true);
       const { insertedId } = await createSong(defaultNewSong);
-      router.push(`/editor/${insertedId}`);
+      router.push(`/my-songs/${insertedId}`);
     } catch (error) {
       // todo fix
       throw error;

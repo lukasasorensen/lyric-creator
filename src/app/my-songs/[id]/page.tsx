@@ -12,7 +12,7 @@ export default function SongEditorView() {
 
   return (
     <main className="song-container w-full">
-      <Link href="/editor">
+      <Link href="/my-songs">
         <div className="cursor-pointer p-5">
           <FaArrowLeft size={22} className={`${tw.TEXT_TERTIARY}`} />
         </div>

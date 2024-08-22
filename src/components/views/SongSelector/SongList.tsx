@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function SongListItem({ song }: { song: ISongDb }) {
   return (
-    <Link href={`/editor/${song._id}`}>
+    <Link href={`/my-songs/${song._id}`}>
       <li className={`flex justify-between gap-x-6 py-5`} key={song._id}>
         <div className={`flex min-w-0 gap-x-4`}>
           <div className={`min-w-0 flex-auto`}>

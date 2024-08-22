@@ -84,13 +84,13 @@ export default function NavBar() {
                   Home
                 </Link>
                 <Link
-                  href="/editor"
+                  href="/my-songs"
                   aria-current="page"
                   className={
-                    pathname === "/editor" ? activeLinkClasses : nonActiveLinkClasses
+                    pathname === "/my-songs" ? activeLinkClasses : nonActiveLinkClasses
                   }
                 >
-                  Editor
+                  My Songs
                 </Link>
               </div>
             </div>
@@ -139,14 +139,14 @@ export default function NavBar() {
               Home
             </Link>
             <Link
-              href="/editor"
+              href="/my-songs"
               className={
-                pathname === "/editor"
+                pathname === "/my-songs"
                   ? mobileActiveLinkClasses
                   : mobileNonActiveLinkClasse
               }
             >
-              Editor
+              My Songs
             </Link>
             {status === "authenticated" ? (
               <button

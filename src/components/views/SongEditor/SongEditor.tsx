@@ -107,7 +107,7 @@ export default function SongEditor({ songId }: { songId: string }) {
       console.error(error);
       throw new Error("Error Deleting Song");
     } finally {
-      router.push("/editor");
+      router.push("/my-songs");
       setIsLoading(false);
     }
   };

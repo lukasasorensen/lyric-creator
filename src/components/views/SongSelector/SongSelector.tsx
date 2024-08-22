@@ -11,15 +11,9 @@ export interface ISongSelectorProps {
   isLoading: boolean;
 }
 
-export function SongListItem({
-  song,
-  loading,
-}: {
-  song?: ISongDb;
-  loading?: boolean;
-}) {
+export function SongListItem({ song, loading }: { song?: ISongDb; loading?: boolean }) {
   return (
-    <Link href={`/editor/${song?._id}`}>
+    <Link href={`/my-songs/${song?._id}`}>
       <li
         className={`mb-2 flex justify-between gap-x-6 rounded-md px-10 py-5 ${tw.BG_SECONDARY}`}
         key={song?._id}
@@ -54,9 +48,7 @@ export default function SongSelector(props: ISongSelectorProps) {
       {props.isLoading && <SongListItem loading={true} />}
       <ul role="list" className={`divide-y divide-gray-100`}>
         {!!props.songs?.length &&
-          props.songs.map((song) => (
-            <SongListItem song={song} key={song._id} />
-          ))}
+          props.songs.map((song) => <SongListItem song={song} key={song._id} />)}
       </ul>
     </div>
   );
