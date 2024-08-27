@@ -1,19 +1,26 @@
-import { IWord } from "@/interfaces/db/ISongDb";
+import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import ChordSelector from "../views/ChordSelctor/ChordSelector";
+import { useSongContext } from "@/providers/SongProvider";
 
 export interface IWordProps {
   word: IWord;
   index?: number;
   edit?: boolean;
+  onChordChange?: (word: IWord) => void;
 }
 
 export default function Word(props: IWordProps) {
+  const { song, setSong } = useSongContext();
+
   if (!props.edit) return <WordInner {...props} />;
 
   const onChordSelect = (note: string) => {
     console.log(note);
+    props.word.chord ??= {} as IChord;
+    props.word.chord.letter = note;
+    props.onChordChange?.(props.word);
   };
 
   return (
@@ -31,9 +38,15 @@ export default function Word(props: IWordProps) {
   );
 }
 
-export function WordInner({ word, edit }: IWordProps) {
+export function WordInner({ word }: IWordProps) {
   return (
     <div className="word-container inline-block">
+      {!!word?.chord?.letter && (
+        <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 font-bold leading-3`}>
+          {word.chord.letter}
+          {word.chord.extension}
+        </div>
+      )}
       <div className={`word ${tw.TEXT_PRIMARY}`}>{word.text} </div>
     </div>
   );

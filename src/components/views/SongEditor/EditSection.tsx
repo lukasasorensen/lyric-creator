@@ -1,5 +1,5 @@
 "use client";
-import { ISongDb, IOrder, ISection } from "@/interfaces/db/ISongDb";
+import { ISongDb, IOrder, ISection, IWord } from "@/interfaces/db/ISongDb";
 import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil";
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
@@ -97,6 +97,11 @@ export default function EditSection({
     onDelete?.(order, section);
   };
 
+  const onChordChange = async (word: IWord) => {
+    if (!song) return;
+    await updateSong(song);
+  };
+
   return (
     <div className="flex justify-center">
       {isSaving && <LoadingDisplay text="Saving..." />}
@@ -161,6 +166,7 @@ export default function EditSection({
                   section={section}
                   showSectionTitleOnly={!!order.showSectionTitleOnly}
                   repeatCount={order?.repeatCount}
+                  onChordChange={onChordChange}
                 />
               )}
             </div>
