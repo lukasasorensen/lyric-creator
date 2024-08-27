@@ -155,11 +155,14 @@ export default function EditSection({
                   <FaPencil />
                 </button>
               )}
-              <Section
-                section={section}
-                showSectionTitleOnly={!!order.showSectionTitleOnly}
-                repeatCount={order?.repeatCount}
-              />
+              {!!section && (
+                <Section
+                  edit={true}
+                  section={section}
+                  showSectionTitleOnly={!!order.showSectionTitleOnly}
+                  repeatCount={order?.repeatCount}
+                />
+              )}
             </div>
           )}
         </div>

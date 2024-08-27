@@ -10,10 +10,12 @@ export default function Section({
   section,
   showSectionTitleOnly,
   repeatCount,
+  edit,
 }: {
   section: ISection;
   showSectionTitleOnly: boolean;
   repeatCount?: number;
+  edit?: boolean;
 }) {
   return (
     <div className="song-section">
@@ -23,7 +25,7 @@ export default function Section({
       </h3>
       {!showSectionTitleOnly &&
         !!section?.lines?.length &&
-        section.lines.map((line: ILine, i: number) => <Line line={line} key={i} />)}
+        section.lines.map((line: ILine, i: number) => <Line line={line} key={i} edit={edit} />)}
     </div>
   );
 }
