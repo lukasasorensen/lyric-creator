@@ -12,6 +12,10 @@ export interface IWordProps {
 export default function Word(props: IWordProps) {
   if (!props.edit) return <WordInner {...props} />;
 
+  const onChordSelect = (note: string) => {
+    console.log(note);
+  };
+
   return (
     <Popover className={`inline-block`}>
       <PopoverButton>
@@ -21,7 +25,7 @@ export default function Word(props: IWordProps) {
         anchor="top center"
         className={`flex justify-center p-8 ${tw.BG_SECONDARY} rounded-md border-2 border-slate-300 dark:border-violet-600`}
       >
-        <ChordSelector />
+        <ChordSelector onSelect={onChordSelect} />
       </PopoverPanel>
     </Popover>
   );
