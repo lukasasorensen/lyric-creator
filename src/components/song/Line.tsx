@@ -1,18 +1,12 @@
 "use client";
 import { ILine } from "@/interfaces/db/ISongDb";
-import Word, { WordModes } from "@/components/song/Word";
+import Word from "@/components/song/Word";
 
-export default function Line({
-  line,
-  onNextLine,
-}: {
-  line: ILine;
-  onNextLine?: () => void;
-}) {
+export default function Line({ line }: { line: ILine }) {
   return (
     <div className="whitespace-pre-line text-center leading-10">
       {line.words.map((word, i) => (
-        <Word mode={WordModes.VIEW} word={word} key={`${i}-${word}`} index={i} />
+        <Word word={word} key={`${i}-${word}`} index={i} />
       ))}
     </div>
   );
