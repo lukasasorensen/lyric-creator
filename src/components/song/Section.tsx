@@ -1,7 +1,6 @@
 "use client";
-import { ISection } from "@/interfaces/ui/Song";
-import Line from "./Line";
-import { ILine } from "@/interfaces/db/ISongDb";
+import Line from "@/components/song/Line";
+import { ILine, ISection } from "@/interfaces/db/ISongDb";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
   return showSectionTitleOnly ? `[${title}]` : title;

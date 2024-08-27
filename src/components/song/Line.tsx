@@ -1,6 +1,6 @@
 "use client";
-import { ILine } from "@/interfaces/ui/Song";
-import Word, { WordModes } from "./Word";
+import { ILine } from "@/interfaces/db/ISongDb";
+import Word, { WordModes } from "@/components/song/Word";
 
 export default function Line({
   line,

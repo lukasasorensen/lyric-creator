@@ -3,7 +3,7 @@ import { ISongDb, IOrder, ISection } from "@/interfaces/db/ISongDb";
 import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil";
 import { useRef, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
-import Section from "./Section";
+import Section from "@/components/song/Section";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { updateSongById } from "@/clients/songClient";
