@@ -2,7 +2,6 @@ import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import ChordSelector from "../views/ChordSelctor/ChordSelector";
-import { useSongContext } from "@/providers/SongProvider";
 
 export interface IWordProps {
   word: IWord;
@@ -12,8 +11,6 @@ export interface IWordProps {
 }
 
 export default function Word(props: IWordProps) {
-  const { song, setSong } = useSongContext();
-
   if (!props.edit) return <WordInner {...props} />;
 
   const onChordSelect = (note: string) => {
@@ -29,7 +26,7 @@ export default function Word(props: IWordProps) {
         <WordInner {...props} />
       </PopoverButton>
       <PopoverPanel
-        anchor="top center"
+        anchor="top"
         className={`flex justify-center p-8 ${tw.BG_SECONDARY} rounded-md border-2 border-slate-300 dark:border-violet-600`}
       >
         <ChordSelector onSelect={onChordSelect} />

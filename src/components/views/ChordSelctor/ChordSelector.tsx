@@ -1,17 +1,14 @@
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import { NATURALS, SHARPS } from "@/constants/Notes";
 export default function ChordSelector({
   onSelect,
 }: {
   onSelect: (note: string) => void;
 }) {
-  const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-  const sharps = ["C#", "D#", "F#", "G#", "A#"];
-  const flats = ["Db", "Eb", "Gb", "Ab", "Bb"];
-  const naturals = ["C", "D", "E", "F", "G", "A", "B"];
   return (
     <div className="chord-selector-container">
       <div className="chord-selector-sharps-container flex justify-between px-9">
-        {sharps.map((note, i) => (
+        {SHARPS.map((note, i) => (
           <ChordSelectorItem
             className={i === 1 ? "mr-16" : ""}
             note={note}
@@ -21,7 +18,7 @@ export default function ChordSelector({
         ))}
       </div>
       <div className="chord-selector-naturals-container flex justify-between">
-        {naturals.map((note, i) => (
+        {NATURALS.map((note, i) => (
           <ChordSelectorItem
             note={note}
             key={i + "-chord"}
