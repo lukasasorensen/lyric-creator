@@ -25,7 +25,7 @@ export const TailWindColorThemeClasses: ITailWindColorThemeClasses = {
   TEXT_DANGER: "text-rose-700",
   TEXT_WARN: "text-amber-400 dark:text-orange-400",
   BG_PRIMARY: "bg-slate-300 dark:bg-slate-700",
-  BG_SECONDARY: "bg-slate-500 dark:bg-gray-800",
+  BG_SECONDARY: "bg-white dark:bg-gray-800",
   BG_TERTIARY: "bg-violet-600 dark:bg-violet-600",
   BTN_PRIMARY:
     "bg-violet-600 text-white dark:bg-violet-600 dark:text-white dark:hover:bg-violet-700",

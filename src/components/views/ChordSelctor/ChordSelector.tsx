@@ -1,7 +1,8 @@
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { NATURALS, SHARPS } from "@/constants/Notes";
+import { NATURALS, SHARPS, CHORD_EXTENSIONS, CHORD_QUALITIES } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
 import { useState } from "react";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 export default function ChordSelector({
   onSelect,
   selectedChord,
@@ -13,19 +14,40 @@ export default function ChordSelector({
   const [selectedExtension, setSelectedExtension] = useState(
     selectedChord?.extension ?? "",
   );
+  const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
 
   const onSelectNote = (note: string) => {
     onSelect({ letter: note, quality: selectedQuality, extension: selectedExtension });
   };
 
   const isMajor = (quality: string | undefined) => {
-    console.log(quality)
     if (!quality) return true;
     return ["", "maj", "major"].includes(quality.toLowerCase());
   };
 
   return (
     <div className="chord-selector-container">
+      <div className="chord-selector-sharps-container flex justify-between px-9">
+        {SHARPS.map(({ letter }, i) => (
+          <ChordSelectorItem
+            className={i === 1 ? "mr-16" : ""}
+            text={letter}
+            key={i + "-chord"}
+            onClick={(note) => onSelectNote(note)}
+            selected={selectedChord?.letter === letter}
+          />
+        ))}
+      </div>
+      <div className="chord-selector-naturals-container flex justify-between">
+        {NATURALS.map(({ letter }, i) => (
+          <ChordSelectorItem
+            text={letter}
+            key={i + "-chord"}
+            onClick={(note) => onSelectNote(note)}
+            selected={selectedChord?.letter === letter}
+          />
+        ))}
+      </div>
       <div className="chord-selector-major-minor mb-4">
         <button
           className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedQuality) && "bg-violet-700"}`}
@@ -40,48 +62,53 @@ export default function ChordSelector({
           Minor
         </button>
       </div>
-      <div className="chord-selector-sharps-container flex justify-between px-9">
-        {SHARPS.map((note, i) => (
-          <ChordSelectorItem
-            className={i === 1 ? "mr-16" : ""}
-            note={note}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === note}
-          />
-        ))}
-      </div>
-      <div className="chord-selector-naturals-container flex justify-between">
-        {NATURALS.map((note, i) => (
-          <ChordSelectorItem
-            note={note}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === note}
-          />
-        ))}
+      <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
+        <button
+          className={`${tw.TEXT_SECONDARY} text-md mb-2`}
+          onClick={() => setIsExtensionsOpen(!isExtensionsOpen)}
+        >
+          Extensions
+          {isExtensionsOpen ? (
+            <FaCaretUp className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
+          ) : (
+            <FaCaretDown className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
+          )}
+        </button>
+        {isExtensionsOpen && (
+          <div className="chord-selector-extensions-inner-container flex max-w-72 flex-wrap justify-center">
+            {CHORD_EXTENSIONS.map(({ shortName }, i) => (
+              <ChordSelectorItem
+                text={shortName}
+                key={i + "-chord"}
+                onClick={(extension) => setSelectedExtension(extension)}
+                selected={selectedChord?.extension === shortName}
+                className="w-auto"
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export function ChordSelectorItem({
-  note,
+  text,
   onClick,
   className,
   selected,
 }: {
-  note: string;
+  text: string;
   className?: string;
-  onClick: (note: string) => void;
+  onClick: (text: string) => void;
   selected?: boolean;
 }) {
   return (
     <button
-      className={`chord-selector-chord m-2 w-10 p-2 text-center text-xs ${tw.BTN_PRIMARY_BORDER} rounded-md ${className} ${!!selected && "bg-violet-700"}`}
-      onClick={() => onClick(note)}
+      className={`chord-selector-chord m-2 w-10 p-2 text-center  ${tw.BTN_PRIMARY_BORDER} rounded-md text-xs ${className} ${!!selected && "bg-violet-700"}`}
+      onClick={() => onClick(text)}
     >
-      {note}
+      {text}
     </button>
   );
 }
