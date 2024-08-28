@@ -41,7 +41,7 @@ export function ChordSelectorItem({
 }) {
   return (
     <button
-      className={`chord-selector-chord m-2 w-10 p-2 text-center ${tw.BTN_PRIMARY} rounded-md ${className}`}
+      className={`chord-selector-chord m-2 w-10 p-2 text-center ${tw.BTN_PRIMARY_BORDER} rounded-md ${className}`}
       onClick={() => onClick(note)}
     >
       {note}
