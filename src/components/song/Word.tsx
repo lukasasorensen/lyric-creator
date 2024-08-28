@@ -14,9 +14,8 @@ export interface IWordProps {
 export default function Word(props: IWordProps) {
   if (!props.edit) return <WordInner word={props.word} />;
 
-  const onChordSelect = (note: string) => {
-    props.word.chord ??= {} as IChord;
-    props.word.chord.letter = note;
+  const onChordSelect = (chord: IChord) => {
+    props.word.chord = chord;
     props.onChordChange?.(props.word);
   };
 
@@ -36,8 +35,8 @@ export default function Word(props: IWordProps) {
                 Select Chord
               </h1>
               <ChordSelector
-                onSelect={(note) => {
-                  onChordSelect(note);
+                onSelect={(chord) => {
+                  onChordSelect(chord);
                   close();
                 }}
                 selectedChord={props.word?.chord}
@@ -55,8 +54,7 @@ export function WordInner({ word, isSelected }: { word: IWord; isSelected?: bool
     <div className="word-container inline-block">
       {!isSelected && !!word?.chord?.letter && (
         <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 font-bold leading-3`}>
-          {word.chord.letter}
-          {word.chord.extension}
+          {word?.chord?.letter}
         </div>
       )}
       <div className={`word ${tw.TEXT_PRIMARY} ${isSelected && 'selected'}`}>{word.text} </div>
