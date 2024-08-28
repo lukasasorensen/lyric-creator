@@ -2,6 +2,7 @@ import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import ChordSelector from "../views/ChordSelctor/ChordSelector";
+import { useState } from "react";
 
 export interface IWordProps {
   word: IWord;
@@ -14,7 +15,6 @@ export default function Word(props: IWordProps) {
   if (!props.edit) return <WordInner word={props.word} />;
 
   const onChordSelect = (note: string) => {
-    console.log(note);
     props.word.chord ??= {} as IChord;
     props.word.chord.letter = note;
     props.onChordChange?.(props.word);
@@ -25,7 +25,7 @@ export default function Word(props: IWordProps) {
       {({ open, close }) => (
         <>
           <PopoverButton>
-            <WordInner word={props.word} showChord={!open} />
+            <WordInner word={props.word} isSelected={open} />
           </PopoverButton>
           <PopoverPanel
             anchor="top"
@@ -40,6 +40,7 @@ export default function Word(props: IWordProps) {
                   onChordSelect(note);
                   close();
                 }}
+                selectedChord={props.word?.chord}
               />
             </div>
           </PopoverPanel>
@@ -49,16 +50,16 @@ export default function Word(props: IWordProps) {
   );
 }
 
-export function WordInner({ word, showChord }: { word: IWord; showChord?: boolean }) {
+export function WordInner({ word, isSelected }: { word: IWord; isSelected?: boolean }) {
   return (
     <div className="word-container inline-block">
-      {showChord && !!word?.chord?.letter && (
+      {!isSelected && !!word?.chord?.letter && (
         <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 font-bold leading-3`}>
           {word.chord.letter}
           {word.chord.extension}
         </div>
       )}
-      <div className={`word ${tw.TEXT_PRIMARY}`}>{word.text} </div>
+      <div className={`word ${tw.TEXT_PRIMARY} ${isSelected && 'selected'}`}>{word.text} </div>
     </div>
   );
 }
