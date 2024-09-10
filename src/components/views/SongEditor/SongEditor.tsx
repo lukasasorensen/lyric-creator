@@ -1,5 +1,5 @@
 "use client";
-import { ISongDb, IWord } from "@/interfaces/db/ISongDb";
+import { IOrder, ISongDb, IWord } from "@/interfaces/db/ISongDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
 import EditSection from "./EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
@@ -13,6 +13,22 @@ import EditSongTitle from "./EditSongTitle";
 import { getLinesFromText } from "@/utils/SongUtil";
 import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 import { useRouter } from "next/navigation";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+import { SortableItem } from "../../common/SortableItem";
 
 export default function SongEditor({ songId }: { songId: string }) {
   const router = useRouter();
@@ -24,6 +40,14 @@ export default function SongEditor({ songId }: { songId: string }) {
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+
+  // sortable
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const inputRef = useRef(null);
 
@@ -117,6 +141,31 @@ export default function SongEditor({ songId }: { songId: string }) {
     setNewSectionWords(e.target.value);
   };
 
+  const getOrderWithIds = (order: IOrder[]) => {
+    return order.map((o, i) => ({ ...o, id: "orderid-" + i }));
+  };
+
+  const handleDragEnd = async ({
+    active,
+    over,
+  }: {
+    active: { id: string };
+    over: { id: string };
+  }) => {
+    if (!song) return;
+
+    if (active.id !== over.id) {
+      song.order ??= [];
+
+      const orderWithIds = getOrderWithIds(song.order);
+      const oldIndex = orderWithIds.findIndex((o) => o.id === active.id);
+      const newIndex = orderWithIds.findIndex((o) => o.id === over.id);
+
+      song.order = arrayMove(song.order, oldIndex, newIndex);
+    }
+    await updateSong(song);
+  };
+
   useEffect(() => {
     const init = async () => {
       const getSong: ISongDb = await getSongById(songId);
@@ -155,87 +204,98 @@ export default function SongEditor({ songId }: { songId: string }) {
   }
 
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
       <div
         className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
       >
         {isSaving && <LoadingDisplay text="Saving..." />}
         {!isSaving && (
           <div className="song-container mt-10 p-10">
-            <div className="song-editor-container p-25 w-full">
-              <EditSongTitle />
-              {!!song?.order?.length &&
-                song.order.map((order, i) => (
-                  <EditSection key={i} index={i} order={order} />
-                ))}
-              {showNewSectionInput && (
-                <div className="container mb-8 flex justify-center">
-                  <div className="container">
-                    <ThemedTextInput
-                      className="text-center"
-                      autoFocus
-                      onChange={(e) => setNewSectionTitle(e.target.value)}
-                      placeholder="New Section Name"
-                    />
-                    <textarea
-                      className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                      onChange={(e) => onNewSectionWordsChange(e)}
-                      placeholder="New Section Words"
-                      ref={inputRef}
-                    ></textarea>
-                    <div className="flex w-full justify-end p-2">
-                      <ThemedButton
-                        className="mr-5"
-                        text="Cancel"
-                        color="warn"
-                        onClick={() => setShowNewSectionInput(false)}
+            <SortableContext
+              items={getOrderWithIds(song?.order ?? [])}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="song-editor-container p-25 w-full">
+                <EditSongTitle />
+                {!!song?.order?.length &&
+                  song.order.map((order, i) => (
+                    <SortableItem key={i} id={"orderid-" + i}>
+                      <EditSection key={i} index={i} order={order} />
+                    </SortableItem>
+                  ))}
+                {showNewSectionInput && (
+                  <div className="container mb-8 flex justify-center">
+                    <div className="container">
+                      <ThemedTextInput
+                        className="text-center"
+                        autoFocus
+                        onChange={(e) => setNewSectionTitle(e.target.value)}
+                        placeholder="New Section Name"
                       />
-                      <ThemedButton
-                        color="primary"
-                        text="Done"
-                        onClick={() => addNewSection()}
-                      />
+                      <textarea
+                        className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                        onChange={(e) => onNewSectionWordsChange(e)}
+                        placeholder="New Section Words"
+                        ref={inputRef}
+                      ></textarea>
+                      <div className="flex w-full justify-end p-2">
+                        <ThemedButton
+                          className="mr-5"
+                          text="Cancel"
+                          color="warn"
+                          onClick={() => setShowNewSectionInput(false)}
+                        />
+                        <ThemedButton
+                          color="primary"
+                          text="Done"
+                          onClick={() => addNewSection()}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-              {showRepeatSectionSelector && (
-                <div className={`container mb-8 mt-10 flex justify-center`}>
-                  <div
-                    className={`container mb-8 w-fit rounded-md p-5 text-center ${tw.BG_TERTIARY}`}
-                  >
-                    <h2 className={`${tw.TEXT_PRIMARY} mb-5`}>
-                      Select Section To Repeat
-                    </h2>
-                    <div className="flex justify-center gap-5">
-                      {!!song?.sections &&
-                        Object.keys(song?.sections).map((sectionKey: string) => (
-                          <ThemedButton
-                            color="secondary"
-                            key={sectionKey}
-                            text={song?.sections[sectionKey]?.title ?? ""}
-                            onClick={() => repeatSection(sectionKey)}
-                          />
-                        ))}
+                )}
+                {showRepeatSectionSelector && (
+                  <div className={`container mb-8 mt-10 flex justify-center`}>
+                    <div
+                      className={`container mb-8 w-fit rounded-md p-5 text-center ${tw.BG_TERTIARY}`}
+                    >
+                      <h2 className={`${tw.TEXT_PRIMARY} mb-5`}>
+                        Select Section To Repeat
+                      </h2>
+                      <div className="flex justify-center gap-5">
+                        {!!song?.sections &&
+                          Object.keys(song?.sections).map((sectionKey: string) => (
+                            <ThemedButton
+                              color="secondary"
+                              key={sectionKey}
+                              text={song?.sections[sectionKey]?.title ?? ""}
+                              onClick={() => repeatSection(sectionKey)}
+                            />
+                          ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-              {!showRepeatSectionSelector && !showNewSectionInput && (
-                <div className="mt-10 flex w-full justify-center">
-                  <PopoverList>
-                    <PopoverListItemButton
-                      text="Add New Section"
-                      onClick={() => setShowNewSectionInput(true)}
-                    ></PopoverListItemButton>
-                    <PopoverListItemButton
-                      text="Repeat Section"
-                      onClick={() => setShowRepeatSectionSelector(true)}
-                    ></PopoverListItemButton>
-                  </PopoverList>
-                </div>
-              )}
-            </div>
+                )}
+                {!showRepeatSectionSelector && !showNewSectionInput && (
+                  <div className="mt-10 flex w-full justify-center">
+                    <PopoverList>
+                      <PopoverListItemButton
+                        text="Add New Section"
+                        onClick={() => setShowNewSectionInput(true)}
+                      ></PopoverListItemButton>
+                      <PopoverListItemButton
+                        text="Repeat Section"
+                        onClick={() => setShowRepeatSectionSelector(true)}
+                      ></PopoverListItemButton>
+                    </PopoverList>
+                  </div>
+                )}
+              </div>
+            </SortableContext>
           </div>
         )}
       </div>
@@ -247,6 +307,6 @@ export default function SongEditor({ songId }: { songId: string }) {
           onClick={() => setShowDeleteWarning(true)}
         />
       </div>
-    </>
+    </DndContext>
   );
 }
