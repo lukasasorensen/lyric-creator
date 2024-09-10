@@ -5,6 +5,7 @@ import { TailWindColorThemeClasses as twColorClasses } from "@/constants/ColorTh
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   title?: string;
+  fill?: boolean;
   color?:
     | "primary"
     | "secondary"
@@ -17,6 +18,7 @@ interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function ThemedButton({
   title,
   text,
+  fill,
   color,
   className,
   ...props

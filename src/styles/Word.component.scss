@@ -1,5 +1,12 @@
 .word-container {
   margin-left: -5px;
+
+  &:hover,
+  &.selected {
+    background-color: rgb(30 41 59); // slate-800
+    border: 1px solid #525252;
+    border-radius: 7px;
+  }
   .word {
     display: inline-block;
     padding: 1px 5px;
@@ -7,13 +14,6 @@
     transition: background-color 0.2s ease;
     border: 1px solid transparent;
     user-select: none;
-
-    &:hover,
-    &.selected {
-      background-color: rgb(30 41 59); // slate-800
-      border: 1px solid #525252;
-      border-radius: 7px;
-    }
   }
   .word-input {
     background-color: rgb(30 41 59); // slate-800
