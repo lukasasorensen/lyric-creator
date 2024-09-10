@@ -2,7 +2,6 @@ import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import ChordSelector from "../views/ChordSelctor/ChordSelector";
-import { useState } from "react";
 
 export interface IWordProps {
   word: IWord;
@@ -53,7 +52,7 @@ export function WordInner({ word, isSelected }: { word: IWord; isSelected?: bool
         <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 font-bold leading-3`}>
           {word?.chord?.letter}
           {word?.chord?.quality}
-          {word?.chord?.extension}
+          {word?.chord?.extensions?.join("")}
         </div>
       )}
       <div className={`word ${tw.TEXT_PRIMARY} `}>{word.text} </div>

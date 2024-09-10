@@ -28,8 +28,17 @@ export default function ChordSelector({
     setSelectedChord({ ...selectedChord });
   };
 
+  const isExtensionSelected = (extension: string) => {
+    return !!selectedChord?.extensions?.includes(extension);
+  };
+
   const setSelectedExtension = (extension: string) => {
-    selectedChord.extension = extension;
+    if (isExtensionSelected(extension)) {
+      selectedChord.extensions = selectedChord.extensions.filter((e) => e !== extension);
+    } else {
+      selectedChord.extensions ??= [];
+      selectedChord.extensions.push(extension);
+    }
     setSelectedChord({ ...selectedChord });
   };
 
@@ -44,7 +53,7 @@ export default function ChordSelector({
       <h3 className={`${tw.TEXT_SECONDARY} mb-4 text-2xl font-bold`}>
         {selectedChord?.letter}
         {selectedChord?.quality}
-        {selectedChord?.extension}
+        {selectedChord?.extensions?.join("")}
       </h3>
 
       <NoteSelector selectedChord={selectedChord} onSelectNote={onSelectNote} />
@@ -61,7 +70,7 @@ export default function ChordSelector({
 
       <ThemedButton
         className="mt-3"
-        text="Add Chord"
+        text="Save Chord"
         color="primary"
         onClick={() => onSelect(selectedChord)}
       />
@@ -142,6 +151,10 @@ export function ChordExtensionsSelector({
 }) {
   const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
 
+  const isExtensionSelected = (extension: string) => {
+    return !!selectedChord?.extensions?.includes(extension);
+  };
+
   return (
     <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
       <button
@@ -162,7 +175,7 @@ export function ChordExtensionsSelector({
               text={shortName}
               key={i + "-chord"}
               onClick={(extension) => onSelectExtension?.(extension)}
-              selected={selectedChord?.extension === shortName}
+              selected={isExtensionSelected(shortName)}
               className="w-auto"
             />
           ))}

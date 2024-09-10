@@ -12,8 +12,8 @@ export interface ILine {
 
 export interface IChord {
   letter: string;
-  quality: string;
-  extension: string;
+  quality?: string;
+  extensions?: string[];
 }
 
 export interface ISection {
