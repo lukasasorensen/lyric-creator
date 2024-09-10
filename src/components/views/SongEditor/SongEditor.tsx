@@ -28,8 +28,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { SortableItem } from "../../common/SortableItem";
-
 export default function SongEditor({ songId }: { songId: string }) {
   const router = useRouter();
   const { song, setSong } = useSongContext();
@@ -162,8 +160,9 @@ export default function SongEditor({ songId }: { songId: string }) {
       const newIndex = orderWithIds.findIndex((o) => o.id === over.id);
 
       song.order = arrayMove(song.order, oldIndex, newIndex);
+
+      await updateSong(song);
     }
-    await updateSong(song);
   };
 
   useEffect(() => {
@@ -222,10 +221,8 @@ export default function SongEditor({ songId }: { songId: string }) {
               <div className="song-editor-container p-25 w-full">
                 <EditSongTitle />
                 {!!song?.order?.length &&
-                  song.order.map((order, i) => (
-                    <SortableItem key={i} id={"orderid-" + i}>
-                      <EditSection key={i} index={i} order={order} />
-                    </SortableItem>
+                  getOrderWithIds(song.order).map((order, i) => (
+                    <EditSection id={order.id} key={i} index={i} order={order} />
                   ))}
                 {showNewSectionInput && (
                   <div className="container mb-8 flex justify-center">
