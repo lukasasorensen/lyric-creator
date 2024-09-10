@@ -1,3 +1,4 @@
+import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS, SHARPS, CHORD_EXTENSIONS, CHORD_QUALITIES } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
@@ -11,8 +12,6 @@ export default function ChordSelector({
   initialChord?: IChord;
 }) {
   const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
-  const [selectedChordExtensions, setSelectedChordExtensions] = useState();
-  const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
 
   const onSelectNote = (note: string) => {
     selectedChord.letter = note;
@@ -34,11 +33,6 @@ export default function ChordSelector({
     setSelectedChord({ ...selectedChord });
   };
 
-  const isMajor = (quality: string | undefined) => {
-    if (!quality) return true;
-    return ["", "maj", "major"].includes(quality.toLowerCase());
-  };
-
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter") {
       onSelect(selectedChord);
@@ -52,6 +46,38 @@ export default function ChordSelector({
         {selectedChord?.quality}
         {selectedChord?.extension}
       </h3>
+
+      <NoteSelector selectedChord={selectedChord} onSelectNote={onSelectNote} />
+
+      <ChordQualitySelector
+        onSelectQuality={setSelectedQuality}
+        selectedChord={selectedChord}
+      />
+
+      <ChordExtensionsSelector
+        onSelectExtension={setSelectedExtension}
+        selectedChord={selectedChord}
+      />
+
+      <ThemedButton
+        className="mt-3"
+        text="Add Chord"
+        color="primary"
+        onClick={() => onSelect(selectedChord)}
+      />
+    </div>
+  );
+}
+
+export function NoteSelector({
+  onSelectNote,
+  selectedChord,
+}: {
+  onSelectNote: (note: string) => void;
+  selectedChord: IChord;
+}) {
+  return (
+    <div className="note-selector-container">
       <div className="chord-selector-sharps-container flex justify-between px-9">
         {SHARPS.map(({ letter }, i) => (
           <ChordSelectorItem
@@ -59,7 +85,6 @@ export default function ChordSelector({
             text={letter}
             key={i + "-chord"}
             onClick={(note) => onSelectNote(note)}
-            onDoubleClick={(note) => onDoubleClickNote(note)}
             selected={selectedChord?.letter === letter}
           />
         ))}
@@ -70,51 +95,79 @@ export default function ChordSelector({
             text={letter}
             key={i + "-chord"}
             onClick={(note) => onSelectNote(note)}
-            onDoubleClick={(note) => onDoubleClickNote(note)}
             selected={selectedChord?.letter === letter}
           />
         ))}
       </div>
-      <div className="chord-selector-major-minor mt-4">
-        <button
-          className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
-          onClick={() => setSelectedQuality("")}
-        >
-          Major
-        </button>
-        <button
-          className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
-          onClick={() => setSelectedQuality("m")}
-        >
-          Minor
-        </button>
-      </div>
-      <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
-        <button
-          className={`${tw.TEXT_SECONDARY} mb-2 text-sm`}
-          onClick={() => setIsExtensionsOpen(!isExtensionsOpen)}
-        >
-          Extensions
-          {isExtensionsOpen ? (
-            <FaCaretUp className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-          ) : (
-            <FaCaretDown className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-          )}
-        </button>
-        {isExtensionsOpen && (
-          <div className="chord-selector-extensions-inner-container flex max-w-72 flex-wrap justify-center">
-            {CHORD_EXTENSIONS.map(({ shortName }, i) => (
-              <ChordSelectorItem
-                text={shortName}
-                key={i + "-chord"}
-                onClick={(extension) => setSelectedExtension(extension)}
-                selected={selectedChord?.extension === shortName}
-                className="w-auto"
-              />
-            ))}
-          </div>
+    </div>
+  );
+}
+
+export function ChordQualitySelector({
+  onSelectQuality,
+  selectedChord,
+}: {
+  selectedChord: IChord;
+  onSelectQuality: (quality: string) => void;
+}) {
+  const isMajor = (quality: string | undefined) => {
+    if (!quality) return true;
+    return ["", "maj", "major"].includes(quality.toLowerCase());
+  };
+
+  return (
+    <div className="chord-selector-major-minor mt-4">
+      <button
+        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
+        onClick={() => onSelectQuality("")}
+      >
+        Major
+      </button>
+      <button
+        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
+        onClick={() => onSelectQuality("m")}
+      >
+        Minor
+      </button>
+    </div>
+  );
+}
+
+export function ChordExtensionsSelector({
+  onSelectExtension,
+  selectedChord,
+}: {
+  onSelectExtension: (extension: string) => void;
+  selectedChord: IChord;
+}) {
+  const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
+
+  return (
+    <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
+      <button
+        className={`${tw.TEXT_SECONDARY} mb-2 text-sm`}
+        onClick={() => setIsExtensionsOpen(!isExtensionsOpen)}
+      >
+        Extensions
+        {isExtensionsOpen ? (
+          <FaCaretUp className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
+        ) : (
+          <FaCaretDown className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
         )}
-      </div>
+      </button>
+      {isExtensionsOpen && (
+        <div className="chord-selector-extensions-inner-container flex max-w-72 flex-wrap justify-center">
+          {CHORD_EXTENSIONS.map(({ shortName }, i) => (
+            <ChordSelectorItem
+              text={shortName}
+              key={i + "-chord"}
+              onClick={(extension) => onSelectExtension?.(extension)}
+              selected={selectedChord?.extension === shortName}
+              className="w-auto"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
