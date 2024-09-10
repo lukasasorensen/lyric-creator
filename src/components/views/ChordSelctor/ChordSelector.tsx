@@ -11,6 +11,7 @@ export default function ChordSelector({
   initialChord?: IChord;
 }) {
   const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
+  const [selectedChordExtensions, setSelectedChordExtensions] = useState();
   const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
 
   const onSelectNote = (note: string) => {
@@ -77,7 +78,7 @@ export default function ChordSelector({
       <div className="chord-selector-major-minor mt-4">
         <button
           className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
-          onClick={() => setSelectedQuality("Maj")}
+          onClick={() => setSelectedQuality("")}
         >
           Major
         </button>

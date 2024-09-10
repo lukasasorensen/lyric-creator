@@ -48,17 +48,15 @@ export default function Word(props: IWordProps) {
 
 export function WordInner({ word, isSelected }: { word: IWord; isSelected?: boolean }) {
   return (
-    <div className="word-container inline-block">
+    <div className={`word-container inline-block ${isSelected && "selected"}`}>
       {!!word?.chord?.letter && (
-        <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 font-bold leading-3`}>
+        <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 font-bold leading-3`}>
           {word?.chord?.letter}
           {word?.chord?.quality}
           {word?.chord?.extension}
         </div>
       )}
-      <div className={`word ${tw.TEXT_PRIMARY} ${isSelected && "selected"}`}>
-        {word.text}{" "}
-      </div>
+      <div className={`word ${tw.TEXT_PRIMARY} `}>{word.text} </div>
     </div>
   );
 }
