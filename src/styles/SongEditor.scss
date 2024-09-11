@@ -1,0 +1,22 @@
+.song-editor-outer-container {
+  .song-editor-edit-section-container {
+    .edit-section-view-container {
+      .sortable-item-drag-handle {
+        z-index: 99999999;
+      }
+
+      .edit-section-pencil-button,
+      .sortable-item-drag-handle {
+        transition: opacity 300ms ease;
+        opacity: 0;
+      }
+
+      &:hover {
+        .edit-section-pencil-button,
+        .sortable-item-drag-handle {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

@@ -10,6 +10,9 @@ import { updateSongById } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { FaBars } from "react-icons/fa";
 
 export default function EditSection({
   order,
@@ -17,7 +20,9 @@ export default function EditSection({
   edit,
   index,
   onDelete,
+  id,
 }: {
+  id: string;
   edit?: boolean;
   order: IOrder;
   index: number;
@@ -29,10 +34,19 @@ export default function EditSection({
   const [isEditing, setIsEditing] = useState(!!edit);
   const [editText, setEditText] = useState(getWordsFromSection(section));
   const [editTitleText, setEditTitleText] = useState(section?.title ?? "");
-  const [isPencilShown, setIsPencilShown] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const inputRef = useRef(null);
+
+  // dnd sortable
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const onEditButtonClick = () => {
     setIsEditing(true);
@@ -103,8 +117,8 @@ export default function EditSection({
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="container max-w-2xl">
+    <div className="song-editor-edit-section-container flex justify-center">
+      <div ref={setNodeRef} style={style} className="container max-w-2xl">
         {isSaving && <LoadingDisplay text="Saving..." />}
         {isEditing && (
           <div className="mb-10">
@@ -149,16 +163,21 @@ export default function EditSection({
           </div>
         )}
         {!isEditing && (
-          <div
-            className="container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10"
-            onMouseEnter={() => setIsPencilShown(true)}
-            onMouseLeave={() => setIsPencilShown(false)}
-          >
-            {isPencilShown && (
-              <button className="absolute right-5" onClick={() => onEditButtonClick()}>
-                <FaPencil />
-              </button>
-            )}
+          <div className="edit-section-view-container container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10">
+            <div
+              className="sortable-item-drag-handle absolute left-5"
+              ref={setNodeRef}
+              {...attributes}
+              {...listeners}
+            >
+              <FaBars />
+            </div>
+            <button
+              className="edit-section-pencil-button absolute right-5"
+              onClick={() => onEditButtonClick()}
+            >
+              <FaPencil />
+            </button>
             {!!section && (
               <Section
                 edit={true}
