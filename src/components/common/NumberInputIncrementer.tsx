@@ -1,11 +1,35 @@
-import { InputHTMLAttributes } from "react";
+import { ChangeEvent, InputHTMLAttributes, useState } from "react";
 
 interface INumberInputIncrementer extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   helpText?: string;
+  defaultValue?: number;
+  value?: number;
+  onChange?: (num: number) => void;
 }
 
 export function NumberInputIncremeneter(props: INumberInputIncrementer) {
+  const [value, setValue] = useState<number>(props.defaultValue || 0);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const num = parseFloat(e.target.value);
+    if (typeof num !== "number") return;
+    setValue(num);
+    props.onChange?.(num);
+  };
+
+  const increment = () => {
+    const incrementedValue = value + 1;
+    setValue(incrementedValue);
+    props.onChange?.(incrementedValue);
+  };
+
+  const decrement = () => {
+    const decrementedValue = value - 1;
+    setValue(decrementedValue);
+    props.onChange?.(decrementedValue);
+  };
+
   return (
     <div className="containter p-2">
       <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
@@ -14,9 +38,8 @@ export function NumberInputIncremeneter(props: INumberInputIncrementer) {
       <div className="relative flex max-w-[8rem] items-center">
         <button
           type="button"
-          id="decrement-button"
-          data-input-counter-decrement="quantity-input"
           className="h-8 rounded-s-lg border border-gray-300 bg-gray-100 p-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          onClick={decrement}
         >
           <svg
             className="h-3 w-3 text-gray-900 dark:text-white"
@@ -36,19 +59,20 @@ export function NumberInputIncremeneter(props: INumberInputIncrementer) {
         </button>
         <input
           type="number"
-          id="quantity-input"
-          data-input-counter
           aria-describedby="helper-text-explanation"
           className="block h-8 w-full border-x-0 border-gray-300 bg-gray-50 py-2.5 text-center text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder={props.placeholder}
           defaultValue={props.defaultValue}
-          onChange={props.onChange}
+          min={props.min}
+          max={props.max}
+          step={props.step}
+          value={value}
+          onChange={handleChange}
         />
         <button
           type="button"
-          id="increment-button"
-          data-input-counter-increment="quantity-input"
           className="h-8 rounded-e-lg border border-gray-300 bg-gray-100 p-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+          onClick={increment}
         >
           <svg
             className="h-3 w-3 text-gray-900 dark:text-white"
@@ -68,12 +92,7 @@ export function NumberInputIncremeneter(props: INumberInputIncrementer) {
         </button>
       </div>
       {!!props.helpText && (
-        <p
-          id="helper-text-explanation"
-          className="mt-2 text-sm text-gray-500 dark:text-gray-400"
-        >
-          {props.helpText}
-        </p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{props.helpText}</p>
       )}
     </div>
   );
