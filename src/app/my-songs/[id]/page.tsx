@@ -13,13 +13,10 @@ export default function SongEditorView() {
   return (
     <main className="song-container w-full">
       <Link href="/my-songs">
-        <div className="cursor-pointer p-5">
+        <div className="-mb-10 cursor-pointer p-5">
           <FaArrowLeft size={22} className={`${tw.TEXT_TERTIARY}`} />
         </div>
       </Link>
-      <h1 className={`-mt-12 mb-10 text-center text-4xl font-bold ${tw.TEXT_SECONDARY}`}>
-        Edit Song
-      </h1>
       <SongProvider>
         <SongEditor songId={songId} />
       </SongProvider>

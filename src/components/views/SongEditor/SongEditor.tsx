@@ -208,18 +208,20 @@ export default function SongEditor({ songId }: { songId: string }) {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
+      <div className="song-editor-edit-title-container mb-4 p-10 text-center">
+        <EditSongTitle />
+      </div>
       <div
-        className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
+        className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} pb-10`}
       >
         {isSaving && <LoadingDisplay text="Saving..." />}
         {!isSaving && (
-          <div className="song-container mt-10 p-10">
+          <div className="song-container mt-10 p-5">
             <SortableContext
               items={getOrderWithIds(song?.order ?? [])}
               strategy={verticalListSortingStrategy}
             >
               <div className="song-editor-container p-25 w-full">
-                <EditSongTitle />
                 {!!song?.order?.length &&
                   getOrderWithIds(song.order).map((order, i) => (
                     <EditSection id={order.id} key={i} index={i} order={order} />
