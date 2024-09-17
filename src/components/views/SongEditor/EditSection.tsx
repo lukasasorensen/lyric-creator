@@ -88,7 +88,6 @@ export default function EditSection({
     try {
       setIsSaving(true);
       setSong(song);
-      debugger;
       await updateSongById(song._id, song);
     } catch (error) {
       console.error("error updating section", error);
@@ -154,6 +153,10 @@ export default function EditSection({
                     onChange={onRepeatInputChange}
                     label="Repeat"
                     defaultValue={order.repeatCount ?? 0}
+                    min={0}
+                    step={1}
+                    containerClassName="flex gap-2"
+                    labelClassName="m-0 self-center"
                   />
                 </div>
                 <ThemedTextInput
