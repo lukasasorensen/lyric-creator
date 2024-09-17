@@ -122,6 +122,7 @@ export default function EditSection({
 
   const onRepeatInputChange = async (repeatCount: number) => {
     if (!song) return;
+    order.repeatCount = repeatCount;
     // todo using index is sketchy
     song.order[index].repeatCount = repeatCount;
   };
@@ -140,23 +141,6 @@ export default function EditSection({
       >
         {isEditing && (
           <div className="mb-10">
-            <Popover className="float-right">
-              <PopoverButton className={`p-2 text-slate-800 dark:text-white`}>
-                <FaEllipsis />
-              </PopoverButton>
-              <PopoverPanel
-                anchor="bottom"
-                className={`divide-y divide-white/5 rounded-xl p-5 ${tw.BG_PRIMARY} ${tw.TEXT_PRIMARY} min-w-56 text-sm/6 drop-shadow-lg`}
-              >
-                <div className="edit-section-options">
-                  <NumberInputIncremeneter
-                    onChange={onRepeatInputChange}
-                    label="Repeat"
-                    defaultValue={order.repeatCount ?? 0}
-                  />
-                </div>
-              </PopoverPanel>
-            </Popover>
             {!!order?.showSectionTitleOnly && (
               <h3 className="mb-3 mt-5 text-center text-lg font-bold">
                 {section?.title}
@@ -165,6 +149,13 @@ export default function EditSection({
             )}
             {!order?.showSectionTitleOnly && (
               <>
+                <div className="float-right text-right">
+                  <NumberInputIncremeneter
+                    onChange={onRepeatInputChange}
+                    label="Repeat"
+                    defaultValue={order.repeatCount ?? 0}
+                  />
+                </div>
                 <ThemedTextInput
                   className="text-center"
                   placeholder="Section Title"
