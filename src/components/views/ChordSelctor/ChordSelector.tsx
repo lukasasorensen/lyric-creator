@@ -1,6 +1,12 @@
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { NATURALS, SHARPS, CHORD_EXTENSIONS, CHORD_QUALITIES } from "@/constants/Notes";
+import {
+  NATURALS,
+  SHARPS,
+  CHORD_EXTENSIONS,
+  CHORD_QUALITIES,
+  FLATS,
+} from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
 import { KeyboardEvent, useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
@@ -12,6 +18,7 @@ export default function ChordSelector({
   initialChord?: IChord;
 }) {
   const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
+  const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
 
   const onSelectNote = (note: string) => {
     selectedChord.letter = note;
@@ -33,19 +40,48 @@ export default function ChordSelector({
   };
 
   const setSelectedExtension = (extension: string) => {
+    selectedChord.extensions ??= [];
     if (isExtensionSelected(extension)) {
       selectedChord.extensions = selectedChord.extensions.filter((e) => e !== extension);
     } else {
-      selectedChord.extensions ??= [];
       selectedChord.extensions.push(extension);
     }
     setSelectedChord({ ...selectedChord });
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter") {
-      onSelect(selectedChord);
+    console.log(event.key);
+
+    const note = NATURALS.find((note) => note.letter === event.key.toUpperCase());
+    if (note?.letter && event.key !== "b") {
+      selectedChord.letter = note.letter;
     }
+
+    switch (event.key.toLowerCase()) {
+      case "enter":
+        onSelect(selectedChord);
+        return;
+      case "#":
+        selectedChord.letter = selectedChord.letter[0];
+        selectedChord.letter += event.key;
+        setSharpsOrFlats("sharps");
+        break;
+      case "b":
+        selectedChord.letter = selectedChord.letter[0];
+        selectedChord.letter += event.key;
+        setSharpsOrFlats("flats");
+        break;
+      case "7":
+      case "6":
+      case "4":
+      case "2":
+      case "9":
+      case "5":
+        setSelectedExtension(event.key);
+        break;
+    }
+
+    setSelectedChord({ ...selectedChord });
   };
 
   return (
@@ -56,7 +92,11 @@ export default function ChordSelector({
         {selectedChord?.extensions?.join("")}
       </h3>
 
-      <NoteSelector selectedChord={selectedChord} onSelectNote={onSelectNote} />
+      <NoteSelector
+        sharpsOrFlats={sharpsOrFlats}
+        selectedChord={selectedChord}
+        onSelectNote={onSelectNote}
+      />
 
       <ChordQualitySelector
         onSelectQuality={setSelectedQuality}
@@ -81,14 +121,16 @@ export default function ChordSelector({
 export function NoteSelector({
   onSelectNote,
   selectedChord,
+  sharpsOrFlats,
 }: {
   onSelectNote: (note: string) => void;
   selectedChord: IChord;
+  sharpsOrFlats: string;
 }) {
   return (
     <div className="note-selector-container">
       <div className="chord-selector-sharps-container flex justify-between px-9">
-        {SHARPS.map(({ letter }, i) => (
+        {(sharpsOrFlats === "sharps" ? SHARPS : FLATS).map(({ letter }, i) => (
           <ChordSelectorItem
             className={i === 1 ? "mr-16" : ""}
             text={letter}
