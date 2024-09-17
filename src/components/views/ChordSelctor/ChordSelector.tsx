@@ -70,7 +70,7 @@ export default function ChordSelector({
 
       <ThemedButton
         className="mt-3"
-        text="Save Chord"
+        text="Select"
         color="primary"
         onClick={() => onSelect(selectedChord)}
       />
