@@ -81,18 +81,19 @@ export default function EditSection({
     section.title = editTitleText;
     song.sections[order.sectionName] = section;
     await updateSong(song);
+    setIsEditing(false);
   };
 
   const updateSong = async (song: ISongDb) => {
     try {
       setIsSaving(true);
       setSong(song);
+      debugger;
       await updateSongById(song._id, song);
     } catch (error) {
       console.error("error updating section", error);
       throw error;
     } finally {
-      setIsEditing(false);
       setIsSaving(false);
     }
   };
@@ -110,6 +111,7 @@ export default function EditSection({
       song.order.splice(orderIndex, 1);
     }
     await updateSong(song);
+    setIsEditing(false);
     onDelete?.(order, section);
   };
 
@@ -118,10 +120,24 @@ export default function EditSection({
     await updateSong(song);
   };
 
+  const onRepeatInputChange = async (repeatCount: number) => {
+    if (!song) return;
+    // todo using index is sketchy
+    song.order[index].repeatCount = repeatCount;
+  };
+
   return (
-    <div className="song-editor-edit-section-container flex justify-center">
-      <div ref={setNodeRef} style={style} className="container max-w-2xl">
-        {isSaving && <LoadingDisplay text="Saving..." />}
+    <div className={`song-editor-edit-section-container flex justify-center`}>
+      {isSaving && (
+        <div className="fixed left-0 right-0 flex justify-center">
+          <LoadingDisplay text="Saving..." />
+        </div>
+      )}
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`${isSaving ? "opacity-30" : ""} container max-w-2xl`}
+      >
         {isEditing && (
           <div className="mb-10">
             <Popover className="float-right">
@@ -134,6 +150,7 @@ export default function EditSection({
               >
                 <div className="edit-section-options">
                   <NumberInputIncremeneter
+                    onChange={onRepeatInputChange}
                     label="Repeat"
                     defaultValue={order.repeatCount ?? 0}
                   />
