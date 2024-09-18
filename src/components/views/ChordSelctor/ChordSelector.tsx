@@ -26,7 +26,9 @@ export default function ChordSelector({
 }) {
   const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
+  const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
   const notePreview = useMemo(() => {
+    if (selectedChord?.customChord?.length) return selectedChord?.customChord;
     if (!selectedChord?.letter) return "";
     let notePreview = selectedChord.letter;
     if (selectedChord?.quality) notePreview += selectedChord.quality;
@@ -50,22 +52,33 @@ export default function ChordSelector({
     setSelectedChord({ ...selectedChord });
   };
 
-  const isExtensionSelected = useCallback((extension: string) => {
-    return !!selectedChord?.extensions?.includes(extension);
-  }, [selectedChord]);
+  const isExtensionSelected = useCallback(
+    (extension: string) => {
+      return !!selectedChord?.extensions?.includes(extension);
+    },
+    [selectedChord],
+  );
 
-  const setSelectedExtension = useCallback((extension: string) => {
-    selectedChord.extensions ??= [];
-    if (isExtensionSelected(extension)) {
-      selectedChord.extensions = selectedChord.extensions.filter((e) => e !== extension);
-    } else {
-      selectedChord.extensions.push(extension);
-    }
-    setSelectedChord({ ...selectedChord });
-  }, [setSelectedChord, selectedChord, isExtensionSelected]);
+  const setSelectedExtension = useCallback(
+    (extension: string) => {
+      selectedChord.extensions ??= [];
+      if (isExtensionSelected(extension)) {
+        selectedChord.extensions = selectedChord.extensions.filter(
+          (e) => e !== extension,
+        );
+      } else {
+        selectedChord.extensions.push(extension);
+      }
+      setSelectedChord({ ...selectedChord });
+    },
+    [setSelectedChord, selectedChord, isExtensionSelected],
+  );
 
   const handleWindowKeydownEvent = useCallback(
     (event: KeyboardEvent<Window>) => {
+      if (isChordTextInputFocused) return;
+      event.stopPropagation();
+      event.preventDefault();
       if (!event?.key) return;
       const key = event.key;
       console.log(key);
@@ -101,7 +114,13 @@ export default function ChordSelector({
 
       setSelectedChord({ ...selectedChord });
     },
-    [selectedChord, setSharpsOrFlats, setSelectedExtension, onSelect],
+    [
+      selectedChord,
+      setSharpsOrFlats,
+      setSelectedExtension,
+      onSelect,
+      isChordTextInputFocused,
+    ],
   );
 
   const onChordTextInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +128,8 @@ export default function ChordSelector({
     e.preventDefault();
     const chordText = e.target.value;
     console.log(chordText);
+    selectedChord.customChord = chordText;
+    setSelectedChord({ ...selectedChord });
     // todo parse new chord value
   };
 
@@ -122,6 +143,8 @@ export default function ChordSelector({
   return (
     <div className="chord-selector-container">
       <input
+        onFocus={() => setIsChordTextInputFocused(true)}
+        onBlur={() => setIsChordTextInputFocused(false)}
         className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
         onChange={onChordTextInputChange}
         value={notePreview}

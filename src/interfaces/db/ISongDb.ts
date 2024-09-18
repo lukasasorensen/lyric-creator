@@ -14,6 +14,7 @@ export interface IChord {
   letter: string;
   quality?: string;
   extensions?: string[];
+  customChord?: string;
 }
 
 export interface ISection {
