@@ -20,7 +20,8 @@ export default function EditSongKey() {
     try {
       setIsSaving(true);
       setIsEditingSongKey(false);
-      song.title = editSongTitleText ?? "";
+      // todo make this work
+      song.key = editSongKey ?? "";
       setSong(song);
       await updateSongById(song._id, song);
     } catch (error) {
@@ -45,6 +46,7 @@ export default function EditSongKey() {
     );
   }
 
+  // todo add popover with chord selector
   return (
     <div>
       {!isEditingSongKey && (
@@ -52,10 +54,9 @@ export default function EditSongKey() {
           className={`mb-5 text-center text-3xl font-bold ${tw.TEXT_SECONDARY}`}
           onClick={showEditSongTitleInput}
         >
-          {song?.title}
+          {song?.key}
         </h1>
       )}
-      {isEditingSongKey && <div className="container flex justify-center"></div>}
     </div>
   );
 }
