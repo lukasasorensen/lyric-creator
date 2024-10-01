@@ -33,6 +33,29 @@ export interface ISongDb extends IDbDocumentDefault {
   title: string;
   artist: string;
   order: IOrder[];
+  key:
+    | "A"
+    | "B"
+    | "C"
+    | "D"
+    | "E"
+    | "F"
+    | "G"
+    | "A#"
+    | "B#"
+    | "C#"
+    | "D#"
+    | "E#"
+    | "F#"
+    | "G#"
+    | "Ab"
+    | "Bb"
+    | "Cb"
+    | "Db"
+    | "Eb"
+    | "Fb"
+    | "Gb";
+
   sections: {
     [key: string]: ISection;
   };
