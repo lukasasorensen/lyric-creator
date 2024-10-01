@@ -24,7 +24,9 @@ export default function ChordSelector({
   onSelect: (chord: IChord) => void;
   initialChord?: IChord;
 }) {
-  const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
+  const [selectedChord, setSelectedChord] = useState(
+    initialChord || ({ letter: "A" } as IChord),
+  );
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
   const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
   const notePreview = useMemo(() => {
