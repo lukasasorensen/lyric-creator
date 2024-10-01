@@ -7,6 +7,7 @@ import NavBar from "@/components/ui/NavBar";
 import { Body } from "@/components/views/Body";
 import { SkeletonTheme } from "react-loading-skeleton";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { SongProvider } from "@/providers/SongProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,19 +25,21 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
         <ThemeProvider>
-          <SkeletonTheme
-            baseColor="#334155"
-            highlightColor="#64748B"
-            borderRadius="0.5rem"
-            duration={4}
-          >
-            <body className={inter.className}>
-              <Body>
-                <NavBar />
-                {children}
-              </Body>
-            </body>
-          </SkeletonTheme>
+          <SongProvider>
+            <SkeletonTheme
+              baseColor="#334155"
+              highlightColor="#64748B"
+              borderRadius="0.5rem"
+              duration={4}
+            >
+              <body className={inter.className}>
+                <Body>
+                  <NavBar />
+                  {children}
+                </Body>
+              </body>
+            </SkeletonTheme>
+          </SongProvider>
         </ThemeProvider>
       </AuthProvider>
     </html>

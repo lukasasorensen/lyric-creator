@@ -28,11 +28,11 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-export default function SongEditor({ songId }: { songId: string }) {
+export default function SongEditor() {
   const router = useRouter();
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
@@ -121,9 +121,11 @@ export default function SongEditor({ songId }: { songId: string }) {
   };
 
   const deleteSong = async () => {
+    if (!song?._id) return;
+
     try {
       setIsLoading(true);
-      await deleteSongById(songId);
+      await deleteSongById(song?._id);
     } catch (error) {
       // todo error handle
       console.error(error);
@@ -164,16 +166,6 @@ export default function SongEditor({ songId }: { songId: string }) {
       await updateSong(song);
     }
   };
-
-  useEffect(() => {
-    const init = async () => {
-      const getSong: ISongDb = await getSongById(songId);
-      setSong(getSong);
-      setIsLoading(false);
-    };
-
-    init();
-  }, [songId, setSong]);
 
   if (isLoading) {
     return <LoadingDisplay text="Loading..." />;
