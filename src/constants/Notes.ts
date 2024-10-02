@@ -20,11 +20,11 @@ export const SHARPS = [
   { letter: "A#" },
 ];
 export const FLATS = [
-  { letter: "D♭" },
-  { letter: "E♭" },
-  { letter: "G♭" },
-  { letter: "A♭" },
-  { letter: "B♭" },
+  { letter: "Db" },
+  { letter: "Eb" },
+  { letter: "Gb" },
+  { letter: "Ab" },
+  { letter: "Bb" },
 ];
 export const NATURALS = [
   { letter: "C" },

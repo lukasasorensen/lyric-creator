@@ -1,17 +1,45 @@
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { NATURALS, SHARPS, CHORD_EXTENSIONS, CHORD_QUALITIES } from "@/constants/Notes";
+import {
+  NATURALS,
+  SHARPS,
+  CHORD_EXTENSIONS,
+  CHORD_QUALITIES,
+  FLATS,
+} from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
-import { KeyboardEvent, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 export default function ChordSelector({
   onSelect,
   initialChord,
+  enableExtensions = true,
 }: {
   onSelect: (chord: IChord) => void;
   initialChord?: IChord;
+  enableExtensions?: boolean;
 }) {
-  const [selectedChord, setSelectedChord] = useState(initialChord || ({} as IChord));
+  const [selectedChord, setSelectedChord] = useState(
+    initialChord || ({ letter: "A" } as IChord),
+  );
+  const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
+  const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
+  const notePreview = useMemo(() => {
+    if (selectedChord?.customChord?.length) return selectedChord?.customChord;
+    if (!selectedChord?.letter) return "";
+    let notePreview = selectedChord.letter;
+    if (selectedChord?.quality) notePreview += selectedChord.quality;
+    if (selectedChord?.extensions?.length)
+      notePreview += selectedChord.extensions.join("");
+    return notePreview;
+  }, [selectedChord]);
 
   const onSelectNote = (note: string) => {
     selectedChord.letter = note;
@@ -28,49 +56,128 @@ export default function ChordSelector({
     setSelectedChord({ ...selectedChord });
   };
 
-  const isExtensionSelected = (extension: string) => {
-    return !!selectedChord?.extensions?.includes(extension);
-  };
+  const isExtensionSelected = useCallback(
+    (extension: string) => {
+      return !!selectedChord?.extensions?.includes(extension);
+    },
+    [selectedChord],
+  );
 
-  const setSelectedExtension = (extension: string) => {
-    if (isExtensionSelected(extension)) {
-      selectedChord.extensions = selectedChord.extensions.filter((e) => e !== extension);
-    } else {
+  const setSelectedExtension = useCallback(
+    (extension: string) => {
       selectedChord.extensions ??= [];
-      selectedChord.extensions.push(extension);
-    }
+      if (isExtensionSelected(extension)) {
+        selectedChord.extensions = selectedChord.extensions.filter(
+          (e) => e !== extension,
+        );
+      } else {
+        selectedChord.extensions.push(extension);
+      }
+      setSelectedChord({ ...selectedChord });
+    },
+    [setSelectedChord, selectedChord, isExtensionSelected],
+  );
+
+  const handleWindowKeydownEvent = useCallback(
+    (event: KeyboardEvent<Window>) => {
+      if (isChordTextInputFocused) return;
+      event.stopPropagation();
+      event.preventDefault();
+      if (!event?.key) return;
+      const key = event.key;
+      console.log(key);
+
+      const note = NATURALS.find((note) => note.letter === key.toUpperCase());
+      if (note?.letter && key !== "b") {
+        selectedChord.letter = note.letter;
+      }
+
+      switch (key.toLowerCase()) {
+        case "enter":
+          onSelect(selectedChord);
+          return;
+        case "#":
+          selectedChord.letter = selectedChord.letter[0];
+          selectedChord.letter += key;
+          setSharpsOrFlats("sharps");
+          break;
+        case "b":
+          selectedChord.letter = selectedChord.letter[0];
+          selectedChord.letter += key;
+          setSharpsOrFlats("flats");
+          break;
+        case "7":
+        case "6":
+        case "4":
+        case "2":
+        case "9":
+        case "5":
+          if (!enableExtensions) return;
+          setSelectedExtension(key);
+          break;
+      }
+
+      setSelectedChord({ ...selectedChord });
+    },
+    [
+      selectedChord,
+      setSharpsOrFlats,
+      setSelectedExtension,
+      onSelect,
+      isChordTextInputFocused,
+      enableExtensions,
+    ],
+  );
+
+  const onChordTextInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const chordText = e.target.value;
+    console.log(chordText);
+    selectedChord.customChord = chordText;
     setSelectedChord({ ...selectedChord });
+    // todo parse new chord value
   };
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter") {
-      onSelect(selectedChord);
-    }
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleWindowKeydownEvent);
+    return () => {
+      window.removeEventListener("keydown", handleWindowKeydownEvent);
+    };
+  }, [handleWindowKeydownEvent]);
 
   return (
-    <div className="chord-selector-container" onKeyDown={onKeyDown}>
-      <h3 className={`${tw.TEXT_SECONDARY} mb-4 text-2xl font-bold`}>
-        {selectedChord?.letter}
-        {selectedChord?.quality}
-        {selectedChord?.extensions?.join("")}
-      </h3>
+    <div className="chord-selector-container">
+      <input
+        onFocus={() => setIsChordTextInputFocused(true)}
+        onBlur={() => setIsChordTextInputFocused(false)}
+        className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
+        onChange={onChordTextInputChange}
+        value={notePreview}
+        autoFocus={false}
+      />
 
-      <NoteSelector selectedChord={selectedChord} onSelectNote={onSelectNote} />
+      <NoteSelector
+        sharpsOrFlats={sharpsOrFlats}
+        selectedChord={selectedChord}
+        onSelectNote={onSelectNote}
+      />
 
       <ChordQualitySelector
         onSelectQuality={setSelectedQuality}
         selectedChord={selectedChord}
       />
 
-      <ChordExtensionsSelector
-        onSelectExtension={setSelectedExtension}
-        selectedChord={selectedChord}
-      />
+      {!!enableExtensions && (
+        <ChordExtensionsSelector
+          onSelectExtension={setSelectedExtension}
+          selectedChord={selectedChord}
+        />
+      )}
 
       <ThemedButton
         className="mt-3"
-        text="Save Chord"
+        text="Select"
         color="primary"
         onClick={() => onSelect(selectedChord)}
       />
@@ -81,14 +188,16 @@ export default function ChordSelector({
 export function NoteSelector({
   onSelectNote,
   selectedChord,
+  sharpsOrFlats,
 }: {
   onSelectNote: (note: string) => void;
   selectedChord: IChord;
+  sharpsOrFlats: string;
 }) {
   return (
     <div className="note-selector-container">
       <div className="chord-selector-sharps-container flex justify-between px-9">
-        {SHARPS.map(({ letter }, i) => (
+        {(sharpsOrFlats === "sharps" ? SHARPS : FLATS).map(({ letter }, i) => (
           <ChordSelectorItem
             className={i === 1 ? "mr-16" : ""}
             text={letter}

@@ -3,6 +3,7 @@ import { ThemedTextInput } from "@/components/Themed";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import React, { KeyboardEvent, useState } from "react";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function EditSongTitle() {
   const { song, setSong } = useSongContext();
@@ -47,12 +48,12 @@ export default function EditSongTitle() {
   return (
     <div>
       {!isEditingSongTitle && (
-        <h2
-          className="mb-5 text-center text-2xl font-bold"
+        <h1
+          className={`mb-5 text-center text-3xl font-bold ${tw.TEXT_SECONDARY}`}
           onClick={showEditSongTitleInput}
         >
           {song?.title}
-        </h2>
+        </h1>
       )}
       {isEditingSongTitle && (
         <div className="container flex justify-center">

@@ -27,12 +27,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import EditSongKey from "./EditSongKey";
 
-export default function SongEditor({ songId }: { songId: string }) {
+export default function SongEditor() {
   const router = useRouter();
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
@@ -121,9 +122,11 @@ export default function SongEditor({ songId }: { songId: string }) {
   };
 
   const deleteSong = async () => {
+    if (!song?._id) return;
+
     try {
       setIsLoading(true);
-      await deleteSongById(songId);
+      await deleteSongById(song?._id);
     } catch (error) {
       // todo error handle
       console.error(error);
@@ -165,16 +168,6 @@ export default function SongEditor({ songId }: { songId: string }) {
     }
   };
 
-  useEffect(() => {
-    const init = async () => {
-      const getSong: ISongDb = await getSongById(songId);
-      setSong(getSong);
-      setIsLoading(false);
-    };
-
-    init();
-  }, [songId, setSong]);
-
   if (isLoading) {
     return <LoadingDisplay text="Loading..." />;
   }
@@ -208,18 +201,21 @@ export default function SongEditor({ songId }: { songId: string }) {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
+      <div className="song-editor-edit-title-container mb-4 p-10 text-center">
+        <EditSongTitle />
+        <EditSongKey />
+      </div>
       <div
-        className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} py-10`}
+        className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} pb-10`}
       >
         {isSaving && <LoadingDisplay text="Saving..." />}
         {!isSaving && (
-          <div className="song-container mt-10 p-10">
+          <div className="song-container mt-10 p-5">
             <SortableContext
               items={getOrderWithIds(song?.order ?? [])}
               strategy={verticalListSortingStrategy}
             >
               <div className="song-editor-container p-25 w-full">
-                <EditSongTitle />
                 {!!song?.order?.length &&
                   getOrderWithIds(song.order).map((order, i) => (
                     <EditSection id={order.id} key={i} index={i} order={order} />

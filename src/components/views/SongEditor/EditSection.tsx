@@ -2,7 +2,7 @@
 import { ISongDb, IOrder, ISection, IWord } from "@/interfaces/db/ISongDb";
 import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil";
 import { useRef, useState } from "react";
-import { FaPencil } from "react-icons/fa6";
+import { FaEllipsis, FaPencil } from "react-icons/fa6";
 import Section from "@/components/song/Section";
 import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
@@ -13,6 +13,8 @@ import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FaBars } from "react-icons/fa";
+import { NumberInputIncremeneter } from "@/components/common/NumberInputIncrementer";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 export default function EditSection({
   order,
@@ -79,6 +81,7 @@ export default function EditSection({
     section.title = editTitleText;
     song.sections[order.sectionName] = section;
     await updateSong(song);
+    setIsEditing(false);
   };
 
   const updateSong = async (song: ISongDb) => {
@@ -90,7 +93,6 @@ export default function EditSection({
       console.error("error updating section", error);
       throw error;
     } finally {
-      setIsEditing(false);
       setIsSaving(false);
     }
   };
@@ -108,6 +110,7 @@ export default function EditSection({
       song.order.splice(orderIndex, 1);
     }
     await updateSong(song);
+    setIsEditing(false);
     onDelete?.(order, section);
   };
 
@@ -116,10 +119,25 @@ export default function EditSection({
     await updateSong(song);
   };
 
+  const onRepeatInputChange = async (repeatCount: number) => {
+    if (!song) return;
+    order.repeatCount = repeatCount;
+    // todo using index is sketchy
+    song.order[index].repeatCount = repeatCount;
+  };
+
   return (
-    <div className="song-editor-edit-section-container flex justify-center">
-      <div ref={setNodeRef} style={style} className="container max-w-2xl">
-        {isSaving && <LoadingDisplay text="Saving..." />}
+    <div className={`song-editor-edit-section-container flex justify-center`}>
+      {isSaving && (
+        <div className="fixed left-0 right-0 flex justify-center">
+          <LoadingDisplay text="Saving..." />
+        </div>
+      )}
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`${isSaving ? "opacity-30" : ""} container max-w-2xl`}
+      >
         {isEditing && (
           <div className="mb-10">
             {!!order?.showSectionTitleOnly && (
@@ -130,6 +148,17 @@ export default function EditSection({
             )}
             {!order?.showSectionTitleOnly && (
               <>
+                <div className="float-right text-right">
+                  <NumberInputIncremeneter
+                    onChange={onRepeatInputChange}
+                    label="Repeat"
+                    defaultValue={order.repeatCount ?? 0}
+                    min={0}
+                    step={1}
+                    containerClassName="flex gap-2"
+                    labelClassName="m-0 self-center"
+                  />
+                </div>
                 <ThemedTextInput
                   className="text-center"
                   placeholder="Section Title"
@@ -179,13 +208,15 @@ export default function EditSection({
               <FaPencil />
             </button>
             {!!section && (
-              <Section
-                edit={true}
-                section={section}
-                showSectionTitleOnly={!!order.showSectionTitleOnly}
-                repeatCount={order?.repeatCount}
-                onChordChange={onChordChange}
-              />
+              <div className="edit-section-container">
+                <Section
+                  edit={true}
+                  section={section}
+                  showSectionTitleOnly={!!order.showSectionTitleOnly}
+                  repeatCount={order?.repeatCount}
+                  onChordChange={onChordChange}
+                />
+              </div>
             )}
           </div>
         )}

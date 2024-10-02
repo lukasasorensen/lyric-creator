@@ -28,6 +28,7 @@ export default function Word(props: IWordProps) {
           <PopoverPanel
             anchor="top"
             className={`flex justify-center p-4 ${tw.BG_SECONDARY} rounded-md border-2 border-slate-300 dark:border-slate-600`}
+            focus={true}
           >
             <div className="flex flex-col text-center">
               <ChordSelector

@@ -14,6 +14,7 @@ export interface IChord {
   letter: string;
   quality?: string;
   extensions?: string[];
+  customChord?: string;
 }
 
 export interface ISection {
@@ -32,6 +33,8 @@ export interface ISongDb extends IDbDocumentDefault {
   title: string;
   artist: string;
   order: IOrder[];
+  key?: IChord;
+
   sections: {
     [key: string]: ISection;
   };
