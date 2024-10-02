@@ -20,9 +20,11 @@ import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 export default function ChordSelector({
   onSelect,
   initialChord,
+  enableExtensions = true,
 }: {
   onSelect: (chord: IChord) => void;
   initialChord?: IChord;
+  enableExtensions?: boolean;
 }) {
   const [selectedChord, setSelectedChord] = useState(
     initialChord || ({ letter: "A" } as IChord),
@@ -110,6 +112,7 @@ export default function ChordSelector({
         case "2":
         case "9":
         case "5":
+          if (!enableExtensions) return;
           setSelectedExtension(key);
           break;
       }
@@ -122,6 +125,7 @@ export default function ChordSelector({
       setSelectedExtension,
       onSelect,
       isChordTextInputFocused,
+      enableExtensions,
     ],
   );
 
@@ -150,6 +154,7 @@ export default function ChordSelector({
         className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
         onChange={onChordTextInputChange}
         value={notePreview}
+        autoFocus={false}
       />
 
       <NoteSelector
@@ -163,10 +168,12 @@ export default function ChordSelector({
         selectedChord={selectedChord}
       />
 
-      <ChordExtensionsSelector
-        onSelectExtension={setSelectedExtension}
-        selectedChord={selectedChord}
-      />
+      {!!enableExtensions && (
+        <ChordExtensionsSelector
+          onSelectExtension={setSelectedExtension}
+          selectedChord={selectedChord}
+        />
+      )}
 
       <ThemedButton
         className="mt-3"

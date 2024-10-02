@@ -27,6 +27,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import EditSongKey from "./EditSongKey";
 
 export default function SongEditor() {
   const router = useRouter();
@@ -202,6 +203,7 @@ export default function SongEditor() {
     >
       <div className="song-editor-edit-title-container mb-4 p-10 text-center">
         <EditSongTitle />
+        <EditSongKey />
       </div>
       <div
         className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} pb-10`}
