@@ -1,6 +1,11 @@
 import clientPromise from "@/lib/mongodb";
+import { authOptions } from "@/lib/nextauth";
+import { getServerSession } from "next-auth";
 
 export async function GET(request: Request) {
+
+  const session = await getServerSession(authOptions);
+  console.log(session);
   try {
     const client = await clientPromise;
     const db = client.db("lyrical");
