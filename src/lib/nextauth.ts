@@ -1,7 +1,8 @@
 import clientPromise from "@/lib/mongodb";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, Session } from "next-auth";
 import credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -25,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         if (!passwordMatch) throw new Error("Wrong Password");
 
         return {
-          id: user._id.toString(),
+          _id: user._id.toString(),
           email: user.email,
           name: user.firstName + " " + user.lastName,
           token: user.token,
@@ -34,7 +35,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, token }) => {
+    session: async ({ session, token }: { session: Session; token: JWT }) => {
       if (session?.user) {
         session.user._id = token.uid;
       }
@@ -42,7 +43,7 @@ export const authOptions: NextAuthOptions = {
     },
     jwt: async ({ user, token }) => {
       if (user) {
-        token.uid = user.id;
+        token.uid = user._id;
       }
       return token;
     },

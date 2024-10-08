@@ -3,9 +3,6 @@ import { authOptions } from "@/lib/nextauth";
 import { getServerSession } from "next-auth";
 
 export async function GET(request: Request) {
-
-  const session = await getServerSession(authOptions);
-  console.log(session);
   try {
     const client = await clientPromise;
     const db = client.db("lyrical");
@@ -21,7 +18,10 @@ export async function POST(request: Request) {
   try {
     const client = await clientPromise;
     const db = client.db("lyrical");
+    const session = await getServerSession(authOptions);
+    if (!session) throw new Error("Session Not Found");
     const newSong = await request.json();
+    newSong.createdBy = session.user._id;
     const createdSong = await db.collection("songs").insertOne(newSong);
     return Response.json(createdSong);
   } catch (e) {
