@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
           email: credentials?.email,
         });
 
+        console.log(user)
         if (!user) throw new Error("Wrong Email");
 
         const passwordMatch = await bcrypt.compare(credentials!.password, user.password);
@@ -25,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         if (!passwordMatch) throw new Error("Wrong Password");
 
         return {
-          id: user.id,
+          id: user._id.toString(),
           email: user.email,
           name: user.firstName + " " + user.lastName,
           token: user.token,
