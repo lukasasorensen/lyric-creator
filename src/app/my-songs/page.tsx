@@ -1,5 +1,5 @@
 "use client";
-import { createSong, getSongs } from "@/clients/songClient";
+import { createSong, getSongs, getSongsForUser } from "@/clients/songClient";
 import { CirclePlusButton } from "@/components/common/CirclePlusButton";
 import SongSelector from "@/components/views/SongSelector/SongSelector";
 import defaultNewSong from "@/constants/defaultNewSong";
@@ -28,14 +28,14 @@ export default function SongListView() {
     }
   };
 
-  const getAllSongs = async () => {
-    const allSong: ISongDb[] = await getSongs();
-    setSongs(allSong);
+  const getMySongs = async () => {
+    const allSongs: ISongDb[] = await getSongsForUser();
+    setSongs(allSongs);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getAllSongs();
+    getMySongs();
   }, []);
 
   if (status !== "authenticated") {
