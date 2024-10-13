@@ -31,6 +31,7 @@ export default function ChordSelector({
   );
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
   const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
+  const [isCustomChordInputShown, setIsCustomChordInputShown] = useState(false);
   const notePreview = useMemo(() => {
     if (selectedChord?.customChord?.length) return selectedChord?.customChord;
     if (!selectedChord?.letter) return "";
@@ -148,14 +149,17 @@ export default function ChordSelector({
 
   return (
     <div className="chord-selector-container">
-      <input
-        onFocus={() => setIsChordTextInputFocused(true)}
-        onBlur={() => setIsChordTextInputFocused(false)}
-        className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
-        onChange={onChordTextInputChange}
-        value={notePreview}
-        autoFocus={false}
-      />
+      {isCustomChordInputShown ? (
+        <input
+          onFocus={() => setIsChordTextInputFocused(true)}
+          onBlur={() => setIsChordTextInputFocused(false)}
+          className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
+          onChange={onChordTextInputChange}
+          value={notePreview}
+        />
+      ) : (
+        <h2 className={`${tw.TEXT_SECONDARY}`}>{notePreview}</h2>
+      )}
 
       <NoteSelector
         sharpsOrFlats={sharpsOrFlats}
