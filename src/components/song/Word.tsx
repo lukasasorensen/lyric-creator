@@ -35,6 +35,9 @@ export default function Word(props: IWordProps) {
                   onChordSelect(chord);
                   close();
                 }}
+                onChordChange={(chord) => {
+                  onChordSelect(chord);
+                }}
                 initialChord={props.word?.chord}
               />
             </div>

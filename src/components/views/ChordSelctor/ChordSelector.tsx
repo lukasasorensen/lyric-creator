@@ -1,12 +1,6 @@
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import {
-  NATURALS,
-  SHARPS,
-  CHORD_EXTENSIONS,
-  CHORD_QUALITIES,
-  FLATS,
-} from "@/constants/Notes";
+import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
 import {
   ChangeEvent,
@@ -19,10 +13,14 @@ import {
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 export default function ChordSelector({
   onSelect,
+  onChordChange,
+  onCancel,
   initialChord,
   enableExtensions = true,
 }: {
   onSelect: (chord: IChord) => void;
+  onChordChange: (chord: IChord) => void;
+  onCancel: () => void;
   initialChord?: IChord;
   enableExtensions?: boolean;
 }) {
@@ -44,8 +42,16 @@ export default function ChordSelector({
 
   const onSelectNote = (note: string) => {
     selectedChord.letter = note;
-    setSelectedChord({ ...selectedChord });
+    updateChord({ ...selectedChord });
   };
+
+  const updateChord = useCallback(
+    (chord: IChord) => {
+      setSelectedChord({ ...chord });
+      onChordChange(chord);
+    },
+    [setSelectedChord, onChordChange],
+  );
 
   const onDoubleClickNote = (note: string) => {
     onSelectNote(note);
@@ -54,7 +60,7 @@ export default function ChordSelector({
 
   const setSelectedQuality = (quality: string) => {
     selectedChord.quality = quality;
-    setSelectedChord({ ...selectedChord });
+    updateChord({ ...selectedChord });
   };
 
   const isExtensionSelected = useCallback(
@@ -74,9 +80,9 @@ export default function ChordSelector({
       } else {
         selectedChord.extensions.push(extension);
       }
-      setSelectedChord({ ...selectedChord });
+      updateChord({ ...selectedChord });
     },
-    [setSelectedChord, selectedChord, isExtensionSelected],
+    [updateChord, selectedChord, isExtensionSelected],
   );
 
   const handleWindowKeydownEvent = useCallback(
@@ -118,7 +124,7 @@ export default function ChordSelector({
           break;
       }
 
-      setSelectedChord({ ...selectedChord });
+      updateChord({ ...selectedChord });
     },
     [
       selectedChord,
@@ -127,9 +133,11 @@ export default function ChordSelector({
       onSelect,
       isChordTextInputFocused,
       enableExtensions,
+      updateChord,
     ],
   );
 
+  let onChordTextInputChangeDebounceTimer: Timeout;
   const onChordTextInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -137,7 +145,11 @@ export default function ChordSelector({
     console.log(chordText);
     selectedChord.customChord = chordText;
     setSelectedChord({ ...selectedChord });
-    // todo parse new chord value
+    if (onChordTextInputChangeDebounceTimer)
+      clearTimeout(onChordTextInputChangeDebounceTimer);
+    onChordTextInputChangeDebounceTimer = setTimeout(() => {
+      onChordChange(selectedChord);
+    }, 100);
   };
 
   useEffect(() => {
