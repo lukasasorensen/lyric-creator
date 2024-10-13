@@ -245,13 +245,6 @@ export default function ChordSelector({
           selectedChord={selectedChord}
         />
       )}
-
-      <ThemedButton
-        className="mt-3"
-        text="Select"
-        color="primary"
-        onClick={() => onSelect?.(selectedChord)}
-      />
     </div>
   );
 }
