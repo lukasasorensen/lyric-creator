@@ -69,10 +69,13 @@ export default function ChordSelector({
     onSelect?.(selectedChord);
   };
 
-  const setSelectedQuality = (quality: string) => {
-    selectedChord.quality = quality;
-    updateChord({ ...selectedChord });
-  };
+  const setSelectedQuality = useCallback(
+    (quality: string) => {
+      selectedChord.quality = quality;
+      updateChord({ ...selectedChord });
+    },
+    [selectedChord, updateChord],
+  );
 
   const isExtensionSelected = useCallback(
     (extension: string) => {
@@ -104,26 +107,52 @@ export default function ChordSelector({
       if (!event?.key) return;
       const key = event.key;
       console.log(key);
+      const lowerCaseKey = key.toLowerCase();
 
       const note = NATURALS.find((note) => note.letter === key.toUpperCase());
       if (note?.letter && key !== "b") {
         selectedChord.letter = note.letter;
+        updateChord(selectedChord);
+        return;
       }
 
-      switch (key.toLowerCase()) {
-        case "enter":
-          onSelect?.(selectedChord);
-          return;
-        case "#":
-          selectedChord.letter = selectedChord.letter[0];
-          selectedChord.letter += key;
-          setSharpsOrFlats("sharps");
-          break;
-        case "b":
-          selectedChord.letter = selectedChord.letter[0];
-          selectedChord.letter += key;
-          setSharpsOrFlats("flats");
-          break;
+      if (lowerCaseKey === "enter") {
+        onSelect?.(selectedChord);
+        return;
+      }
+
+      if (lowerCaseKey === "#") {
+        selectedChord.letter = selectedChord.letter[0];
+        selectedChord.letter += key;
+        setSharpsOrFlats("sharps");
+        updateChord({ ...selectedChord });
+        return;
+      }
+
+      if (key === "b") {
+        selectedChord.letter = selectedChord.letter[0];
+        selectedChord.letter += key;
+        setSharpsOrFlats("flats");
+        updateChord({ ...selectedChord });
+        return;
+      }
+
+      if (key === "m") {
+        setSelectedQuality("m");
+        return;
+      }
+
+      if (key === "M") {
+        setSelectedQuality("");
+        return;
+      }
+
+      if (lowerCaseKey === "backspace") {
+        deleteChord();
+        return;
+      }
+
+      switch (key) {
         case "7":
         case "6":
         case "4":
@@ -133,12 +162,7 @@ export default function ChordSelector({
           if (!enableExtensions) return;
           setSelectedExtension(key);
           break;
-        case "backspace":
-          deleteChord();
-          break;
       }
-
-      updateChord({ ...selectedChord });
     },
     [
       selectedChord,
@@ -149,6 +173,7 @@ export default function ChordSelector({
       enableExtensions,
       updateChord,
       deleteChord,
+      setSelectedQuality,
     ],
   );
 

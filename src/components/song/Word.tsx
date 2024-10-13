@@ -38,6 +38,9 @@ export default function Word(props: IWordProps) {
                 onChordChange={(chord) => {
                   onChordSelect(chord);
                 }}
+                onDeleteChord={(emptyChord) => {
+                  onChordSelect(emptyChord);
+                }}
                 initialChord={props.word?.chord}
               />
             </div>
