@@ -153,12 +153,14 @@ export default function ChordSelector({
         <input
           onFocus={() => setIsChordTextInputFocused(true)}
           onBlur={() => setIsChordTextInputFocused(false)}
-          className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl`}
+          className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
           onChange={onChordTextInputChange}
           value={notePreview}
         />
       ) : (
-        <h2 className={`${tw.TEXT_SECONDARY}`}>{notePreview}</h2>
+        <h2 className={`${tw.TEXT_SECONDARY} mb-4 text-center text-2xl font-bold`}>
+          {notePreview}
+        </h2>
       )}
 
       <NoteSelector
@@ -199,7 +201,7 @@ export function NoteSelector({
   sharpsOrFlats: string;
 }) {
   return (
-    <div className="note-selector-container">
+    <div className="note-selector-container text-center">
       <div className="chord-selector-sharps-container flex justify-between px-9">
         {(sharpsOrFlats === "sharps" ? SHARPS : FLATS).map(({ letter }, i) => (
           <ChordSelectorItem
