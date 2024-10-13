@@ -7,3 +7,8 @@ export function getChordExtensionsArrayFromChord(chord: IChord) {
     const includesLongName = chord.extensions.includes(name);
   });
 }
+
+export function isMajor(quality: string | undefined) {
+  if (!quality) return true;
+  return ["", "maj", "major"].includes(quality.toLowerCase());
+}

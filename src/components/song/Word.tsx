@@ -1,7 +1,8 @@
 import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../views/ChordSelctor/ChordSelector";
+import ChordSelector from "../views/ChordSelector/ChordSelector";
+import { useSongContext } from "@/providers/SongProvider";
 
 export interface IWordProps {
   word: IWord;
@@ -11,12 +12,14 @@ export interface IWordProps {
 }
 
 export default function Word(props: IWordProps) {
-  if (!props.edit) return <WordInner word={props.word} />;
+  const { song } = useSongContext();
 
   const onChordSelect = (chord: IChord) => {
     props.word.chord = chord;
     props.onChordChange?.(props.word);
   };
+
+  if (!props.edit) return <WordInner word={props.word} />;
 
   return (
     <Popover className={`inline-block`}>
@@ -31,6 +34,8 @@ export default function Word(props: IWordProps) {
           >
             <div className="flex flex-col text-center">
               <ChordSelector
+                showSuggestions={true}
+                songKey={song?.key}
                 onSelect={(chord) => {
                   onChordSelect(chord);
                   close();

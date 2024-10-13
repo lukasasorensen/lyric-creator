@@ -2,6 +2,7 @@ import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
+import { isMajor } from "@/utils/ChordUtil";
 import debounce from "lodash/debounce";
 import {
   ChangeEvent,
@@ -18,7 +19,9 @@ export default function ChordSelector({
   onCancel,
   onDeleteChord,
   initialChord,
+  songKey,
   enableExtensions = true,
+  showSuggestions = false,
 }: {
   onSelect?: (chord: IChord) => void;
   onChordChange?: (chord: IChord) => void;
@@ -26,9 +29,11 @@ export default function ChordSelector({
   onCancel?: () => void;
   initialChord?: IChord;
   enableExtensions?: boolean;
+  songKey?: IChord | null;
+  showSuggestions?: boolean;
 }) {
   const [selectedChord, setSelectedChord] = useState(
-    initialChord || ({ letter: "A" } as IChord),
+    initialChord || (songKey ?? ({ letter: "A" } as IChord)),
   );
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
   const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
@@ -211,6 +216,17 @@ export default function ChordSelector({
         </h2>
       )}
 
+      {!!showSuggestions && !!songKey && (
+        <div className="mb-4">
+          <p className={`${tw.TEXT_PRIMARY} text-xs`}>Suggestions</p>
+          <SongKeyChordSuggestions
+            onSelectNote={onSelectNote}
+            songKey={songKey}
+            selectedChord={selectedChord}
+          />
+        </div>
+      )}
+
       <NoteSelector
         sharpsOrFlats={sharpsOrFlats}
         selectedChord={selectedChord}
@@ -282,11 +298,6 @@ export function ChordQualitySelector({
   selectedChord: IChord;
   onSelectQuality: (quality: string) => void;
 }) {
-  const isMajor = (quality: string | undefined) => {
-    if (!quality) return true;
-    return ["", "maj", "major"].includes(quality.toLowerCase());
-  };
-
   return (
     <div className="chord-selector-major-minor mt-4">
       <button
@@ -369,5 +380,29 @@ export function ChordSelectorItem({
     >
       {text}
     </button>
+  );
+}
+
+export function SongKeyChordSuggestions({
+  songKey,
+  selectedChord,
+  onSelectNote,
+}: {
+  songKey: IChord;
+  selectedChord: IChord;
+  onSelectNote?: (note: string) => void;
+}) {
+  const notesInKey = ["G", "C", "D", "Em", "Am"];
+  return (
+    <div className="container flex justify-center">
+      {notesInKey.map((note) => (
+        <ChordSelectorItem
+          text={note}
+          key={note + "-chord"}
+          selected={selectedChord?.letter === note}
+          onClick={(note) => onSelectNote?.(note)}
+        />
+      ))}
+    </div>
   );
 }
