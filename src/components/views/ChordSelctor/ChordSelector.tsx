@@ -53,7 +53,7 @@ export default function ChordSelector({
       setSelectedChord({ ...chord });
       onChordChange?.(chord);
     },
-    [setSelectedChord, onChordChange],
+    [onChordChange],
   );
 
   const deleteChord = useCallback(() => {
@@ -63,7 +63,7 @@ export default function ChordSelector({
     delete selectedChord.customChord;
     setSelectedChord({ ...selectedChord });
     onDeleteChord?.(selectedChord);
-  }, [setSelectedChord, onDeleteChord, selectedChord]);
+  }, [onDeleteChord, selectedChord]);
 
   const onDoubleClickNote = (note: string) => {
     onSelectNote(note);
