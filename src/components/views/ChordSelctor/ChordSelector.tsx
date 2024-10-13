@@ -2,6 +2,7 @@ import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
+import debounce from "lodash/debounce";
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -177,20 +178,15 @@ export default function ChordSelector({
     ],
   );
 
-  let onChordTextInputChangeDebounceTimer: Timeout;
-  const onChordTextInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChordTextInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     e.preventDefault();
     const chordText = e.target.value;
     console.log(chordText);
     selectedChord.customChord = chordText;
     setSelectedChord({ ...selectedChord });
-    if (onChordTextInputChangeDebounceTimer)
-      clearTimeout(onChordTextInputChangeDebounceTimer);
-    onChordTextInputChangeDebounceTimer = setTimeout(() => {
-      onChordChange?.(selectedChord);
-    }, 100);
-  };
+    onChordChange?.(selectedChord);
+  }, 100);
 
   useEffect(() => {
     window.addEventListener("keydown", handleWindowKeydownEvent);
