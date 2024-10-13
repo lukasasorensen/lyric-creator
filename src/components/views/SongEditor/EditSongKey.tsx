@@ -5,7 +5,7 @@ import { useSongContext } from "@/providers/SongProvider";
 import React, { KeyboardEvent, useState } from "react";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../ChordSelctor/ChordSelector";
+import ChordSelector from "../ChordSelector/ChordSelector";
 import { IChord } from "@/interfaces/db/ISongDb";
 
 export default function EditSongKey() {
@@ -43,7 +43,7 @@ export default function EditSongKey() {
           <PopoverButton>
             <p className={`mb-5 text-center text-lg font-bold ${tw.TEXT_TERTIARY}`}>
               {song?.key?.letter
-                ? `Key of ${song.key.letter}${song.key.quality}`
+                ? `Key of ${song.key.letter}${song.key?.quality ?? ""}`
                 : "Add Song Key"}
             </p>
           </PopoverButton>
@@ -54,11 +54,12 @@ export default function EditSongKey() {
           >
             <div className="flex flex-col text-center">
               <ChordSelector
+                key="edit-title-chord-selector"
                 onSelect={(chord) => {
                   updateSongKey(chord);
                   close();
                 }}
-                initialChord={song?.key}
+                initialChord={song?.key ? { ...song.key } : undefined}
                 enableExtensions={false}
               />
             </div>

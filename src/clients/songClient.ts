@@ -17,6 +17,22 @@ export async function getSongs(): Promise<ISongDb[]> {
   }
 }
 
+export async function getSongsForUser(): Promise<ISongDb[]> {
+  try {
+    const res = await fetch("http://localhost:3000/api/songs/my-songs");
+    let results = await res.json();
+
+    if (!results?.length) {
+      throw new Error("Not Found");
+    }
+
+    return results;
+  } catch (err) {
+    console.error("SongClient.getSongsForUser ERROR - ", err);
+    throw err;
+  }
+}
+
 export async function getSongById(id: string): Promise<ISongDb> {
   try {
     const res = await fetch("http://localhost:3000/api/songs/" + id);

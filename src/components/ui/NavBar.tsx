@@ -107,12 +107,10 @@ export default function NavBar() {
                 </button>
               ) : (
                 <Link
-                  href="/login/register"
+                  href="/login"
                   aria-current="page"
                   className={
-                    pathname === "/login/register"
-                      ? activeLinkClasses
-                      : nonActiveLinkClasses
+                    pathname === "/login" ? activeLinkClasses : nonActiveLinkClasses
                   }
                 >
                   Sign in
@@ -160,9 +158,9 @@ export default function NavBar() {
               </button>
             ) : (
               <Link
-                href="/login/register"
+                href="/login"
                 className={
-                  pathname === "/login/register"
+                  pathname === "/login"
                     ? mobileActiveLinkClasses
                     : mobileNonActiveLinkClasse
                 }

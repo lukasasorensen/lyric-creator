@@ -2,10 +2,8 @@
 
 import { ISongDb } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import SongList from "./SongList";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
-import { CirclePlusButton } from "@/components/common/CirclePlusButton";
 export interface ISongSelectorProps {
   songs: ISongDb[];
   isLoading: boolean;
@@ -13,7 +11,7 @@ export interface ISongSelectorProps {
 
 export function SongListItem({ song, loading }: { song?: ISongDb; loading?: boolean }) {
   return (
-    <Link href={`/my-songs/${song?._id}`}>
+    <Link href={`/my-songs/edit/${song?._id}`}>
       <li
         className={`mb-2 flex justify-between gap-x-6 rounded-md px-10 py-5 ${tw.BG_SECONDARY}`}
         key={song?._id}

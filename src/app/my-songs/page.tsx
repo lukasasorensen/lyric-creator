@@ -1,5 +1,5 @@
 "use client";
-import { createSong, getSongs } from "@/clients/songClient";
+import { createSong, getSongs, getSongsForUser } from "@/clients/songClient";
 import { CirclePlusButton } from "@/components/common/CirclePlusButton";
 import SongSelector from "@/components/views/SongSelector/SongSelector";
 import defaultNewSong from "@/constants/defaultNewSong";
@@ -7,17 +7,19 @@ import { ISongDb } from "@/interfaces/db/ISongDb";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import { useSession } from "next-auth/react";
 
 export default function SongListView() {
   const router = useRouter();
   const [songs, setSongs] = useState<ISongDb[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
 
   const addNewSong = async () => {
     try {
       setIsLoading(true);
       const { insertedId } = await createSong(defaultNewSong);
-      router.push(`/my-songs/${insertedId}`);
+      router.push(`/my-songs/edit/${insertedId}`);
     } catch (error) {
       // todo fix
       throw error;
@@ -26,15 +28,30 @@ export default function SongListView() {
     }
   };
 
-  const getAllSongs = async () => {
-    const allSong: ISongDb[] = await getSongs();
-    setSongs(allSong);
+  const getMySongs = async () => {
+    const allSongs: ISongDb[] = await getSongsForUser();
+    setSongs(allSongs);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getAllSongs();
+    getMySongs();
   }, []);
+
+  if (status !== "authenticated") {
+    return (
+      <div className="flex h-60 max-h-full w-full flex-col justify-center text-center">
+        <h1 className={`${tw.TEXT_SECONDARY} mb-5 text-2xl font-bold`}>No Songs Found</h1>
+        <h2>
+          Please{" "}
+          <a className={`${tw.TEXT_TERTIARY} underline`} href="/login">
+            Sign In
+          </a>{" "}
+          to view your songs.
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <main className="song-container flex w-full flex-col justify-center">
