@@ -122,6 +122,46 @@ export function getChordSuggestionsForKey(key: IChord) {
           createChord("Eb", "m"), // vi
           createChord("Ab", "m"), // ii
         ];
+      case "c#":
+        return [
+          createChord("C#"), // I
+          createChord("F#"), // IV
+          createChord("G#"), // V
+          createChord("A#", "m"), // vi
+          createChord("D#", "m"), // ii
+        ];
+      case "d#":
+        return [
+          createChord("D#"), // I
+          createChord("G#"), // IV
+          createChord("A#"), // V
+          createChord("B#", "m"), // vi
+          createChord("E#", "m"), // ii
+        ];
+      case "f#":
+        return [
+          createChord("F#"), // I
+          createChord("B"), // IV
+          createChord("C#"), // V
+          createChord("D#", "m"), // vi
+          createChord("G#", "m"), // ii
+        ];
+      case "g#":
+        return [
+          createChord("G#"), // I
+          createChord("C#"), // IV
+          createChord("D#"), // V
+          createChord("E#", "m"), // vi
+          createChord("A#", "m"), // ii
+        ];
+      case "a#":
+        return [
+          createChord("A#"), // I
+          createChord("D#"), // IV
+          createChord("E#"), // V
+          createChord("F#", "m"), // vi
+          createChord("B#", "m"), // ii
+        ];
     }
   } else {
     // Handle minor keys using i, III, VI, VII, iv
@@ -237,6 +277,46 @@ export function getChordSuggestionsForKey(key: IChord) {
           createChord("Ebb"), // VI
           createChord("Fb"), // VII
           createChord("Cb", "m"), // iv
+        ];
+      case "c#":
+        return [
+          createChord("C#", "m"), // i
+          createChord("E"), // III
+          createChord("A"), // VI
+          createChord("B"), // VII
+          createChord("F#", "m"), // iv
+        ];
+      case "d#":
+        return [
+          createChord("D#", "m"), // i
+          createChord("F#"), // III
+          createChord("B"), // VI
+          createChord("C#"), // VII
+          createChord("G#", "m"), // iv
+        ];
+      case "f#":
+        return [
+          createChord("F#", "m"), // i
+          createChord("A"), // III
+          createChord("D"), // VI
+          createChord("E"), // VII
+          createChord("B", "m"), // iv
+        ];
+      case "g#":
+        return [
+          createChord("G#", "m"), // i
+          createChord("B"), // III
+          createChord("E"), // VI
+          createChord("F#"), // VII
+          createChord("C#", "m"), // iv
+        ];
+      case "a#":
+        return [
+          createChord("A#", "m"), // i
+          createChord("C#"), // III
+          createChord("F#"), // VI
+          createChord("G#"), // VII
+          createChord("D#", "m"), // iv
         ];
     }
   }
