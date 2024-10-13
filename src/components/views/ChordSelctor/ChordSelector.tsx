@@ -15,12 +15,14 @@ export default function ChordSelector({
   onSelect,
   onChordChange,
   onCancel,
+  onDeleteChord,
   initialChord,
   enableExtensions = true,
 }: {
-  onSelect: (chord: IChord) => void;
-  onChordChange: (chord: IChord) => void;
-  onCancel: () => void;
+  onSelect?: (chord: IChord) => void;
+  onChordChange?: (chord: IChord) => void;
+  onDeleteChord?: (chord: IChord) => void;
+  onCancel?: () => void;
   initialChord?: IChord;
   enableExtensions?: boolean;
 }) {
@@ -48,14 +50,23 @@ export default function ChordSelector({
   const updateChord = useCallback(
     (chord: IChord) => {
       setSelectedChord({ ...chord });
-      onChordChange(chord);
+      onChordChange?.(chord);
     },
     [setSelectedChord, onChordChange],
   );
 
+  const deleteChord = useCallback(() => {
+    selectedChord.letter = "";
+    delete selectedChord.quality;
+    delete selectedChord.extensions;
+    delete selectedChord.customChord;
+    setSelectedChord({ ...selectedChord });
+    onDeleteChord?.(selectedChord);
+  }, [setSelectedChord, onDeleteChord, selectedChord]);
+
   const onDoubleClickNote = (note: string) => {
     onSelectNote(note);
-    onSelect(selectedChord);
+    onSelect?.(selectedChord);
   };
 
   const setSelectedQuality = (quality: string) => {
@@ -101,7 +112,7 @@ export default function ChordSelector({
 
       switch (key.toLowerCase()) {
         case "enter":
-          onSelect(selectedChord);
+          onSelect?.(selectedChord);
           return;
         case "#":
           selectedChord.letter = selectedChord.letter[0];
@@ -122,6 +133,9 @@ export default function ChordSelector({
           if (!enableExtensions) return;
           setSelectedExtension(key);
           break;
+        case "backspace":
+          deleteChord();
+          break;
       }
 
       updateChord({ ...selectedChord });
@@ -134,6 +148,7 @@ export default function ChordSelector({
       isChordTextInputFocused,
       enableExtensions,
       updateChord,
+      deleteChord,
     ],
   );
 
@@ -148,7 +163,7 @@ export default function ChordSelector({
     if (onChordTextInputChangeDebounceTimer)
       clearTimeout(onChordTextInputChangeDebounceTimer);
     onChordTextInputChangeDebounceTimer = setTimeout(() => {
-      onChordChange(selectedChord);
+      onChordChange?.(selectedChord);
     }, 100);
   };
 
@@ -197,7 +212,7 @@ export default function ChordSelector({
         className="mt-3"
         text="Select"
         color="primary"
-        onClick={() => onSelect(selectedChord)}
+        onClick={() => onSelect?.(selectedChord)}
       />
     </div>
   );
