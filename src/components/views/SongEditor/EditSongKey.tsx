@@ -54,11 +54,12 @@ export default function EditSongKey() {
           >
             <div className="flex flex-col text-center">
               <ChordSelector
+                key="edit-title-chord-selector"
                 onSelect={(chord) => {
                   updateSongKey(chord);
                   close();
                 }}
-                initialChord={song?.key}
+                initialChord={song?.key ? { ...song.key } : undefined}
                 enableExtensions={false}
               />
             </div>

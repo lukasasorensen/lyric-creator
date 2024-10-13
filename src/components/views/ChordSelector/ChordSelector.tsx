@@ -3,6 +3,7 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
 import { isMajor } from "@/utils/ChordUtil";
+import { getChordSuggestionsForKey } from "@/utils/SongKeyUtil";
 import debounce from "lodash/debounce";
 import {
   ChangeEvent,
@@ -392,14 +393,17 @@ export function SongKeyChordSuggestions({
   selectedChord: IChord;
   onSelectNote?: (note: string) => void;
 }) {
-  const notesInKey = ["G", "C", "D", "Em", "Am"];
+  const chordsInKey = getChordSuggestionsForKey(songKey);
   return (
     <div className="container flex justify-center">
-      {notesInKey.map((note) => (
+      {chordsInKey?.map((chord) => (
         <ChordSelectorItem
-          text={note}
-          key={note + "-chord"}
-          selected={selectedChord?.letter === note}
+          text={chord.letter + chord?.quality ?? ""}
+          key={chord.letter + "-chord"}
+          selected={
+            selectedChord?.letter === chord.letter &&
+            selectedChord?.quality === chord.quality
+          }
           onClick={(note) => onSelectNote?.(note)}
         />
       ))}
