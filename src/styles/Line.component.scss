@@ -1,0 +1,23 @@
+.song-line-container {
+  .chord-before-after-container {
+    opacity: 0;
+
+    &:hover {
+      opacity: 1;
+    }
+    button {
+        padding-left: 5px;
+    }
+  }
+  .add-chord-before-container {
+    .add-chord-before-button {
+      // void
+    }
+  }
+
+  .add-chord-after-container {
+    .add-chord-after-vutton {
+      // void
+    }
+  }
+}
