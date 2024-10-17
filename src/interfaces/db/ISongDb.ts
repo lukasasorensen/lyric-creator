@@ -20,6 +20,7 @@ export interface IChord {
 export interface ISection {
   lines: ILine[];
   title: string;
+  type: string;
 }
 
 export interface IOrder {
