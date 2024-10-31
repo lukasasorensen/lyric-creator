@@ -24,6 +24,8 @@ export interface IChordSelectorProps {
   enableExtensions?: boolean;
   songKey?: IChord | null;
   showSuggestions?: boolean;
+  showSelectButton?: boolean;
+  selectButtonLabel?: string;
 }
 
 export default function ChordSelector({
@@ -35,6 +37,8 @@ export default function ChordSelector({
   songKey,
   enableExtensions = true,
   showSuggestions = false,
+  showSelectButton = false,
+  selectButtonLabel = "Select",
 }: IChordSelectorProps) {
   const [selectedChord, setSelectedChord] = useState(
     initialChord || (songKey ?? ({ letter: "A" } as IChord)),
@@ -197,6 +201,10 @@ export default function ChordSelector({
     onChordChange?.(selectedChord);
   }, 100);
 
+  const onSelectButtonClick = () => {
+    onSelect?.(selectedChord);
+  };
+
   useEffect(() => {
     window.addEventListener("keydown", handleWindowKeydownEvent);
     return () => {
@@ -206,19 +214,23 @@ export default function ChordSelector({
 
   return (
     <div className="chord-selector-container">
-      {isCustomChordInputShown ? (
-        <input
-          onFocus={() => setIsChordTextInputFocused(true)}
-          onBlur={() => setIsChordTextInputFocused(false)}
-          className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
-          onChange={onChordTextInputChange}
-          value={notePreview}
-        />
-      ) : (
-        <h2 className={`${tw.TEXT_SECONDARY} mb-4 text-center text-2xl font-bold`}>
-          {notePreview}
-        </h2>
-      )}
+      <div className="container mb-4 flex justify-center">
+        {isCustomChordInputShown ? (
+          <input
+            onFocus={() => setIsChordTextInputFocused(true)}
+            onBlur={() => setIsChordTextInputFocused(false)}
+            className={`${tw.TEXT_SECONDARY} w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
+            onChange={onChordTextInputChange}
+            value={notePreview}
+          />
+        ) : (
+          <h2
+            className={`${tw.TEXT_SECONDARY} rounded-md border border-violet-500 px-5 py-2 text-center text-2xl font-bold`}
+          >
+            {notePreview}
+          </h2>
+        )}
+      </div>
 
       {!!showSuggestions && !!songKey && (
         <div className="mb-4">
@@ -246,6 +258,15 @@ export default function ChordSelector({
         <ChordExtensionsSelector
           onSelectExtension={setSelectedExtension}
           selectedChord={selectedChord}
+        />
+      )}
+
+      {!!showSelectButton && (
+        <ThemedButton
+          className="mt-5"
+          color="primary"
+          text={selectButtonLabel}
+          onClick={onSelectButtonClick}
         />
       )}
     </div>
@@ -298,13 +319,13 @@ export function ChordQualitySelector({
   return (
     <div className="chord-selector-major-minor mt-4">
       <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
+        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_SECONDARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-cyan-900 dark:bg-cyan-700"}`}
         onClick={() => onSelectQuality("")}
       >
         Major
       </button>
       <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
+        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_SECONDARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-cyan-900 dark:bg-cyan-700"}`}
         onClick={() => onSelectQuality("m")}
       >
         Minor
@@ -371,7 +392,7 @@ export function ChordSelectorItem({
 }) {
   return (
     <button
-      className={`chord-selector-chord m-2 w-10 p-2 text-center  ${tw.BTN_PRIMARY_BORDER} rounded-md text-xs ${className} ${!!selected && "bg-violet-700"}`}
+      className={`chord-selector-chord m-2 w-10 rounded-md p-2 ${tw.BTN_SECONDARY_BORDER} text-center text-xs ${className} ${!!selected && "bg-cyan-900 dark:bg-cyan-700"}`}
       onClick={() => onClick(text)}
       onDoubleClick={() => onDoubleClick?.(text)}
     >

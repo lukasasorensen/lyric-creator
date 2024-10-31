@@ -29,7 +29,7 @@ export default function Measure(props: IMeasureProps) {
       onMouseEnter={() => setIsAddChordButtonShown(true)}
       onMouseLeave={() => setIsAddChordButtonShown(false)}
     >
-      <div className="inline">
+      <div className="flex">
         {props.measure.chords.map((chord, i) => (
           <div key={`measure-${props.index}-chord-${i}`} className="ml-5 inline">
             <Chord
@@ -50,6 +50,8 @@ export default function Measure(props: IMeasureProps) {
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
             enableExtensions={false}
+            showSelectButton={true}
+            selectButtonLabel="Add Chord"
           />
         </div>
       )}
