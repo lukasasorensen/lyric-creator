@@ -21,7 +21,7 @@ export function getWordsFromSection(section: ISection | null | undefined) {
 
   const words: string = section.lines
     .map((line) => {
-      return line.words.map((w) => w.text).join(" ");
+      return line.words?.map((w) => w.text).join(" ");
     })
     .join("\n");
   return words;
@@ -47,7 +47,7 @@ export function updateSongSectionFromText(text: string, section: ISection): ISec
 
   const updatedLines = newLines.map((line, lineIndex) => {
     return {
-      words: line.words.map((word, wordIndex) => ({
+      words: line.words?.map((word, wordIndex) => ({
         ...section.lines?.[lineIndex]?.words?.[wordIndex],
         text: word.text,
       })),

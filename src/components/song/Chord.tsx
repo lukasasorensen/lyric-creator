@@ -65,7 +65,9 @@ export function ChordView({
 }) {
   return (
     <div className={`chord-container inline-block ${isSelected && "selected"}`}>
-      <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 font-bold leading-3`}>
+      <div
+        className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 text-xl font-bold leading-3`}
+      >
         {chord?.letter}
         {chord?.quality}
         {chord?.extensions?.join("")}

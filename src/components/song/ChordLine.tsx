@@ -3,6 +3,8 @@ import Word from "@/components/song/Word";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import Chord from "./Chord";
 import Measure from "./Measure";
+import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
+import { useSongContext } from "@/providers/SongProvider";
 
 export default function ChordLine({
   line,
@@ -13,29 +15,44 @@ export default function ChordLine({
   edit?: boolean;
   onChordChange?: (chord: IChord) => void;
 }) {
-  return (
-    <div className="song-line-container whitespace-pre-line text-center leading-10">
-      {line?.measures?.map((measure, i) => (
-        <Measure
-          measure={measure}
-          key={`${i}-measure`}
-          index={i}
-          edit={edit}
-          onChordChange={(newChord) => onChordChange?.(newChord)}
-        />
-      ))}
-    </div>
-  );
-}
+  const { song } = useSongContext();
 
-export function AddChordButton() {
+  const addChordToNewMeasureOnLine = (line: ILine, chord: IChord) => {
+    //add chord logic
+    const newMeasure = { chords: [chord] };
+    if (!line?.measures) {
+      line.measures = [newMeasure];
+    } else {
+      line.measures.push(newMeasure);
+    }
+
+    onChordChange?.(chord);
+  };
+
   return (
-    <div className="chord-before-after-container ml-4 inline-block text-center">
-      <button
-        className={`add-chord-after-button ${tw.BTN_PRIMARY} flex h-5 w-5 flex-col justify-center rounded-full`}
-      >
-        +
-      </button>
+    <div className="song-line-container flex justify-center whitespace-pre-line text-center leading-7">
+      {line?.measures?.map((measure, i) => (
+        <div key={`${i}-measure`} className="measure-container flex">
+          <Measure
+            measure={measure}
+            index={i}
+            edit={edit}
+            onChordChange={(newChord) => onChordChange?.(newChord)}
+          />
+        </div>
+      ))}
+      {!!edit && (
+        <div className={`add-chord-button-container ml-4`}>
+          <ChordSelectorButton
+            key="edit-title-chord-selector"
+            onSelect={(chord) => {
+              addChordToNewMeasureOnLine(line, chord);
+            }}
+            initialChord={song?.key ? { ...song.key } : undefined}
+            enableExtensions={false}
+          />
+        </div>
+      )}
     </div>
   );
 }

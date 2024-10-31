@@ -1,9 +1,6 @@
 "use client";
 import { IChord, ILine, ISection, IWord } from "@/interfaces/db/ISongDb";
 import ChordLine from "./ChordLine";
-import { CirclePlusButton } from "../common/CirclePlusButton";
-import { PopoverPanel, Popover, PopoverButton } from "@headlessui/react";
-import ChordSelector from "../views/ChordSelector/ChordSelector";
 import { useSongContext } from "@/providers/SongProvider";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
@@ -26,12 +23,13 @@ export default function ChordSection({
   onChordChange?: () => void;
 }) {
   const { song } = useSongContext();
-  const addChord = (chord: IChord) => {
+  const addFirstChord = (chord: IChord) => {
     //add chord logic
+    const newLine = { measures: [{ chords: [chord] }] };
 
-    section.lines ??= [{ measures: [] }];
-    const lastLine = section.lines.pop();
-    const lastMeasure = lastLine?.measures?.pop();
+    section.lines = [newLine];
+
+    onChordChange?.();
   };
 
   return (
@@ -45,17 +43,18 @@ export default function ChordSection({
         section.lines.map((line: ILine, i: number) => (
           <ChordLine line={line} key={i} edit={edit} onChordChange={onChordChange} />
         ))}
-
-      {edit && (
-        <ChordSelectorButton
-          key="edit-title-chord-selector"
-          onSelect={(chord) => {
-            addChord(chord);
-          }}
-          onChordChange={(chord) => addChord(chord)}
-          initialChord={song?.key ? { ...song.key } : undefined}
-          enableExtensions={false}
-        />
+      {edit && !section?.lines?.length && (
+        <div className="add-first-chord-button">
+          <ChordSelectorButton
+            key="edit-title-chord-selector"
+            onSelect={(chord) => {
+              addFirstChord(chord);
+            }}
+            onChordChange={(chord) => addFirstChord(chord)}
+            initialChord={song?.key ? { ...song.key } : undefined}
+            enableExtensions={false}
+          />
+        </div>
       )}
     </div>
   );

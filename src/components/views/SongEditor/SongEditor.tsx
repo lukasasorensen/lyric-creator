@@ -65,7 +65,8 @@ export default function SongEditor() {
       ...song.sections,
       [sectionKey]: {
         title: newSectionTitle,
-        lines: getLinesFromText(newSectionWords),
+        lines:
+          newSectionType === SectionTypes.LYRICS ? getLinesFromText(newSectionWords) : [],
         type: newSectionType,
       },
     };
