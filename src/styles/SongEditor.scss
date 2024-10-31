@@ -13,8 +13,12 @@
 
       &:hover {
         .edit-section-pencil-button,
-        .sortable-item-drag-handle {
+        .sortable-item-drag-handle,
+        .show-on-container-hover {
           opacity: 1;
+        }
+        .show-on-container-hover {
+          height: auto;
         }
       }
     }

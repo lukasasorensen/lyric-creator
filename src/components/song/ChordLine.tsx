@@ -42,7 +42,7 @@ export default function ChordLine({
         </div>
       ))}
       {!!edit && (
-        <div className={`add-chord-button-container ml-4`}>
+        <div className={`add-chord-button-container ml-2`}>
           <ChordSelectorButton
             key="edit-title-chord-selector"
             onSelect={(chord) => {

@@ -35,7 +35,7 @@ export default function ChordSection({
 
   return (
     <div className="song-section">
-      <h3 className="mb-3 mt-5 text-center text-lg font-bold">
+      <h3 className="mb-5 mt-2 text-center text-lg font-bold">
         {getSectionTitle(section?.title, !!showSectionTitleOnly)}{" "}
         {!!repeatCount && `[x${repeatCount}]`}
       </h3>
@@ -45,7 +45,9 @@ export default function ChordSection({
           <ChordLine line={line} key={i} edit={edit} onChordChange={onChordChange} />
         ))}
       {edit && (
-        <div className="add-first-chord-button mt-2 flex h-0 w-full justify-center opacity-0 transition-opacity hover:h-auto hover:opacity-100">
+        <div
+          className={`add-first-chord-button mt-2 flex h-0 w-full justify-center opacity-0 transition-opacity hover:h-auto hover:opacity-100 ${!section?.lines?.length && "show-on-container-hover"}`}
+        >
           <ChordSelectorButton
             key="edit-title-chord-selector"
             onSelect={(chord) => {

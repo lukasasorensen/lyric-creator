@@ -79,7 +79,9 @@ export default function EditSection({
   const done = async () => {
     if (!song) return;
     let section = song.sections[order.sectionName];
-    section = updateSongSectionFromText(editText, section);
+    if (section.type === SectionTypes.LYRICS) {
+      section = updateSongSectionFromText(editText, section);
+    }
     section.title = editTitleText;
     song.sections[order.sectionName] = section;
     await updateSong(song);
@@ -169,12 +171,14 @@ export default function EditSection({
                   }}
                   value={editTitleText}
                 />
-                <textarea
-                  className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                  value={editText}
-                  onChange={(e) => onTextChange(section, e)}
-                  ref={inputRef}
-                ></textarea>
+                {section?.type === SectionTypes.LYRICS && (
+                  <textarea
+                    className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                    value={editText}
+                    onChange={(e) => onTextChange(section, e)}
+                    ref={inputRef}
+                  ></textarea>
+                )}
               </>
             )}
             <div className="flex w-full justify-end p-2">
