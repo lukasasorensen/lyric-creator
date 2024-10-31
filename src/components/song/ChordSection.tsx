@@ -23,11 +23,12 @@ export default function ChordSection({
   onChordChange?: () => void;
 }) {
   const { song } = useSongContext();
-  const addFirstChord = (chord: IChord) => {
+  const addNewLine = (chord: IChord) => {
     //add chord logic
     const newLine = { measures: [{ chords: [chord] }] };
 
-    section.lines = [newLine];
+    section.lines ??= [];
+    section.lines.push(newLine);
 
     onChordChange?.();
   };
@@ -43,14 +44,13 @@ export default function ChordSection({
         section.lines.map((line: ILine, i: number) => (
           <ChordLine line={line} key={i} edit={edit} onChordChange={onChordChange} />
         ))}
-      {edit && !section?.lines?.length && (
-        <div className="add-first-chord-button">
+      {edit && (
+        <div className="mt-2 w-full flex justify-center add-first-chord-button opacity-0 hover:opacity-100 transition-opacity h-0 hover:h-auto">
           <ChordSelectorButton
             key="edit-title-chord-selector"
             onSelect={(chord) => {
-              addFirstChord(chord);
+              addNewLine(chord);
             }}
-            onChordChange={(chord) => addFirstChord(chord)}
             initialChord={song?.key ? { ...song.key } : undefined}
             enableExtensions={false}
           />
