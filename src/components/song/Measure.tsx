@@ -17,9 +17,14 @@ export default function Measure(props: IMeasureProps) {
   const { song } = useSongContext();
   const [isAddChordButtonShown, setIsAddChordButtonShown] = useState(false);
 
-  const addChordToMeasure = (measure: IMeasure, chord: IChord) => {
-    measure.chords ??= [];
-    measure.chords.push(chord);
+  const addChordToMeasure = (chord: IChord) => {
+    props.measure.chords ??= [];
+    props.measure.chords.push(chord);
+    props.onChordChange?.(chord);
+  };
+
+  const onChangeExistingChord = (chord: IChord, i: number) => {
+    props.measure.chords[i] = chord;
     props.onChordChange?.(chord);
   };
 
@@ -31,22 +36,23 @@ export default function Measure(props: IMeasureProps) {
     >
       <div className="flex">
         {props.measure.chords.map((chord, i) => (
-          <div key={`measure-${props.index}-chord-${i}`} className="ml-5 inline">
+          <div key={`measure-${props.index}-chord-${i}`} className="ml-2 inline">
             <Chord
+              edit={props.edit}
               chord={chord}
-              onChordChange={(newChord) => props?.onChordChange?.(newChord)}
+              onChordChange={(newChord) => onChangeExistingChord(newChord, i)}
             />
           </div>
         ))}
       </div>
       {!!props.edit && (
         <div
-          className={`add-chord-button-container ${isAddChordButtonShown && "visible ml-3"}`}
+          className={`add-chord-button-container ${isAddChordButtonShown && "visible ml-1 mr-1"}`}
         >
           <ChordSelectorButton
             key="edit-title-chord-selector"
             onSelect={(chord) => {
-              addChordToMeasure(props.measure, chord);
+              addChordToMeasure(chord);
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
             enableExtensions={false}
@@ -56,7 +62,7 @@ export default function Measure(props: IMeasureProps) {
         </div>
       )}
 
-      <div className={`measure-divider inline pl-3 text-gray-500`}>|</div>
+      <div className={`measure-divider inline pl-1 pr-1 text-gray-500`}>|</div>
     </div>
   );
 }

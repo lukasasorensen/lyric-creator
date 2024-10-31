@@ -15,7 +15,6 @@ export default function Chord(props: IChordProps) {
   const { song } = useSongContext();
 
   const onChordSelect = (chord: IChord) => {
-    props.chord = chord;
     props.onChordChange?.(props.chord);
   };
 
@@ -66,7 +65,7 @@ export function ChordView({
   return (
     <div className={`chord-container inline-block ${isSelected && "selected"}`}>
       <div
-        className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 text-xl font-bold leading-3`}
+        className={`${tw.TEXT_SECONDARY} word-chord cursor-pointer px-2 py-2 text-xl font-bold leading-3`}
       >
         {chord?.letter}
         {chord?.quality}
