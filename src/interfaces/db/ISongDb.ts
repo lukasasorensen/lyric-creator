@@ -7,7 +7,9 @@ export interface IWord {
 }
 
 export interface ILine {
-  words: IWord[];
+  type?: string;
+  words?: IWord[];
+  measures?: IMeasure[];
 }
 
 export interface IChord {
@@ -15,6 +17,10 @@ export interface IChord {
   quality?: string;
   extensions?: string[];
   customChord?: string;
+}
+
+export interface IMeasure {
+  chords: IChord[];
 }
 
 export interface ISection {

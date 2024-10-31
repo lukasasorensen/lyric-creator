@@ -15,6 +15,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { FaBars } from "react-icons/fa";
 import { NumberInputIncremeneter } from "@/components/common/NumberInputIncrementer";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { SectionTypes } from "@/constants/SectionTypes";
+import ChordSection from "@/components/song/ChordSection";
 
 export default function EditSection({
   order,
@@ -114,7 +116,7 @@ export default function EditSection({
     onDelete?.(order, section);
   };
 
-  const onChordChange = async (word: IWord) => {
+  const onChordChange = async () => {
     if (!song) return;
     await updateSong(song);
   };
@@ -207,9 +209,20 @@ export default function EditSection({
             >
               <FaPencil />
             </button>
-            {!!section && (
+            {!!section && (!section.type || section.type === SectionTypes.LYRICS) && (
               <div className="edit-section-container">
                 <Section
+                  edit={true}
+                  section={section}
+                  showSectionTitleOnly={!!order.showSectionTitleOnly}
+                  repeatCount={order?.repeatCount}
+                  onChordChange={onChordChange}
+                />
+              </div>
+            )}
+            {!!section && section.type === SectionTypes.CHORDS && (
+              <div className="edit-section-container">
+                <ChordSection
                   edit={true}
                   section={section}
                   showSectionTitleOnly={!!order.showSectionTitleOnly}

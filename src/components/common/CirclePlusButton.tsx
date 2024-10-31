@@ -1,14 +1,14 @@
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { FaPlus } from "react-icons/fa";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import { ButtonHTMLAttributes } from "react";
 
-export function CirclePlusButton({ onClick }: { onClick: () => void }) {
-  
-
+export interface ICirclePlusButton extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export function CirclePlusButton(props: ICirclePlusButton) {
   return (
     <button
-      onClick={onClick}
-      className={`rounded-full p-2 ${tw.BTN_PRIMARY}`}
+      {...props}
+      className={`rounded-full p-2 ${tw.BTN_PRIMARY} ${props.className}`}
     >
       <FaPlus />
     </button>

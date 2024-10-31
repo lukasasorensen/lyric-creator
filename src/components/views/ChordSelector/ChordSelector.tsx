@@ -14,6 +14,18 @@ import {
   useState,
 } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+
+export interface IChordSelectorProps {
+  onSelect?: (chord: IChord) => void;
+  onChordChange?: (chord: IChord) => void;
+  onDeleteChord?: (chord: IChord) => void;
+  onCancel?: () => void;
+  initialChord?: IChord;
+  enableExtensions?: boolean;
+  songKey?: IChord | null;
+  showSuggestions?: boolean;
+}
+
 export default function ChordSelector({
   onSelect,
   onChordChange,
@@ -23,16 +35,7 @@ export default function ChordSelector({
   songKey,
   enableExtensions = true,
   showSuggestions = false,
-}: {
-  onSelect?: (chord: IChord) => void;
-  onChordChange?: (chord: IChord) => void;
-  onDeleteChord?: (chord: IChord) => void;
-  onCancel?: () => void;
-  initialChord?: IChord;
-  enableExtensions?: boolean;
-  songKey?: IChord | null;
-  showSuggestions?: boolean;
-}) {
+}: IChordSelectorProps) {
   const [selectedChord, setSelectedChord] = useState(
     initialChord || (songKey ?? ({ letter: "A" } as IChord)),
   );

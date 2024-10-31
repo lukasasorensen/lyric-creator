@@ -1,7 +1,7 @@
 "use client";
 import { IOrder, ISongDb, IWord } from "@/interfaces/db/ISongDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
-import EditSection from "./EditSection";
+import EditSection from "./editSection/EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton, ThemedTextInput, ThemedToggle } from "@/components/Themed";
 import { deleteSongById, getSongById, updateSongById } from "@/clients/songClient";

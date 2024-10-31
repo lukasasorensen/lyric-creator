@@ -1,35 +1,29 @@
-import { ILine, IWord } from "@/interfaces/db/ISongDb";
+import { IChord, ILine, IWord } from "@/interfaces/db/ISongDb";
 import Word from "@/components/song/Word";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
+import Chord from "./Chord";
+import Measure from "./Measure";
 
-export default function Line({
+export default function ChordLine({
   line,
   edit,
   onChordChange,
 }: {
   line: ILine;
   edit?: boolean;
-  onChordChange?: (word: IWord) => void;
+  onChordChange?: (chord: IChord) => void;
 }) {
   return (
     <div className="song-line-container whitespace-pre-line text-center leading-10">
-      {/*<div className="add-chord-before-container mr-4 inline-block">
-        <AddChordButton />
-      </div>*/}
-
-      {line?.words?.map((word, i) => (
-        <Word
-          word={word}
-          key={`${i}-${word}`}
+      {line?.measures?.map((measure, i) => (
+        <Measure
+          measure={measure}
+          key={`${i}-measure`}
           index={i}
           edit={edit}
-          onChordChange={onChordChange}
+          onChordChange={(newChord) => onChordChange?.(newChord)}
         />
       ))}
-
-      {/* <div className="add-chord-after-container ml-4 inline-block">
-        <AddChordButton />
-      </div> */}
     </div>
   );
 }
