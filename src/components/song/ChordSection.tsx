@@ -49,6 +49,7 @@ export default function ChordSection({
           className={`add-first-chord-button mt-2 flex h-0 w-full justify-center opacity-0 transition-opacity hover:h-auto hover:opacity-100 ${!section?.lines?.length && "show-on-container-hover"}`}
         >
           <ChordSelectorButton
+            songKey={song?.key ? { ...song.key } : undefined}
             key="edit-title-chord-selector"
             onSelect={(chord) => {
               addNewLine(chord);

@@ -143,26 +143,28 @@ export default function EditSection({
         className={`${isSaving ? "opacity-30" : ""} container max-w-2xl`}
       >
         {isEditing && (
-          <div className="mb-10">
-            {!!order?.showSectionTitleOnly && (
-              <h3 className="mb-3 mt-5 text-center text-lg font-bold">
-                {section?.title}
-                {!!order?.repeatCount && `[x${order.repeatCount}]`}
-              </h3>
-            )}
-            {!order?.showSectionTitleOnly && (
-              <>
-                <div className="float-right text-right">
-                  <NumberInputIncremeneter
-                    onChange={onRepeatInputChange}
-                    label="Repeat"
-                    defaultValue={order.repeatCount ?? 0}
-                    min={0}
-                    step={1}
-                    containerClassName="flex gap-2"
-                    labelClassName="m-0 self-center"
-                  />
+          <div className="mb-10 rounded-lg bg-slate-400/30 bg-white/10 p-5">
+            <>
+              <div className="float-right text-right">
+                <NumberInputIncremeneter
+                  onChange={onRepeatInputChange}
+                  label="Repeat"
+                  defaultValue={order.repeatCount ?? 1}
+                  min={1}
+                  step={1}
+                  containerClassName="flex gap-2"
+                  labelClassName="m-0 self-center"
+                />
+              </div>
+              {!!order?.showSectionTitleOnly && (
+                <div className="relative flex w-full">
+                  <h3 className="mb-3 w-full text-center text-lg font-bold">
+                    {section?.title}
+                    {!!order?.repeatCount && `[x${order.repeatCount}]`}
+                  </h3>
                 </div>
+              )}
+              {!order?.showSectionTitleOnly && (
                 <ThemedTextInput
                   className="text-center"
                   placeholder="Section Title"
@@ -171,16 +173,16 @@ export default function EditSection({
                   }}
                   value={editTitleText}
                 />
-                {section?.type === SectionTypes.LYRICS && (
-                  <textarea
-                    className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                    value={editText}
-                    onChange={(e) => onTextChange(section, e)}
-                    ref={inputRef}
-                  ></textarea>
-                )}
-              </>
-            )}
+              )}
+              {!order?.showSectionTitleOnly && section?.type === SectionTypes.LYRICS && (
+                <textarea
+                  className={`section-input mt-2 block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                  value={editText}
+                  onChange={(e) => onTextChange(section, e)}
+                  ref={inputRef}
+                ></textarea>
+              )}
+            </>
             <div className="flex w-full justify-end p-2">
               <ThemedButton
                 className=""

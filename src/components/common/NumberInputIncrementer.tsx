@@ -14,7 +14,7 @@ interface INumberInputIncrementer
 }
 
 export function NumberInputIncremeneter(props: INumberInputIncrementer) {
-  const [value, setValue] = useState<number>(props.defaultValue || 0);
+  const [value, setValue] = useState<number>(props.defaultValue ?? 1);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const num = parseFloat(e.target.value);

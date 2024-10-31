@@ -51,6 +51,7 @@ export default function Measure(props: IMeasureProps) {
         >
           <ChordSelectorButton
             key="edit-title-chord-selector"
+            songKey={song?.key ? { ...song.key } : undefined}
             onSelect={(chord) => {
               addChordToMeasure(chord);
             }}

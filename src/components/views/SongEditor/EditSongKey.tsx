@@ -61,6 +61,8 @@ export default function EditSongKey() {
                 }}
                 initialChord={song?.key ? { ...song.key } : undefined}
                 enableExtensions={false}
+                showSelectButton={true}
+                selectButtonLabel="Select Key"
               />
             </div>
           </PopoverPanel>
