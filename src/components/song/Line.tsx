@@ -13,10 +13,6 @@ export default function Line({
 }) {
   return (
     <div className="song-line-container whitespace-pre-line text-center leading-10">
-      {/*<div className="add-chord-before-container mr-4 inline-block">
-        <AddChordButton />
-      </div>*/}
-
       {line?.words?.map((word, i) => (
         <Word
           word={word}
@@ -26,10 +22,6 @@ export default function Line({
           onChordChange={onChordChange}
         />
       ))}
-
-      {/* <div className="add-chord-after-container ml-4 inline-block">
-        <AddChordButton />
-      </div> */}
     </div>
   );
 }

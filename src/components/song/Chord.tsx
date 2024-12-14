@@ -3,6 +3,8 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import ChordSelector from "../views/ChordSelector/ChordSelector";
 import { useSongContext } from "@/providers/SongProvider";
+import { CircleMinusButton } from "../common/CirclePlusButton";
+import { useState } from "react";
 
 export interface IChordProps {
   chord: IChord;
@@ -62,14 +64,25 @@ export function ChordView({
   chord: IChord;
   isSelected?: boolean;
 }) {
+  const [isDeleteChordButtonShown, setIsDeleteChordButtonShown] = useState(false);
+
   return (
-    <div className={`chord-container inline-block ${isSelected && "selected"}`}>
+    <div
+      className={`chord-container inline-block ${isSelected && "selected"}`}
+      onMouseEnter={() => setIsDeleteChordButtonShown(true)}
+      onMouseLeave={() => setIsDeleteChordButtonShown(false)}
+    >
       <div
         className={`${tw.TEXT_SECONDARY} word-chord cursor-pointer px-2 py-2 text-xl font-bold leading-3`}
       >
         {chord?.letter}
         {chord?.quality}
         {chord?.extensions?.join("")}
+      </div>
+      <div
+        className={`${isDeleteChordButtonShown ? "relative z-10 float-right -mt-10 opacity-100 transition-opacity" : "opacity-0"}`}
+      >
+        <CircleMinusButton size={8} className="p-0.5" />
       </div>
     </div>
   );
