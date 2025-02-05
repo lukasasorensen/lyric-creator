@@ -1,12 +1,10 @@
 import { IChord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../views/ChordSelector/ChordSelector";
 import { useSongContext } from "@/providers/SongProvider";
-import { CircleMinusButton } from "../common/CirclePlusButton";
 import { useState } from "react";
 import { FaMinus } from "react-icons/fa";
-import { debounce } from "lodash";
+import ChordSelector from "../ChordSelector/ChordSelector";
 
 export interface IChordProps {
   chord: IChord;
@@ -38,6 +36,7 @@ export default function Chord(props: IChordProps) {
             <div className="flex flex-col text-center">
               <ChordSelector
                 showSuggestions={true}
+                showHorizontalShift={true}
                 songKey={song?.key ? { ...song.key } : undefined}
                 onSelect={(chord) => {
                   onChordSelect(chord);

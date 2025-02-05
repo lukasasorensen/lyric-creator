@@ -14,6 +14,10 @@ import {
   useState,
 } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { NoteSelector } from "./NoteSelector";
+import { SongKeyChordSuggestions } from "./SongKeyChordSuggestions";
+import { ChordQualitySelector } from "./ChordQualitySelector";
+import { ChordExtensionsSelector } from "./ChordExtensionsSelector";
 
 export interface IChordSelectorProps {
   onSelect?: (chord: IChord) => void;
@@ -26,6 +30,7 @@ export interface IChordSelectorProps {
   showSuggestions?: boolean;
   showSelectButton?: boolean;
   selectButtonLabel?: string;
+  showHorizontalShift?: boolean;
 }
 
 export default function ChordSelector({
@@ -46,6 +51,7 @@ export default function ChordSelector({
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
   const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
   const [isCustomChordInputShown, setIsCustomChordInputShown] = useState(false);
+
   const notePreview = useMemo(() => {
     if (selectedChord?.customChord?.length) return selectedChord?.customChord;
     if (!selectedChord?.letter) return "";
@@ -269,161 +275,6 @@ export default function ChordSelector({
           onClick={onSelectButtonClick}
         />
       )}
-    </div>
-  );
-}
-
-export function NoteSelector({
-  onSelectNote,
-  selectedChord,
-  sharpsOrFlats,
-}: {
-  onSelectNote: (note: string) => void;
-  selectedChord: IChord;
-  sharpsOrFlats: string;
-}) {
-  return (
-    <div className="note-selector-container text-center">
-      <div className="chord-selector-sharps-container flex justify-between px-9">
-        {(sharpsOrFlats === "sharps" ? SHARPS : FLATS).map(({ letter }, i) => (
-          <ChordSelectorItem
-            className={i === 1 ? "mr-16" : ""}
-            text={letter}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === letter}
-          />
-        ))}
-      </div>
-      <div className="chord-selector-naturals-container flex justify-between">
-        {NATURALS.map(({ letter }, i) => (
-          <ChordSelectorItem
-            text={letter}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === letter}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function ChordQualitySelector({
-  onSelectQuality,
-  selectedChord,
-}: {
-  selectedChord: IChord;
-  onSelectQuality: (quality: string) => void;
-}) {
-  return (
-    <div className="chord-selector-major-minor mt-4">
-      <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_SECONDARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-cyan-900 dark:bg-cyan-700"}`}
-        onClick={() => onSelectQuality("")}
-      >
-        Major
-      </button>
-      <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_SECONDARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-cyan-900 dark:bg-cyan-700"}`}
-        onClick={() => onSelectQuality("m")}
-      >
-        Minor
-      </button>
-    </div>
-  );
-}
-
-export function ChordExtensionsSelector({
-  onSelectExtension,
-  selectedChord,
-}: {
-  onSelectExtension: (extension: string) => void;
-  selectedChord: IChord;
-}) {
-  const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
-
-  const isExtensionSelected = (extension: string) => {
-    return !!selectedChord?.extensions?.includes(extension);
-  };
-
-  return (
-    <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
-      <button
-        className={`${tw.TEXT_SECONDARY} mb-2 text-sm`}
-        onClick={() => setIsExtensionsOpen(!isExtensionsOpen)}
-      >
-        Extensions
-        {isExtensionsOpen ? (
-          <FaCaretUp className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-        ) : (
-          <FaCaretDown className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-        )}
-      </button>
-      {isExtensionsOpen && (
-        <div className="chord-selector-extensions-inner-container flex max-w-72 flex-wrap justify-center">
-          {CHORD_EXTENSIONS.map(({ shortName }, i) => (
-            <ChordSelectorItem
-              text={shortName}
-              key={i + "-chord"}
-              onClick={(extension) => onSelectExtension?.(extension)}
-              selected={isExtensionSelected(shortName)}
-              className="w-auto"
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function ChordSelectorItem({
-  text,
-  onClick,
-  onDoubleClick,
-  className,
-  selected,
-}: {
-  text: string;
-  className?: string;
-  onClick: (text: string) => void;
-  onDoubleClick?: (text: string) => void;
-  selected?: boolean;
-}) {
-  return (
-    <button
-      className={`chord-selector-chord m-2 w-10 rounded-md p-2 ${tw.BTN_SECONDARY_BORDER} text-center text-xs ${className} ${!!selected && "bg-cyan-900 dark:bg-cyan-700"}`}
-      onClick={() => onClick(text)}
-      onDoubleClick={() => onDoubleClick?.(text)}
-    >
-      {text}
-    </button>
-  );
-}
-
-export function SongKeyChordSuggestions({
-  songKey,
-  selectedChord,
-  onSelectNote,
-}: {
-  songKey: IChord;
-  selectedChord: IChord;
-  onSelectNote?: (note: string) => void;
-}) {
-  const chordsInKey = getChordSuggestionsForKey(songKey);
-  return (
-    <div className="container flex justify-center">
-      {chordsInKey?.map((chord) => (
-        <ChordSelectorItem
-          text={chord.letter + chord?.quality ?? ""}
-          key={chord.letter + "-chord"}
-          selected={
-            selectedChord?.letter === chord.letter &&
-            selectedChord?.quality === chord.quality
-          }
-          onClick={(note) => onSelectNote?.(note)}
-        />
-      ))}
     </div>
   );
 }

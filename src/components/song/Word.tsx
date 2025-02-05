@@ -1,8 +1,8 @@
 import { IChord, IWord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../views/ChordSelector/ChordSelector";
 import { useSongContext } from "@/providers/SongProvider";
+import ChordSelector from "../ChordSelector/ChordSelector";
 
 export interface IWordProps {
   word: IWord;

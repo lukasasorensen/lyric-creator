@@ -2,10 +2,10 @@ import { IChord, IMeasure } from "@/interfaces/db/ISongDb";
 import Chord from "./Chord";
 import { CirclePlusButton } from "../common/CirclePlusButton";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
 import { useSongContext } from "@/providers/SongProvider";
 import { useState } from "react";
 import { debounce } from "lodash";
+import ChordSelectorButton from "../ChordSelector/ChordSelectorButton";
 
 export interface IMeasureProps {
   measure: IMeasure;

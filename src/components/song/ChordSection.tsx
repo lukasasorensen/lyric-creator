@@ -3,7 +3,7 @@ import { IChord, ILine, ISection, IWord } from "@/interfaces/db/ISongDb";
 import ChordLine from "./ChordLine";
 import { useSongContext } from "@/providers/SongProvider";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
+import ChordSelectorButton from "../ChordSelector/ChordSelectorButton";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
   return showSectionTitleOnly ? `[${title}]` : title;

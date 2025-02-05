@@ -1,10 +1,7 @@
 import { IChord, ILine, IWord } from "@/interfaces/db/ISongDb";
-import Word from "@/components/song/Word";
-import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import Chord from "./Chord";
 import Measure from "./Measure";
-import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
 import { useSongContext } from "@/providers/SongProvider";
+import ChordSelectorButton from "../ChordSelector/ChordSelectorButton";
 
 export default function ChordLine({
   line,

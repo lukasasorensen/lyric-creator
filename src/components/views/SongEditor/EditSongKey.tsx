@@ -5,8 +5,8 @@ import { useSongContext } from "@/providers/SongProvider";
 import React, { KeyboardEvent, useState } from "react";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../ChordSelector/ChordSelector";
 import { IChord } from "@/interfaces/db/ISongDb";
+import ChordSelector from "@/components/ChordSelector/ChordSelector";
 
 export default function EditSongKey() {
   const { song, setSong } = useSongContext();
