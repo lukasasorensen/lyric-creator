@@ -5,8 +5,7 @@
     opacity 0.2s ease,
     width 0.2s ease;
 
-  &.visible,
-  &:hover {
+  &.visible {
     opacity: 1;
     width: 20px;
   }

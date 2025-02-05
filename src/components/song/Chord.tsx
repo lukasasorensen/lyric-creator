@@ -5,6 +5,8 @@ import ChordSelector from "../views/ChordSelector/ChordSelector";
 import { useSongContext } from "@/providers/SongProvider";
 import { CircleMinusButton } from "../common/CirclePlusButton";
 import { useState } from "react";
+import { FaMinus } from "react-icons/fa";
+import { debounce } from "lodash";
 
 export interface IChordProps {
   chord: IChord;
@@ -65,24 +67,37 @@ export function ChordView({
   isSelected?: boolean;
 }) {
   const [isDeleteChordButtonShown, setIsDeleteChordButtonShown] = useState(false);
+  const [isChordHighlighted, setIsChordHighlighted] = useState(false);
+
+  const onMouseEnterChord = () => {
+    setIsChordHighlighted(true);
+    setIsDeleteChordButtonShown(true);
+  };
+
+  const onMouseLeaveChord = () => {
+    setIsChordHighlighted(false);
+    setIsDeleteChordButtonShown(false);
+  };
 
   return (
     <div
-      className={`chord-container inline-block ${isSelected && "selected"}`}
-      onMouseEnter={() => setIsDeleteChordButtonShown(true)}
-      onMouseLeave={() => setIsDeleteChordButtonShown(false)}
+      className={`chord-container inline-block ${isSelected && "selected"} ${isChordHighlighted ? "highlighted" : ""}`}
+      onMouseEnter={() => onMouseEnterChord()}
+      onMouseLeave={() => onMouseLeaveChord()}
     >
       <div
-        className={`${tw.TEXT_SECONDARY} word-chord cursor-pointer px-2 py-2 text-xl font-bold leading-3`}
+        className={`${tw.TEXT_SECONDARY}  word-chord cursor-pointer px-2 py-2 text-xl font-bold leading-3`}
       >
         {chord?.letter}
         {chord?.quality}
         {chord?.extensions?.join("")}
       </div>
       <div
-        className={`${isDeleteChordButtonShown ? "relative z-10 float-right -mt-10 opacity-100 transition-opacity" : "opacity-0"}`}
+        className={`${isDeleteChordButtonShown ? "relative z-10 float-right -mr-2 -mt-9 opacity-100 transition-opacity" : "opacity-0"}`}
       >
-        <CircleMinusButton size={8} className="p-0.5" />
+        <div className={`rounded-full p-1 ${tw.BTN_DANGER}`}>
+          <FaMinus size={10} />
+        </div>
       </div>
     </div>
   );

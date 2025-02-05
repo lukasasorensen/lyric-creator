@@ -45,7 +45,7 @@ export default function ChordLine({
         <div className={`add-chord-button-container ml-2`}>
           <ChordSelectorButton
             songKey={song?.key ? { ...song.key } : undefined}
-            key="edit-title-chord-selector"
+            key="add-measure-chord-selector"
             onSelect={(chord) => {
               addChordToNewMeasureOnLine(line, chord);
             }}

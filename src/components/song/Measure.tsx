@@ -5,6 +5,7 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import ChordSelectorButton from "../views/ChordSelector/ChordSelectorButton";
 import { useSongContext } from "@/providers/SongProvider";
 import { useState } from "react";
+import { debounce } from "lodash";
 
 export interface IMeasureProps {
   measure: IMeasure;
@@ -28,12 +29,16 @@ export default function Measure(props: IMeasureProps) {
     props.onChordChange?.(chord);
   };
 
+  const onMouseEnterAddButton = () => {
+    setIsAddChordButtonShown(true);
+  };
+
+  const onMouseLeaveAddButton = debounce(() => {
+    setIsAddChordButtonShown(false);
+  }, 300);
+
   return (
-    <div
-      className="measure-container flex"
-      onMouseEnter={() => setIsAddChordButtonShown(true)}
-      onMouseLeave={() => setIsAddChordButtonShown(false)}
-    >
+    <div className="measure-container flex">
       <div className="flex">
         {props.measure.chords.map((chord, i) => (
           <div key={`measure-${props.index}-chord-${i}`} className="ml-2 inline">
@@ -47,6 +52,8 @@ export default function Measure(props: IMeasureProps) {
       </div>
       {!!props.edit && (
         <div
+          onMouseEnter={() => onMouseEnterAddButton()}
+          onMouseLeave={() => onMouseLeaveAddButton()}
           className={`add-chord-button-container ${isAddChordButtonShown && "visible ml-1 mr-1"}`}
         >
           <ChordSelectorButton
