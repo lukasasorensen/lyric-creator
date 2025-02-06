@@ -3,10 +3,8 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useSongContext } from "@/providers/SongProvider";
 import { ChordSelector } from "@/components/ChordSelector";
-import useMousePosition from "@/hooks/useMousePositon";
 import { useRef, useState } from "react";
 import useDrag from "@/hooks/useDrag";
-import { max } from "lodash";
 
 export interface IWordProps {
   word: IWord;
@@ -99,11 +97,13 @@ export function WordInner({
   });
 
   return (
-    <div className={`word-container inline-block ${isSelected && "selected"}`}>
+    <div
+      className={`word-container inline-block ${isSelected && "selected"} cursor-col-resize`}
+    >
       {!!word?.chord?.letter && (
         <div
           ref={chordRef}
-          className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "text-2xl" : ""}`}
+          className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3`}
           style={{ transform: `translateX(${translate.x}px)` }}
         >
           {word?.chord?.letter}
