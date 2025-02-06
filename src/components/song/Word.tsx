@@ -71,7 +71,7 @@ export function WordInner({
 }: {
   word: IWord;
   isSelected?: boolean;
-  onChordChange: (word: IWord) => void;
+  onChordChange?: (word: IWord) => void;
 }) {
   const chordRef = useRef<HTMLDivElement>(null);
 
@@ -80,15 +80,18 @@ export function WordInner({
   const handleDrag = (e: MouseEvent) => {
     if (!word?.chord) return;
     const maxOffset = (chordRef.current?.clientWidth ?? 10) / 2;
-    word.chord.offset ??= 0;
     translate.x += e.movementX;
+    translate.y += e.movementY;
+
+    // boundaries
     if (translate.x > maxOffset) translate.x = maxOffset;
     if (translate.x < maxOffset * -1) translate.x = maxOffset * -1;
-    translate.y += e.movementY;
-    setTranslate({ ...translate });
+
+    word.chord.offset ??= 0;
     word.chord.offset = translate.x;
-    console.log("handleDrag", word.chord.offset);
-    onChordChange(word);
+
+    setTranslate({ ...translate });
+    onChordChange?.(word);
   };
 
   const drag = useDrag(chordRef, [translate], {
