@@ -17,6 +17,7 @@ import { NumberInputIncremeneter } from "@/components/common/NumberInputIncremen
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { SectionTypes } from "@/constants/SectionTypes";
 import ChordSection from "@/components/song/ChordSection";
+import { debounce } from "lodash";
 
 export default function EditSection({
   order,
@@ -118,10 +119,10 @@ export default function EditSection({
     onDelete?.(order, section);
   };
 
-  const onChordChange = async () => {
+  const onChordChange = debounce(async () => {
     if (!song) return;
     await updateSong(song);
-  };
+  }, 300);
 
   const onRepeatInputChange = async (repeatCount: number) => {
     if (!song) return;

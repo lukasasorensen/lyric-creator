@@ -1,0 +1,13 @@
+.chord-selector-container {
+  .horizontal-shift-range {
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      width: 15px; /* Set a specific slider handle width */
+      height: 20px; /* Slider handle height */
+      border-radius: 5px;
+      background: rgb(14 116 144); /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+  }
+}

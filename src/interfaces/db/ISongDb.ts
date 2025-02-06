@@ -17,6 +17,7 @@ export interface IChord {
   quality?: string;
   extensions?: string[];
   customChord?: string;
+  offset?: number;
 }
 
 export interface IMeasure {

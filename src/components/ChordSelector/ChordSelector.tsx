@@ -1,4 +1,4 @@
-import { ThemedButton } from "@/components/Themed";
+import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
@@ -40,14 +40,15 @@ export default function ChordSelector({
   enableExtensions = true,
   showSuggestions = false,
   showSelectButton = false,
+  showHorizontalShift = false,
   selectButtonLabel = "Select",
 }: IChordSelectorProps) {
   const [selectedChord, setSelectedChord] = useState(
     initialChord || (songKey ?? ({ letter: "A" } as IChord)),
   );
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
-  const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
   const [isCustomChordInputShown, setIsCustomChordInputShown] = useState(false);
+  const [isShortcutsEnabled, setIsShortcutsEnabled] = useState(true);
 
   const notePreview = useMemo(() => {
     if (selectedChord?.customChord?.length) return selectedChord?.customChord;
@@ -118,7 +119,7 @@ export default function ChordSelector({
 
   const handleWindowKeydownEvent = useCallback(
     (event: KeyboardEvent<Window>) => {
-      if (isChordTextInputFocused) return;
+      if (!isShortcutsEnabled) return;
       event.stopPropagation();
       event.preventDefault();
       if (!event?.key) return;
@@ -186,7 +187,7 @@ export default function ChordSelector({
       setSharpsOrFlats,
       setSelectedExtension,
       onSelect,
-      isChordTextInputFocused,
+      isShortcutsEnabled,
       enableExtensions,
       updateChord,
       deleteChord,
@@ -204,6 +205,12 @@ export default function ChordSelector({
     onChordChange?.(selectedChord);
   }, 100);
 
+  const onHorizontalShiftChange = (e: ChangeEvent<HTMLInputElement>) => {
+    selectedChord.offset = parseInt(e.target.value);
+    setSelectedChord({ ...selectedChord });
+    onChordChange?.(selectedChord);
+  };
+
   const onSelectButtonClick = () => {
     onSelect?.(selectedChord);
   };
@@ -220,8 +227,8 @@ export default function ChordSelector({
       <div className="container mb-4 flex justify-center">
         {isCustomChordInputShown ? (
           <input
-            onFocus={() => setIsChordTextInputFocused(true)}
-            onBlur={() => setIsChordTextInputFocused(false)}
+            onFocus={() => setIsShortcutsEnabled(false)}
+            onBlur={() => setIsShortcutsEnabled(true)}
             className={`${tw.TEXT_SECONDARY} w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
             onChange={onChordTextInputChange}
             value={notePreview}
@@ -271,6 +278,19 @@ export default function ChordSelector({
           text={selectButtonLabel}
           onClick={onSelectButtonClick}
         />
+      )}
+
+      {!!showHorizontalShift && (
+        <div className="top-1 flex w-full justify-center px-10 py-5">
+          <input
+            type="range"
+            defaultValue={selectedChord?.offset}
+            onChange={onHorizontalShiftChange}
+            min={-60}
+            max={60}
+            className={`horizontal-shift-range h-2 w-full max-w-32 cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700`}
+          />
+        </div>
       )}
     </div>
   );
