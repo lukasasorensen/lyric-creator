@@ -11,6 +11,8 @@ export interface IWordProps {
   index?: number;
   edit?: boolean;
   onChordChange?: (word: IWord) => void;
+  onMoveChordToNextWord?: (word: IWord) => void;
+  onMoveChordToPrevWord?: (word: IWord) => void;
 }
 
 export default function Word(props: IWordProps) {
@@ -23,17 +25,6 @@ export default function Word(props: IWordProps) {
 
   if (!props.edit) return <WordInner word={props.word} />;
 
-  const onMoveChordToNextWord = (word: IWord) => {
-    // remove chord from current word
-    // get next word
-    // add chord to next word
-  };
-  const onMoveChordToPrevWord = (word: IWord) => {
-    // remove chord from current word
-    // get prev word
-    // add chord to prev word
-  };
-
   return (
     <Popover className={`inline-block`}>
       {({ open, close }) => (
@@ -41,8 +32,8 @@ export default function Word(props: IWordProps) {
           <PopoverButton className="focus-visible:outline-none">
             <WordInner
               onChordChange={props.onChordChange}
-              onMoveChordToNextWord={props.onChordChange}
-              onMoveChordToPrevWord={props.onChordChange}
+              onMoveChordToNextWord={props.onMoveChordToNextWord}
+              onMoveChordToPrevWord={props.onMoveChordToPrevWord}
               word={props.word}
               isSelected={open}
             />
@@ -88,11 +79,39 @@ export function WordInner({
   onMoveChordToNextWord?: (word: IWord) => void;
   onMoveChordToPrevWord?: (word: IWord) => void;
 }) {
-  const chordRef = useRef<HTMLDivElement>(null);
+  return (
+    <div
+      className={`word-container inline-block ${isSelected && "selected"} cursor-col-resize`}
+    >
+      {!!word?.chord?.letter && (
+        <DraggableChord
+          word={word}
+          onChordChange={onChordChange}
+          onMoveChordToNextWord={onMoveChordToNextWord}
+          onMoveChordToPrevWord={onMoveChordToPrevWord}
+        />
+      )}
+      <div className={`word ${tw.TEXT_PRIMARY} `}>{word.text} </div>
+    </div>
+  );
+}
 
+export function DraggableChord({
+  word,
+  onChordChange,
+  onMoveChordToNextWord,
+  onMoveChordToPrevWord,
+}: {
+  word: IWord;
+  onChordChange?: (word: IWord) => void;
+  onMoveChordToNextWord?: (word: IWord) => void;
+  onMoveChordToPrevWord?: (word: IWord) => void;
+}) {
+  const chordRef = useRef<HTMLDivElement>(null);
   const [translate, setTranslate] = useState({ x: word.chord?.offset ?? 0, y: 0 });
 
   const handleDrag = (e: MouseEvent) => {
+    console.log("handleDrag");
     if (!word?.chord) return;
     const maxOffset = (chordRef.current?.clientWidth ?? 10) / 2;
     translate.x += e.movementX;
@@ -108,6 +127,10 @@ export function WordInner({
       onMoveChordToPrevWord?.(word);
     }
 
+    // chord may have been removed from onMovechordTo<Next/Prev>Word
+    // todo probably fix this side-effect
+    if (!word.chord) return;
+
     word.chord.offset ??= 0;
     word.chord.offset = translate.x;
 
@@ -121,20 +144,13 @@ export function WordInner({
 
   return (
     <div
-      className={`word-container inline-block ${isSelected && "selected"} cursor-col-resize`}
+      ref={chordRef}
+      className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3`}
+      style={{ transform: `translateX(${translate.x}px)` }}
     >
-      {!!word?.chord?.letter && (
-        <div
-          ref={chordRef}
-          className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3`}
-          style={{ transform: `translateX(${translate.x}px)` }}
-        >
-          {word?.chord?.letter}
-          {word?.chord?.quality}
-          {word?.chord?.extensions?.join("")}
-        </div>
-      )}
-      <div className={`word ${tw.TEXT_PRIMARY} `}>{word.text} </div>
+      {word?.chord?.letter}
+      {word?.chord?.quality}
+      {word?.chord?.extensions?.join("")}
     </div>
   );
 }
