@@ -42,11 +42,11 @@ const useDrag = (ref: RefObject<any>, deps: any[] = [], options: IUseDragOptions
     const element = ref.current;
     if (element) {
       element.addEventListener("pointerdown", handlePointerDown);
-      element.addEventListener("pointermove", handlePointerMove);
+      window.addEventListener("pointermove", handlePointerMove);
 
       return () => {
         element.removeEventListener("pointerdown", handlePointerDown);
-        element.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointermove", handlePointerMove);
       };
     }
 

@@ -91,7 +91,7 @@ export function WordInner({
           onMoveChordToPrevWord={onMoveChordToPrevWord}
         />
       )}
-      <div className={`word ${tw.TEXT_PRIMARY} `}>{word.text} </div>
+      <div className={`word ${tw.TEXT_PRIMARY}`}>{word.text} </div>
     </div>
   );
 }
@@ -109,22 +109,26 @@ export function DraggableChord({
 }) {
   const chordRef = useRef<HTMLDivElement>(null);
   const [translate, setTranslate] = useState({ x: word.chord?.offset ?? 0, y: 0 });
+  const [isOutsideOfContainer, setIsOutsideOfContainer] = useState(false);
 
   const handleDrag = (e: MouseEvent) => {
     console.log("handleDrag");
     if (!word?.chord) return;
-    const maxOffset = (chordRef.current?.clientWidth ?? 10) / 2;
+    const maxOffset = (chordRef.current?.clientWidth ?? 10) / 1.75;
     translate.x += e.movementX;
     translate.y += e.movementY;
 
     // boundaries
     if (translate.x > maxOffset) {
-      translate.x = maxOffset;
-      onMoveChordToNextWord?.(word);
-    }
-    if (translate.x < maxOffset * -1) {
-      translate.x = maxOffset * -1;
-      onMoveChordToPrevWord?.(word);
+      // translate.x = maxOffset;
+      setIsOutsideOfContainer(true);
+      //onMoveChordToNextWord?.(word);
+    } else if (translate.x < maxOffset * -1) {
+      // translate.x = maxOffset * -1;
+      setIsOutsideOfContainer(true);
+      // onMoveChordToPrevWord?.(word);
+    } else {
+      setIsOutsideOfContainer(false);
     }
 
     // chord may have been removed from onMovechordTo<Next/Prev>Word
@@ -138,15 +142,23 @@ export function DraggableChord({
     onChordChange?.(word);
   };
 
-  const drag = useDrag(chordRef, [translate], {
-    onDrag: handleDrag,
-  });
+  const handleOnPointerUp = (e: MouseEvent) => {
+    const elementUnderPoint = document.elementFromPoint(e.clientX, e.clientY);
+    if (!elementUnderPoint?.classList.contains("word")) return;
+  };
+
+  //const drag = useDrag(chordRef, [translate], {
+  //  onDrag: handleDrag,
+  //  onPointerUp: handleOnPointerUp
+  //});
 
   return (
     <div
       ref={chordRef}
-      className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3`}
-      style={{ transform: `translateX(${translate.x}px)` }}
+      className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "pointer-events-none text-4xl" : ""}`}
+      style={{
+        transform: `translateX(${translate.x}px) ${isOutsideOfContainer ? `translateY(${translate.y}px)` : ""}`,
+      }}
     >
       {word?.chord?.letter}
       {word?.chord?.quality}
