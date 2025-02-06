@@ -3,6 +3,7 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useSongContext } from "@/providers/SongProvider";
 import { ChordSelector } from "@/components/ChordSelector";
+import useMousePosition from "@/hooks/useMousePositon";
 
 export interface IWordProps {
   word: IWord;
