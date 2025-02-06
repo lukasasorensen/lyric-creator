@@ -10,6 +10,6 @@ export default class ThemeService {
   }
 
   getThemeFromLocalStorage() {
-    return localStorage?.theme === "light" ? "light" : "dark"
+    return localStorage?.theme === "light" ? "light" : "dark";
   }
 }

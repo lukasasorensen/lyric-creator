@@ -7,7 +7,6 @@ import { CirclePlusButton } from "./common/CirclePlusButton";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function LyricTextEditor({ song }: { song: ISongDb }) {
-  
   const [isAddingNewSection, setIsAddingNewSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [songUpdate, setSong] = useState(song);

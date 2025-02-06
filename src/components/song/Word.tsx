@@ -61,7 +61,10 @@ export function WordInner({ word, isSelected }: { word: IWord; isSelected?: bool
   return (
     <div className={`word-container inline-block ${isSelected && "selected"}`}>
       {!!word?.chord?.letter && (
-        <div className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 font-bold leading-3`} style={{ transform: `translateX(${word?.chord?.offset ?? 0}%)` }}>
+        <div
+          className={`${tw.TEXT_SECONDARY} word-chord -mb-1 pt-2 font-bold leading-3`}
+          style={{ transform: `translateX(${word?.chord?.offset ?? 0}%)` }}
+        >
           {word?.chord?.letter}
           {word?.chord?.quality}
           {word?.chord?.extensions?.join("")}

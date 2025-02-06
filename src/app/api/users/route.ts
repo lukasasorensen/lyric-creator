@@ -20,10 +20,10 @@ export async function POST(request: Request) {
     delete newUser.confirmPassword;
 
     const createdSong = await collection.insertOne({
-        ...newUser,
-        createdAt: new Date()
+      ...newUser,
+      createdAt: new Date(),
     });
-    
+
     return Response.json(createdSong);
   } catch (e) {
     console.error(e);
