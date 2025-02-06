@@ -27,7 +27,6 @@ export interface IChordSelectorProps {
   showSuggestions?: boolean;
   showSelectButton?: boolean;
   selectButtonLabel?: string;
-  showHorizontalShift?: boolean;
 }
 
 export default function ChordSelector({
@@ -40,7 +39,6 @@ export default function ChordSelector({
   enableExtensions = true,
   showSuggestions = false,
   showSelectButton = false,
-  showHorizontalShift = false,
   selectButtonLabel = "Select",
 }: IChordSelectorProps) {
   const [selectedChord, setSelectedChord] = useState(
@@ -278,19 +276,6 @@ export default function ChordSelector({
           text={selectButtonLabel}
           onClick={onSelectButtonClick}
         />
-      )}
-
-      {!!showHorizontalShift && (
-        <div className="top-1 flex w-full justify-center px-10 py-5">
-          <input
-            type="range"
-            defaultValue={selectedChord?.offset}
-            onChange={onHorizontalShiftChange}
-            min={-60}
-            max={60}
-            className={`horizontal-shift-range h-2 w-full max-w-32 cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700`}
-          />
-        </div>
       )}
     </div>
   );

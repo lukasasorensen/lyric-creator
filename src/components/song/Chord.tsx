@@ -36,7 +36,6 @@ export default function Chord(props: IChordProps) {
             <div className="flex flex-col text-center">
               <ChordSelector
                 showSuggestions={true}
-                showHorizontalShift={true}
                 songKey={song?.key ? { ...song.key } : undefined}
                 onSelect={(chord) => {
                   onChordSelect(chord);

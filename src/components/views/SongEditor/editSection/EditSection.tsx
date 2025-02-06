@@ -203,7 +203,7 @@ export default function EditSection({
         {!isEditing && (
           <div className="edit-section-view-container container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10">
             <div
-              className="sortable-item-drag-handle absolute left-5"
+              className="sortable-item-drag-handle absolute left-5 z-10"
               ref={setNodeRef}
               {...attributes}
               {...listeners}

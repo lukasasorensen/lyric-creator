@@ -1,13 +1,13 @@
 import { useState, useEffect, Ref, RefObject } from "react";
 
 interface IUseDragOptions {
-  onPointerDown: (e: MouseEvent) => void;
-  onPointerUp: (e: MouseEvent) => void;
-  onPointerMove: (e: MouseEvent) => void;
-  onDrag: (e: MouseEvent) => void;
+  onPointerDown?: (e: MouseEvent) => void;
+  onPointerUp?: (e: MouseEvent) => void;
+  onPointerMove?: (e: MouseEvent) => void;
+  onDrag?: (e: MouseEvent) => void;
 }
 
-const useDrag = (ref: RefObject<any>, deps = [], options: IUseDragOptions) => {
+const useDrag = (ref: RefObject<any>, deps: any[] = [], options: IUseDragOptions) => {
   const {
     onPointerDown = () => {},
     onPointerUp = () => {},
@@ -19,21 +19,22 @@ const useDrag = (ref: RefObject<any>, deps = [], options: IUseDragOptions) => {
 
   const handlePointerDown = (e: MouseEvent) => {
     setIsDragging(true);
+    onPointerDown?.(e);
 
-    onPointerDown(e);
+    window.addEventListener("pointerup", handlePointerUp);
   };
 
   const handlePointerUp = (e: MouseEvent) => {
     setIsDragging(false);
-
-    onPointerUp(e);
+    onPointerUp?.(e);
+    window.removeEventListener("pointerup", handlePointerUp);
   };
 
   const handlePointerMove = (e: MouseEvent) => {
     onPointerMove(e);
 
     if (isDragging) {
-      onDrag(e);
+      onDrag?.(e);
     }
   };
 
@@ -41,13 +42,11 @@ const useDrag = (ref: RefObject<any>, deps = [], options: IUseDragOptions) => {
     const element = ref.current;
     if (element) {
       element.addEventListener("pointerdown", handlePointerDown);
-      element.addEventListener("pointerup", handlePointerUp);
       element.addEventListener("pointermove", handlePointerMove);
 
       return () => {
-        element.removeEventListener("mousedown", handlePointerDown);
-        element.removeEventListener("mouseup", handlePointerUp);
-        element.removeEventListener("mousemove", handlePointerMove);
+        element.removeEventListener("pointerdown", handlePointerDown);
+        element.removeEventListener("pointermove", handlePointerMove);
       };
     }
 
