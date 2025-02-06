@@ -4,7 +4,7 @@ import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useSongContext } from "@/providers/SongProvider";
 import { useState } from "react";
 import { FaMinus } from "react-icons/fa";
-import ChordSelector from "../ChordSelector/ChordSelector";
+import { ChordSelector } from "@/components/ChordSelector";
 
 export interface IChordProps {
   chord: IChord;

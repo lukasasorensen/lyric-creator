@@ -1,7 +1,7 @@
 import { IChord, ILine, IWord } from "@/interfaces/db/ISongDb";
 import Measure from "./Measure";
 import { useSongContext } from "@/providers/SongProvider";
-import ChordSelectorButton from "../ChordSelector/ChordSelectorButton";
+import { ChordSelectorButton } from "@/components/ChordSelector";
 
 export default function ChordLine({
   line,
