@@ -23,6 +23,17 @@ export default function Word(props: IWordProps) {
 
   if (!props.edit) return <WordInner word={props.word} />;
 
+  const onMoveChordToNextWord = (word: IWord) => {
+    // remove chord from current word
+    // get next word
+    // add chord to next word
+  };
+  const onMoveChordToPrevWord = (word: IWord) => {
+    // remove chord from current word
+    // get prev word
+    // add chord to prev word
+  };
+
   return (
     <Popover className={`inline-block`}>
       {({ open, close }) => (
@@ -30,6 +41,8 @@ export default function Word(props: IWordProps) {
           <PopoverButton className="focus-visible:outline-none">
             <WordInner
               onChordChange={props.onChordChange}
+              onMoveChordToNextWord={props.onChordChange}
+              onMoveChordToPrevWord={props.onChordChange}
               word={props.word}
               isSelected={open}
             />
@@ -66,10 +79,14 @@ export function WordInner({
   word,
   isSelected,
   onChordChange,
+  onMoveChordToNextWord,
+  onMoveChordToPrevWord,
 }: {
   word: IWord;
   isSelected?: boolean;
   onChordChange?: (word: IWord) => void;
+  onMoveChordToNextWord?: (word: IWord) => void;
+  onMoveChordToPrevWord?: (word: IWord) => void;
 }) {
   const chordRef = useRef<HTMLDivElement>(null);
 
@@ -82,8 +99,14 @@ export function WordInner({
     translate.y += e.movementY;
 
     // boundaries
-    if (translate.x > maxOffset) translate.x = maxOffset;
-    if (translate.x < maxOffset * -1) translate.x = maxOffset * -1;
+    if (translate.x > maxOffset) {
+      translate.x = maxOffset;
+      onMoveChordToNextWord?.(word);
+    }
+    if (translate.x < maxOffset * -1) {
+      translate.x = maxOffset * -1;
+      onMoveChordToPrevWord?.(word);
+    }
 
     word.chord.offset ??= 0;
     word.chord.offset = translate.x;
