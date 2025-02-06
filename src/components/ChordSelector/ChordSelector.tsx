@@ -1,9 +1,7 @@
 import { ThemedButton } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
+import { NATURALS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
-import { isMajor } from "@/utils/ChordUtil";
-import { getChordSuggestionsForKey } from "@/utils/SongKeyUtil";
 import debounce from "lodash/debounce";
 import {
   ChangeEvent,
@@ -13,7 +11,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { NoteSelector } from "./NoteSelector";
 import { SongKeyChordSuggestions } from "./SongKeyChordSuggestions";
 import { ChordQualitySelector } from "./ChordQualitySelector";
