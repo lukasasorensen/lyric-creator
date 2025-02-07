@@ -147,10 +147,10 @@ export function DraggableChord({
     if (!elementUnderPoint?.classList.contains("word")) return;
   };
 
-  //const drag = useDrag(chordRef, [translate], {
-  //  onDrag: handleDrag,
-  //  onPointerUp: handleOnPointerUp
-  //});
+  const drag = useDrag(chordRef, [translate], {
+    onDrag: handleDrag,
+    onPointerUp: handleOnPointerUp,
+  });
 
   return (
     <div
