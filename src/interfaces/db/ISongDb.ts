@@ -1,12 +1,14 @@
 import { IDbDocumentDefault } from "./defaultDbProperties";
 
 export interface IWord {
+  _id: string;
   text: string;
   chord?: IChord;
   hasChord?: boolean;
 }
 
 export interface ILine {
+  _id: string;
   type?: string;
   words?: IWord[];
   measures?: IMeasure[];

@@ -1,4 +1,7 @@
 import { ISongDb, IOrder, ISection, ILine } from "@/interfaces/db/ISongDb";
+import { e } from "keyboard-key";
+import { v4 as uuid } from "uuid";
+import { createKebabFromText } from "./StringUtil";
 
 export function getWordsFromSong(song: ISongDb): string {
   if (!song?.order?.length) return "";
@@ -28,9 +31,10 @@ export function getWordsFromSection(section: ISection | null | undefined) {
 }
 
 export function getLinesFromText(text: string): ILine[] {
-  return text
-    .split("\n")
-    .map((line) => ({ words: line.split(" ").map((word) => ({ text: word })) }));
+  return text.split("\n").map((line) => ({
+    _id: uuid(),
+    words: line.split(" ").map((word) => ({ _id: uuid(), text: word })),
+  }));
 }
 
 /**
@@ -46,14 +50,42 @@ export function updateSongSectionFromText(text: string, section: ISection): ISec
   const newLines = getLinesFromText(text);
 
   const updatedLines = newLines.map((line, lineIndex) => {
+    const currentLine = section?.lines?.[lineIndex];
+
     return {
-      words: line.words?.map((word, wordIndex) => ({
-        ...section.lines?.[lineIndex]?.words?.[wordIndex],
-        text: word.text,
-      })),
+      ...line,
+      ...currentLine,
+      words: line.words?.map((word, wordIndex) => {
+        const currentWord = currentLine?.words?.[wordIndex];
+        return {
+          ...word,
+          ...currentWord,
+        };
+      }),
     };
   });
 
   section.lines = updatedLines;
   return section;
+}
+
+export function getUniqueSectionKeyAndTitleForSong(song: ISongDb, sectionTitle: string) {
+  let counter = 1;
+  let uniqueTitle = sectionTitle;
+  let uniqueKey = createKebabFromText(sectionTitle);
+
+  let sectionKeyExists = !!song?.sections[uniqueKey];
+  if (sectionKeyExists) {
+    while (sectionKeyExists) {
+      uniqueKey = `${uniqueKey}-${counter}`;
+      uniqueTitle = `${sectionTitle} (${counter})`;
+      sectionKeyExists = !!song?.sections[uniqueKey];
+      counter++;
+    }
+  }
+
+  return {
+    uniqueTitle,
+    uniqueKey,
+  };
 }

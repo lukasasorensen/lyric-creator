@@ -10,7 +10,7 @@ import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import EditSongTitle from "./EditSongTitle";
-import { getLinesFromText } from "@/utils/SongUtil";
+import { getLinesFromText, getUniqueSectionKeyAndTitleForSong } from "@/utils/SongUtil";
 import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 import { useRouter } from "next/navigation";
 import {
@@ -35,7 +35,7 @@ export default function SongEditor() {
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [newSectionTitle, setNewSectionTitle] = useState("");
+  let [newSectionTitle, setNewSectionTitle] = useState("");
   const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
@@ -54,17 +54,15 @@ export default function SongEditor() {
   const addNewSection = async () => {
     if (!song || !newSectionTitle?.length) return;
 
-    const sectionKey = createKebabFromText(newSectionTitle);
-    if (!!song?.sections[sectionKey]) {
-      // todo handle this better
-      console.error("Section with this name already exists");
-      throw new Error("Cannot create section, section with this name already exists");
-    }
+    const { uniqueTitle, uniqueKey } = getUniqueSectionKeyAndTitleForSong(
+      song,
+      newSectionTitle,
+    );
 
     song.sections = {
       ...song.sections,
-      [sectionKey]: {
-        title: newSectionTitle,
+      [uniqueKey]: {
+        title: uniqueTitle,
         lines:
           newSectionType === SectionTypes.LYRICS ? getLinesFromText(newSectionWords) : [],
         type: newSectionType,
@@ -74,7 +72,7 @@ export default function SongEditor() {
     song.order = [
       ...song.order,
       {
-        sectionName: sectionKey,
+        sectionName: uniqueKey,
         showSectionTitleOnly: false,
       },
     ];
