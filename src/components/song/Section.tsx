@@ -1,6 +1,7 @@
 "use client";
 import Line from "@/components/song/Line";
-import { ILine, ISection, IWord } from "@/interfaces/db/ISongDb";
+import { IChord, ILine, ISection, IWord } from "@/interfaces/db/ISongDb";
+import { replaceSectionWordChordByWordId } from "@/utils/SongUtil";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
   return showSectionTitleOnly ? `[${title}]` : title;
@@ -19,6 +20,11 @@ export default function Section({
   edit?: boolean;
   onChordChange?: () => void;
 }) {
+  const onMoveChord = (chord: IChord, nextWordId: string) => {
+    if (!chord || !nextWordId?.length) return;
+    replaceSectionWordChordByWordId(section, nextWordId, chord);
+    onChordChange?.();
+  };
   return (
     <div className="song-section">
       <h3 className="mb-3 mt-5 text-center text-lg font-bold">
@@ -28,7 +34,13 @@ export default function Section({
       {!showSectionTitleOnly &&
         !!section?.lines?.length &&
         section.lines.map((line: ILine, i: number) => (
-          <Line line={line} key={i} edit={edit} onChordChange={onChordChange} />
+          <Line
+            line={line}
+            key={i}
+            edit={edit}
+            onChordChange={onChordChange}
+            onMoveChord={onMoveChord}
+          />
         ))}
     </div>
   );

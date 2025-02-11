@@ -1,4 +1,4 @@
-import { ISongDb, IOrder, ISection, ILine } from "@/interfaces/db/ISongDb";
+import { ISongDb, IOrder, ISection, ILine, IChord } from "@/interfaces/db/ISongDb";
 import { e } from "keyboard-key";
 import { v4 as uuid } from "uuid";
 import { createKebabFromText } from "./StringUtil";
@@ -88,4 +88,22 @@ export function getUniqueSectionKeyAndTitleForSong(song: ISongDb, sectionTitle: 
     uniqueTitle,
     uniqueKey,
   };
+}
+
+export function replaceSectionWordChordByWordId(
+  section: ISection,
+  wordId: string,
+  newChord: IChord,
+) {
+  if (!section || !wordId?.length) return;
+
+  for (const line of section.lines) {
+    if (!line?.words?.length) continue;
+    for (const word of line.words) {
+      if (word._id === wordId) {
+        word.chord = newChord;
+        break;
+      }
+    }
+  }
 }

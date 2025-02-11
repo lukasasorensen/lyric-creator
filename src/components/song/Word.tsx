@@ -11,8 +11,7 @@ export interface IWordProps {
   index?: number;
   edit?: boolean;
   onChordChange?: (word: IWord) => void;
-  onMoveChordToNextWord?: (word: IWord) => void;
-  onMoveChordToPrevWord?: (word: IWord) => void;
+  onMoveChord?: (chord: IChord, nextWordId: string) => void;
 }
 
 export default function Word(props: IWordProps) {
@@ -23,7 +22,13 @@ export default function Word(props: IWordProps) {
     props.onChordChange?.(props.word);
   };
 
-  if (!props.edit) return <WordInner word={props.word} />;
+  if (!props.edit)
+    return (
+      <WordInner
+        onMoveChord={(chord, nextWordId) => props?.onMoveChord?.(chord, nextWordId)}
+        word={props.word}
+      />
+    );
 
   return (
     <Popover className={`inline-block`}>
@@ -32,8 +37,7 @@ export default function Word(props: IWordProps) {
           <PopoverButton className="focus-visible:outline-none">
             <WordInner
               onChordChange={props.onChordChange}
-              onMoveChordToNextWord={props.onMoveChordToNextWord}
-              onMoveChordToPrevWord={props.onMoveChordToPrevWord}
+              onMoveChord={(chord, nextWordId) => props?.onMoveChord?.(chord, nextWordId)}
               word={props.word}
               isSelected={open}
             />
@@ -70,14 +74,12 @@ export function WordInner({
   word,
   isSelected,
   onChordChange,
-  onMoveChordToNextWord,
-  onMoveChordToPrevWord,
+  onMoveChord,
 }: {
   word: IWord;
   isSelected?: boolean;
   onChordChange?: (word: IWord) => void;
-  onMoveChordToNextWord?: (word: IWord) => void;
-  onMoveChordToPrevWord?: (word: IWord) => void;
+  onMoveChord: (chord: IChord, nextWordId: string) => void;
 }) {
   return (
     <div
@@ -87,11 +89,12 @@ export function WordInner({
         <DraggableChord
           word={word}
           onChordChange={onChordChange}
-          onMoveChordToNextWord={onMoveChordToNextWord}
-          onMoveChordToPrevWord={onMoveChordToPrevWord}
+          onMoveChord={onMoveChord}
         />
       )}
-      <div className={`word ${tw.TEXT_PRIMARY}`}>{word.text} </div>
+      <div className={`word ${tw.TEXT_PRIMARY}`} data-word-id={word._id}>
+        {word.text}{" "}
+      </div>
     </div>
   );
 }
@@ -99,13 +102,11 @@ export function WordInner({
 export function DraggableChord({
   word,
   onChordChange,
-  onMoveChordToNextWord,
-  onMoveChordToPrevWord,
+  onMoveChord,
 }: {
   word: IWord;
   onChordChange?: (word: IWord) => void;
-  onMoveChordToNextWord?: (word: IWord) => void;
-  onMoveChordToPrevWord?: (word: IWord) => void;
+  onMoveChord: (chord: IChord, nextWordId: string) => void;
 }) {
   const chordRef = useRef<HTMLDivElement>(null);
   const [translate, setTranslate] = useState({ x: word.chord?.offset ?? 0, y: 0 });
@@ -113,6 +114,7 @@ export function DraggableChord({
 
   const handleDrag = (e: MouseEvent) => {
     console.log("handleDrag");
+    e.stopPropagation();
     if (!word?.chord) return;
     const maxOffset = (chordRef.current?.clientWidth ?? 10) / 1.75;
     translate.x += e.movementX;
@@ -122,17 +124,11 @@ export function DraggableChord({
     if (translate.x > maxOffset) {
       // translate.x = maxOffset;
       setIsOutsideOfContainer(true);
-      //onMoveChordToNextWord?.(word);
     } else if (translate.x < maxOffset * -1) {
       // translate.x = maxOffset * -1;
       setIsOutsideOfContainer(true);
-      // onMoveChordToPrevWord?.(word);
-    } else {
-      setIsOutsideOfContainer(false);
     }
 
-    // chord may have been removed from onMovechordTo<Next/Prev>Word
-    // todo probably fix this side-effect
     if (!word.chord) return;
 
     word.chord.offset ??= 0;
@@ -143,8 +139,16 @@ export function DraggableChord({
   };
 
   const handleOnPointerUp = (e: MouseEvent) => {
+    setIsOutsideOfContainer(false);
     const elementUnderPoint = document.elementFromPoint(e.clientX, e.clientY);
-    if (!elementUnderPoint?.classList.contains("word")) return;
+    const wordId = elementUnderPoint?.getAttribute("data-word-id");
+    if (!word?.chord || !wordId?.length || wordId === word._id) return;
+
+    const copiedChord = { ...word.chord, offset: 0 };
+
+    onMoveChord?.(copiedChord, wordId);
+
+    delete word?.chord;
   };
 
   const drag = useDrag(chordRef, [translate], {
