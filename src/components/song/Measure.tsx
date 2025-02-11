@@ -76,9 +76,10 @@ export default function Measure(props: IMeasureProps) {
               addChordToMeasure(chord);
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
-            enableExtensions={false}
+            enableExtensions={true}
             showSelectButton={true}
             selectButtonLabel="Add Chord"
+            closeOnSelect={true}
           />
         </div>
       )}

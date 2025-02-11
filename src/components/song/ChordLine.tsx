@@ -72,7 +72,7 @@ export default function ChordLine({
               addChordToNewMeasureOnLine(line, chord);
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
-            enableExtensions={false}
+            enableExtensions={true}
             showSelectButton={true}
             showSuggestions={true}
             selectButtonLabel="Add Measure"

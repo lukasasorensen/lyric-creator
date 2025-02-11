@@ -56,8 +56,9 @@ export default function ChordSection({
               addNewLine(chord);
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
-            enableExtensions={false}
+            enableExtensions={true}
             showSelectButton={true}
+            closeOnSelect={true}
             selectButtonLabel="Add Line"
           />
         </div>
