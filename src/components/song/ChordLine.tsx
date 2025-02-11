@@ -10,10 +10,12 @@ export default function ChordLine({
   line,
   edit,
   onChordChange,
+  onRemoveLine,
 }: {
   line: ILine;
   edit?: boolean;
   onChordChange?: () => void;
+  onRemoveLine?: () => void;
 }) {
   const { song } = useSongContext();
 
@@ -42,6 +44,11 @@ export default function ChordLine({
   const removeMeasure = (measureIndex: number) => {
     if (measureIndex < 0 || !line?.measures?.length) return;
     line.measures.splice(measureIndex, 1);
+
+    if (!line.measures?.length) {
+      onRemoveLine?.();
+    }
+
     onChordChange?.();
   };
 

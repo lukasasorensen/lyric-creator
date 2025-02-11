@@ -34,6 +34,11 @@ export default function ChordSection({
     onChordChange?.();
   };
 
+  const removeLine = (lineIndex: number) => {
+    section.lines.splice(lineIndex, 1);
+    onChordChange?.();
+  };
+
   return (
     <div className="song-section">
       <h3 className="mb-5 mt-2 text-center text-lg font-bold">
@@ -43,7 +48,13 @@ export default function ChordSection({
       {!showSectionTitleOnly &&
         !!section?.lines?.length &&
         section.lines.map((line: ILine, i: number) => (
-          <ChordLine line={line} key={i} edit={edit} onChordChange={onChordChange} />
+          <ChordLine
+            line={line}
+            key={i}
+            edit={edit}
+            onChordChange={onChordChange}
+            onRemoveLine={() => removeLine(i)}
+          />
         ))}
       {edit && (
         <div

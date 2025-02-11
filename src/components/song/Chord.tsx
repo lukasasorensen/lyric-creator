@@ -49,8 +49,8 @@ export default function Chord(props: IChordProps) {
                 onChordChange={(chord) => {
                   onChordSelect(chord);
                 }}
-                onDeleteChord={(emptyChord) => {
-                  onChordSelect(emptyChord);
+                onDeleteChord={() => {
+                  props.onRemoveChord?.(props.chord);
                 }}
                 initialChord={props.chord}
               />
