@@ -4,7 +4,7 @@ import { TailWindColorThemeClasses as twColorClasses } from "@/constants/ColorTh
 import { Switch, SwitchProps } from "@headlessui/react";
 
 interface IThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
+  text?: string;
   title?: string;
   fill?: boolean;
   color?:
@@ -22,6 +22,7 @@ export function ThemedButton({
   fill,
   color,
   className,
+  children,
   ...props
 }: IThemedButtonProps) {
   const buttonThemeClasses = useMemo<string>(() => {
@@ -34,7 +35,8 @@ export function ThemedButton({
       className={`w-fit min-w-24 rounded-md px-5 py-1.5 text-center ${buttonThemeClasses} ${className}`}
       title={title ?? text}
     >
-      {text}
+      {!!text && text}
+      {children}
     </button>
   );
 }

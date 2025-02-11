@@ -18,6 +18,7 @@ import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { SectionTypes } from "@/constants/SectionTypes";
 import ChordSection from "@/components/song/ChordSection";
 import { debounce } from "lodash";
+import EditSectionDropDownMenu from "./EditSectionDropDownMenu";
 
 export default function EditSection({
   order,
@@ -210,12 +211,14 @@ export default function EditSection({
             >
               <FaBars />
             </div>
-            <button
+            <div
               className="edit-section-pencil-button absolute right-5"
-              onClick={() => onEditButtonClick()}
             >
-              <FaPencil />
-            </button>
+              <EditSectionDropDownMenu
+                onEditTextClick={onEditButtonClick}
+                onEditStyleClick={() => {}}
+              />
+            </div>
             {!!section && (!section.type || section.type === SectionTypes.LYRICS) && (
               <div className="edit-section-container">
                 <Section
