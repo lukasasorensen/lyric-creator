@@ -1,10 +1,9 @@
-import { ThemedButton } from "@/components/Themed";
+import { ThemedButton, ThemedTextInput } from "@/components/Themed";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { NATURALS, SHARPS, CHORD_EXTENSIONS, FLATS } from "@/constants/Notes";
+import { NATURALS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
-import { isMajor } from "@/utils/ChordUtil";
-import { getChordSuggestionsForKey } from "@/utils/SongKeyUtil";
 import debounce from "lodash/debounce";
+import { v4 as uuid } from "uuid";
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -13,7 +12,24 @@ import {
   useMemo,
   useState,
 } from "react";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { NoteSelector } from "./NoteSelector";
+import { SongKeyChordSuggestions } from "./SongKeyChordSuggestions";
+import { ChordQualitySelector } from "./ChordQualitySelector";
+import { ChordExtensionsSelector } from "./ChordExtensionsSelector";
+
+export interface IChordSelectorProps {
+  onSelect?: (chord: IChord) => void;
+  onChordChange?: (chord: IChord) => void;
+  onDeleteChord?: (chord: IChord) => void;
+  onCancel?: () => void;
+  initialChord?: IChord;
+  enableExtensions?: boolean;
+  songKey?: IChord | null;
+  showSuggestions?: boolean;
+  showSelectButton?: boolean;
+  selectButtonLabel?: string;
+}
+
 export default function ChordSelector({
   onSelect,
   onChordChange,
@@ -23,22 +39,16 @@ export default function ChordSelector({
   songKey,
   enableExtensions = true,
   showSuggestions = false,
-}: {
-  onSelect?: (chord: IChord) => void;
-  onChordChange?: (chord: IChord) => void;
-  onDeleteChord?: (chord: IChord) => void;
-  onCancel?: () => void;
-  initialChord?: IChord;
-  enableExtensions?: boolean;
-  songKey?: IChord | null;
-  showSuggestions?: boolean;
-}) {
+  showSelectButton = false,
+  selectButtonLabel = "Select",
+}: IChordSelectorProps) {
   const [selectedChord, setSelectedChord] = useState(
     initialChord || (songKey ?? ({ letter: "A" } as IChord)),
   );
   const [sharpsOrFlats, setSharpsOrFlats] = useState<"sharps" | "flats">("sharps");
-  const [isChordTextInputFocused, setIsChordTextInputFocused] = useState(false);
   const [isCustomChordInputShown, setIsCustomChordInputShown] = useState(false);
+  const [isShortcutsEnabled, setIsShortcutsEnabled] = useState(true);
+
   const notePreview = useMemo(() => {
     if (selectedChord?.customChord?.length) return selectedChord?.customChord;
     if (!selectedChord?.letter) return "";
@@ -108,7 +118,7 @@ export default function ChordSelector({
 
   const handleWindowKeydownEvent = useCallback(
     (event: KeyboardEvent<Window>) => {
-      if (isChordTextInputFocused) return;
+      if (!isShortcutsEnabled) return;
       event.stopPropagation();
       event.preventDefault();
       if (!event?.key) return;
@@ -176,7 +186,7 @@ export default function ChordSelector({
       setSharpsOrFlats,
       setSelectedExtension,
       onSelect,
-      isChordTextInputFocused,
+      isShortcutsEnabled,
       enableExtensions,
       updateChord,
       deleteChord,
@@ -194,6 +204,16 @@ export default function ChordSelector({
     onChordChange?.(selectedChord);
   }, 100);
 
+  const onHorizontalShiftChange = (e: ChangeEvent<HTMLInputElement>) => {
+    selectedChord.offset = parseInt(e.target.value);
+    setSelectedChord({ ...selectedChord });
+    onChordChange?.(selectedChord);
+  };
+
+  const onSelectButtonClick = () => {
+    onSelect?.(selectedChord);
+  };
+
   useEffect(() => {
     window.addEventListener("keydown", handleWindowKeydownEvent);
     return () => {
@@ -203,19 +223,23 @@ export default function ChordSelector({
 
   return (
     <div className="chord-selector-container">
-      {isCustomChordInputShown ? (
-        <input
-          onFocus={() => setIsChordTextInputFocused(true)}
-          onBlur={() => setIsChordTextInputFocused(false)}
-          className={`${tw.TEXT_SECONDARY} mb-4 w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
-          onChange={onChordTextInputChange}
-          value={notePreview}
-        />
-      ) : (
-        <h2 className={`${tw.TEXT_SECONDARY} mb-4 text-center text-2xl font-bold`}>
-          {notePreview}
-        </h2>
-      )}
+      <div className="container mb-4 flex justify-center">
+        {isCustomChordInputShown ? (
+          <input
+            onFocus={() => setIsShortcutsEnabled(false)}
+            onBlur={() => setIsShortcutsEnabled(true)}
+            className={`${tw.TEXT_SECONDARY} w-20 rounded-md border-none bg-transparent text-center text-2xl font-bold`}
+            onChange={onChordTextInputChange}
+            value={notePreview}
+          />
+        ) : (
+          <h2
+            className={`${tw.TEXT_SECONDARY} rounded-md border border-violet-500 px-5 py-2 text-center text-2xl font-bold`}
+          >
+            {notePreview}
+          </h2>
+        )}
+      </div>
 
       {!!showSuggestions && !!songKey && (
         <div className="mb-4">
@@ -245,161 +269,15 @@ export default function ChordSelector({
           selectedChord={selectedChord}
         />
       )}
-    </div>
-  );
-}
 
-export function NoteSelector({
-  onSelectNote,
-  selectedChord,
-  sharpsOrFlats,
-}: {
-  onSelectNote: (note: string) => void;
-  selectedChord: IChord;
-  sharpsOrFlats: string;
-}) {
-  return (
-    <div className="note-selector-container text-center">
-      <div className="chord-selector-sharps-container flex justify-between px-9">
-        {(sharpsOrFlats === "sharps" ? SHARPS : FLATS).map(({ letter }, i) => (
-          <ChordSelectorItem
-            className={i === 1 ? "mr-16" : ""}
-            text={letter}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === letter}
-          />
-        ))}
-      </div>
-      <div className="chord-selector-naturals-container flex justify-between">
-        {NATURALS.map(({ letter }, i) => (
-          <ChordSelectorItem
-            text={letter}
-            key={i + "-chord"}
-            onClick={(note) => onSelectNote(note)}
-            selected={selectedChord?.letter === letter}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export function ChordQualitySelector({
-  onSelectQuality,
-  selectedChord,
-}: {
-  selectedChord: IChord;
-  onSelectQuality: (quality: string) => void;
-}) {
-  return (
-    <div className="chord-selector-major-minor mt-4">
-      <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
-        onClick={() => onSelectQuality("")}
-      >
-        Major
-      </button>
-      <button
-        className={`chord-selector-chord m-2 px-4 py-1 text-center text-sm ${tw.BTN_PRIMARY_BORDER} rounded-md ${!isMajor(selectedChord?.quality) && "bg-violet-700"}`}
-        onClick={() => onSelectQuality("m")}
-      >
-        Minor
-      </button>
-    </div>
-  );
-}
-
-export function ChordExtensionsSelector({
-  onSelectExtension,
-  selectedChord,
-}: {
-  onSelectExtension: (extension: string) => void;
-  selectedChord: IChord;
-}) {
-  const [isExtensionsOpen, setIsExtensionsOpen] = useState(false);
-
-  const isExtensionSelected = (extension: string) => {
-    return !!selectedChord?.extensions?.includes(extension);
-  };
-
-  return (
-    <div className="chord-selector-extensions-container mt-5 flex w-full flex-col items-center justify-center">
-      <button
-        className={`${tw.TEXT_SECONDARY} mb-2 text-sm`}
-        onClick={() => setIsExtensionsOpen(!isExtensionsOpen)}
-      >
-        Extensions
-        {isExtensionsOpen ? (
-          <FaCaretUp className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-        ) : (
-          <FaCaretDown className={`${tw.TEXT_SECONDARY} -mt-1 ml-2 inline-block`} />
-        )}
-      </button>
-      {isExtensionsOpen && (
-        <div className="chord-selector-extensions-inner-container flex max-w-72 flex-wrap justify-center">
-          {CHORD_EXTENSIONS.map(({ shortName }, i) => (
-            <ChordSelectorItem
-              text={shortName}
-              key={i + "-chord"}
-              onClick={(extension) => onSelectExtension?.(extension)}
-              selected={isExtensionSelected(shortName)}
-              className="w-auto"
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function ChordSelectorItem({
-  text,
-  onClick,
-  onDoubleClick,
-  className,
-  selected,
-}: {
-  text: string;
-  className?: string;
-  onClick: (text: string) => void;
-  onDoubleClick?: (text: string) => void;
-  selected?: boolean;
-}) {
-  return (
-    <button
-      className={`chord-selector-chord m-2 w-10 p-2 text-center  ${tw.BTN_PRIMARY_BORDER} rounded-md text-xs ${className} ${!!selected && "bg-violet-700"}`}
-      onClick={() => onClick(text)}
-      onDoubleClick={() => onDoubleClick?.(text)}
-    >
-      {text}
-    </button>
-  );
-}
-
-export function SongKeyChordSuggestions({
-  songKey,
-  selectedChord,
-  onSelectNote,
-}: {
-  songKey: IChord;
-  selectedChord: IChord;
-  onSelectNote?: (note: string) => void;
-}) {
-  const chordsInKey = getChordSuggestionsForKey(songKey);
-  return (
-    <div className="container flex justify-center">
-      {chordsInKey?.map((chord) => (
-        <ChordSelectorItem
-          text={chord.letter + chord?.quality ?? ""}
-          key={chord.letter + "-chord"}
-          selected={
-            selectedChord?.letter === chord.letter &&
-            selectedChord?.quality === chord.quality
-          }
-          onClick={(note) => onSelectNote?.(note)}
+      {!!showSelectButton && (
+        <ThemedButton
+          className="mt-5"
+          color="primary"
+          text={selectButtonLabel}
+          onClick={onSelectButtonClick}
         />
-      ))}
+      )}
     </div>
   );
 }

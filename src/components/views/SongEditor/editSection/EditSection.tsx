@@ -15,6 +15,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { FaBars } from "react-icons/fa";
 import { NumberInputIncremeneter } from "@/components/common/NumberInputIncrementer";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { SectionTypes } from "@/constants/SectionTypes";
+import ChordSection from "@/components/song/ChordSection";
+import { debounce } from "lodash";
 
 export default function EditSection({
   order,
@@ -77,7 +80,9 @@ export default function EditSection({
   const done = async () => {
     if (!song) return;
     let section = song.sections[order.sectionName];
-    section = updateSongSectionFromText(editText, section);
+    if (section.type === SectionTypes.LYRICS) {
+      section = updateSongSectionFromText(editText, section);
+    }
     section.title = editTitleText;
     song.sections[order.sectionName] = section;
     await updateSong(song);
@@ -114,10 +119,10 @@ export default function EditSection({
     onDelete?.(order, section);
   };
 
-  const onChordChange = async (word: IWord) => {
+  const onChordChange = debounce(async () => {
     if (!song) return;
     await updateSong(song);
-  };
+  }, 300);
 
   const onRepeatInputChange = async (repeatCount: number) => {
     if (!song) return;
@@ -139,26 +144,28 @@ export default function EditSection({
         className={`${isSaving ? "opacity-30" : ""} container max-w-2xl`}
       >
         {isEditing && (
-          <div className="mb-10">
-            {!!order?.showSectionTitleOnly && (
-              <h3 className="mb-3 mt-5 text-center text-lg font-bold">
-                {section?.title}
-                {!!order?.repeatCount && `[x${order.repeatCount}]`}
-              </h3>
-            )}
-            {!order?.showSectionTitleOnly && (
-              <>
-                <div className="float-right text-right">
-                  <NumberInputIncremeneter
-                    onChange={onRepeatInputChange}
-                    label="Repeat"
-                    defaultValue={order.repeatCount ?? 0}
-                    min={0}
-                    step={1}
-                    containerClassName="flex gap-2"
-                    labelClassName="m-0 self-center"
-                  />
+          <div className="mb-10 rounded-lg bg-slate-400/30 bg-white/10 p-5">
+            <>
+              <div className="float-right text-right">
+                <NumberInputIncremeneter
+                  onChange={onRepeatInputChange}
+                  label="Repeat"
+                  defaultValue={order.repeatCount ?? 1}
+                  min={1}
+                  step={1}
+                  containerClassName="flex gap-2"
+                  labelClassName="m-0 self-center"
+                />
+              </div>
+              {!!order?.showSectionTitleOnly && (
+                <div className="relative flex w-full">
+                  <h3 className="mb-3 w-full text-center text-lg font-bold">
+                    {section?.title}
+                    {!!order?.repeatCount && `[x${order.repeatCount}]`}
+                  </h3>
                 </div>
+              )}
+              {!order?.showSectionTitleOnly && (
                 <ThemedTextInput
                   className="text-center"
                   placeholder="Section Title"
@@ -167,14 +174,16 @@ export default function EditSection({
                   }}
                   value={editTitleText}
                 />
+              )}
+              {!order?.showSectionTitleOnly && section?.type === SectionTypes.LYRICS && (
                 <textarea
-                  className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                  className={`section-input mt-2 block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
                   value={editText}
                   onChange={(e) => onTextChange(section, e)}
                   ref={inputRef}
                 ></textarea>
-              </>
-            )}
+              )}
+            </>
             <div className="flex w-full justify-end p-2">
               <ThemedButton
                 className=""
@@ -194,7 +203,7 @@ export default function EditSection({
         {!isEditing && (
           <div className="edit-section-view-container container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10">
             <div
-              className="sortable-item-drag-handle absolute left-5"
+              className="sortable-item-drag-handle absolute left-5 z-10"
               ref={setNodeRef}
               {...attributes}
               {...listeners}
@@ -207,9 +216,20 @@ export default function EditSection({
             >
               <FaPencil />
             </button>
-            {!!section && (
+            {!!section && (!section.type || section.type === SectionTypes.LYRICS) && (
               <div className="edit-section-container">
                 <Section
+                  edit={true}
+                  section={section}
+                  showSectionTitleOnly={!!order.showSectionTitleOnly}
+                  repeatCount={order?.repeatCount}
+                  onChordChange={onChordChange}
+                />
+              </div>
+            )}
+            {!!section && section.type === SectionTypes.CHORDS && (
+              <div className="edit-section-container">
+                <ChordSection
                   edit={true}
                   section={section}
                   showSectionTitleOnly={!!order.showSectionTitleOnly}

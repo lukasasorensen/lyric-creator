@@ -17,7 +17,7 @@ export default function Section({
   showSectionTitleOnly: boolean;
   repeatCount?: number;
   edit?: boolean;
-  onChordChange?: (word: IWord) => void;
+  onChordChange?: () => void;
 }) {
   return (
     <div className="song-section">

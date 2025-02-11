@@ -1,12 +1,11 @@
 import { updateSongById } from "@/clients/songClient";
-import { ThemedTextInput } from "@/components/Themed";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
-import React, { KeyboardEvent, useState } from "react";
+import React, { useState } from "react";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import ChordSelector from "../ChordSelector/ChordSelector";
 import { IChord } from "@/interfaces/db/ISongDb";
+import { ChordSelector } from "@/components/ChordSelector";
 
 export default function EditSongKey() {
   const { song, setSong } = useSongContext();
@@ -61,6 +60,8 @@ export default function EditSongKey() {
                 }}
                 initialChord={song?.key ? { ...song.key } : undefined}
                 enableExtensions={false}
+                showSelectButton={true}
+                selectButtonLabel="Select Key"
               />
             </div>
           </PopoverPanel>

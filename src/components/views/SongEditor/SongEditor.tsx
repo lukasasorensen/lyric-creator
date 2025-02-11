@@ -1,16 +1,16 @@
 "use client";
 import { IOrder, ISongDb, IWord } from "@/interfaces/db/ISongDb";
 import { PopoverList, PopoverListItemButton } from "@/components/common/Popover";
-import EditSection from "./EditSection";
+import EditSection from "./editSection/EditSection";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
-import { ThemedButton, ThemedTextInput } from "@/components/Themed";
+import { ThemedButton, ThemedTextInput, ThemedToggle } from "@/components/Themed";
 import { deleteSongById, getSongById, updateSongById } from "@/clients/songClient";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { createKebabFromText } from "@/utils/StringUtil";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
 import EditSongTitle from "./EditSongTitle";
-import { getLinesFromText } from "@/utils/SongUtil";
+import { getLinesFromText, getUniqueSectionKeyAndTitleForSong } from "@/utils/SongUtil";
 import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 import { useRouter } from "next/navigation";
 import {
@@ -28,18 +28,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import EditSongKey from "./EditSongKey";
+import { SectionTypes } from "@/constants/SectionTypes";
 
 export default function SongEditor() {
   const router = useRouter();
   const { song, setSong } = useSongContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [newSectionTitle, setNewSectionTitle] = useState("");
+  let [newSectionTitle, setNewSectionTitle] = useState("");
   const [newSectionWords, setNewSectionWords] = useState("");
   const [showNewSectionInput, setShowNewSectionInput] = useState(false);
   const [showRepeatSectionSelector, setShowRepeatSectionSelector] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-
+  const [newSectionType, setNewSectionType] = useState(SectionTypes.LYRICS);
   // sortable
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -53,25 +54,25 @@ export default function SongEditor() {
   const addNewSection = async () => {
     if (!song || !newSectionTitle?.length) return;
 
-    const sectionKey = createKebabFromText(newSectionTitle);
-    if (!!song?.sections[sectionKey]) {
-      // todo handle this better
-      console.error("Section with this name already exists");
-      throw new Error("Cannot create section, section with this name already exists");
-    }
+    const { uniqueTitle, uniqueKey } = getUniqueSectionKeyAndTitleForSong(
+      song,
+      newSectionTitle,
+    );
 
     song.sections = {
       ...song.sections,
-      [sectionKey]: {
-        title: newSectionTitle,
-        lines: getLinesFromText(newSectionWords),
+      [uniqueKey]: {
+        title: uniqueTitle,
+        lines:
+          newSectionType === SectionTypes.LYRICS ? getLinesFromText(newSectionWords) : [],
+        type: newSectionType,
       },
     };
 
     song.order = [
       ...song.order,
       {
-        sectionName: sectionKey,
+        sectionName: uniqueKey,
         showSectionTitleOnly: false,
       },
     ];
@@ -140,6 +141,12 @@ export default function SongEditor() {
   const onNewSectionWordsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     autoResizeInputToFitText(e.target);
     setNewSectionWords(e.target.value);
+  };
+
+  const onChordsOnlyToggleChange = () => {
+    let updatedSectionType =
+      newSectionType === SectionTypes.CHORDS ? SectionTypes.LYRICS : SectionTypes.CHORDS;
+    setNewSectionType(updatedSectionType);
   };
 
   const getOrderWithIds = (order: IOrder[]) => {
@@ -222,20 +229,31 @@ export default function SongEditor() {
                   ))}
                 {showNewSectionInput && (
                   <div className="container mb-8 flex justify-center">
-                    <div className="container">
-                      <ThemedTextInput
-                        className="text-center"
-                        autoFocus
-                        onChange={(e) => setNewSectionTitle(e.target.value)}
-                        placeholder="New Section Name"
-                      />
-                      <textarea
-                        className={`section-input block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                        onChange={(e) => onNewSectionWordsChange(e)}
-                        placeholder="New Section Words"
-                        ref={inputRef}
-                      ></textarea>
-                      <div className="flex w-full justify-end p-2">
+                    <div className="container max-w-screen-md">
+                      <div className="float-right p-4">
+                        <label className="mr-4">Chords Only</label>
+                        <ThemedToggle
+                          onChange={onChordsOnlyToggleChange}
+                          checked={newSectionType === SectionTypes.CHORDS}
+                        ></ThemedToggle>
+                      </div>
+                      <div>
+                        <ThemedTextInput
+                          className="mb-2 text-center"
+                          autoFocus
+                          onChange={(e) => setNewSectionTitle(e.target.value)}
+                          placeholder="New Section Name"
+                        />
+                        {newSectionType === SectionTypes.LYRICS && (
+                          <textarea
+                            className={`section-input block w-full rounded-md  border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
+                            onChange={(e) => onNewSectionWordsChange(e)}
+                            placeholder="New Section Words"
+                            ref={inputRef}
+                          ></textarea>
+                        )}
+                      </div>
+                      <div className="flex w-full justify-end py-5">
                         <ThemedButton
                           className="mr-5"
                           text="Cancel"

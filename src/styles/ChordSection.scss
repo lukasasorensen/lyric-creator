@@ -1,0 +1,12 @@
+.add-chord-button-container {
+  opacity: 0;
+  width: 1px;
+  transition:
+    opacity 0.2s ease,
+    width 0.2s ease;
+
+  &.visible {
+    opacity: 1;
+    width: 20px;
+  }
+}

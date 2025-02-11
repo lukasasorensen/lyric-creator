@@ -2,7 +2,6 @@
   .song-editor-edit-section-container {
     .edit-section-view-container {
       .sortable-item-drag-handle {
-        z-index: 99999999;
       }
 
       .edit-section-pencil-button,
@@ -13,8 +12,12 @@
 
       &:hover {
         .edit-section-pencil-button,
-        .sortable-item-drag-handle {
+        .sortable-item-drag-handle,
+        .show-on-container-hover {
           opacity: 1;
+        }
+        .show-on-container-hover {
+          height: auto;
         }
       }
     }

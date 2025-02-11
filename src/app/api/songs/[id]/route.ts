@@ -6,9 +6,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   try {
     const client = await clientPromise;
     const db = client.db("lyrical");
-    const song = await db
-      .collection("songs")
-      .findOne({ _id: new ObjectId(params.id) });
+    const song = await db.collection("songs").findOne({ _id: new ObjectId(params.id) });
 
     if (!song) {
       // todo
