@@ -8,7 +8,8 @@ import { ChordSelectorButton } from "@/components/ChordSelector";
 export interface IMeasureProps {
   measure: IMeasure;
   index?: number;
-  onChordChange?: (chord: IChord) => void;
+  onChordChange?: (chord: IChord | null) => void;
+  onRemoveMeasure?: () => void;
   edit?: boolean;
 }
 
@@ -35,6 +36,19 @@ export default function Measure(props: IMeasureProps) {
     setIsAddChordButtonShown(false);
   }, 300);
 
+  const removeChord = (chordIndex: number) => {
+    if (chordIndex < 0 || !props?.measure?.chords?.length) return;
+
+    if (chordIndex === 0 && props.measure.chords.length === 1) {
+      props.onRemoveMeasure?.();
+      props.measure.chords = [];
+      return;
+    }
+
+    props.measure.chords.splice(chordIndex, 1);
+    props.onChordChange?.(null);
+  };
+
   return (
     <div className="measure-container flex">
       <div className="flex">
@@ -44,6 +58,7 @@ export default function Measure(props: IMeasureProps) {
               edit={props.edit}
               chord={chord}
               onChordChange={(newChord) => onChangeExistingChord(newChord, i)}
+              onRemoveChord={() => removeChord(i)}
             />
           </div>
         ))}

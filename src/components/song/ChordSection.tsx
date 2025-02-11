@@ -4,6 +4,7 @@ import ChordLine from "./ChordLine";
 import { useSongContext } from "@/providers/SongProvider";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ChordSelectorButton } from "@/components/ChordSelector";
+import { v4 as uuid } from "uuid";
 
 const getSectionTitle = (title: string, showSectionTitleOnly: boolean) => {
   return showSectionTitleOnly ? `[${title}]` : title;
@@ -25,7 +26,7 @@ export default function ChordSection({
   const { song } = useSongContext();
   const addNewLine = (chord: IChord) => {
     //add chord logic
-    const newLine = { measures: [{ chords: [chord] }] };
+    const newLine = { _id: uuid(), measures: [{ _id: uuid(), chords: [chord] }] };
 
     section.lines ??= [];
     section.lines.push(newLine);

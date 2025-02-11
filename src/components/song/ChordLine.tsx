@@ -2,6 +2,9 @@ import { IChord, ILine, IWord } from "@/interfaces/db/ISongDb";
 import Measure from "./Measure";
 import { useSongContext } from "@/providers/SongProvider";
 import { ChordSelectorButton } from "@/components/ChordSelector";
+import { useState } from "react";
+import { debounce } from "lodash";
+import { v4 as uuid } from "uuid";
 
 export default function ChordLine({
   line,
@@ -10,20 +13,36 @@ export default function ChordLine({
 }: {
   line: ILine;
   edit?: boolean;
-  onChordChange?: (chord: IChord) => void;
+  onChordChange?: () => void;
 }) {
   const { song } = useSongContext();
 
   const addChordToNewMeasureOnLine = (line: ILine, chord: IChord) => {
     //add chord logic
-    const newMeasure = { chords: [chord] };
+    const newMeasure = { _id: uuid(), chords: [chord] };
     if (!line?.measures) {
       line.measures = [newMeasure];
     } else {
       line.measures.push(newMeasure);
     }
 
-    onChordChange?.(chord);
+    onChordChange?.();
+  };
+
+  const [isAddChordButtonShown, setIsAddChordButtonShown] = useState(false);
+
+  const onMouseEnterAddButton = () => {
+    setIsAddChordButtonShown(true);
+  };
+
+  const onMouseLeaveAddButton = debounce(() => {
+    setIsAddChordButtonShown(false);
+  }, 100);
+
+  const removeMeasure = (measureIndex: number) => {
+    if (measureIndex < 0 || !line?.measures?.length) return;
+    line.measures.splice(measureIndex, 1);
+    onChordChange?.();
   };
 
   return (
@@ -34,21 +53,28 @@ export default function ChordLine({
             measure={measure}
             index={i}
             edit={edit}
-            onChordChange={(newChord) => onChordChange?.(newChord)}
+            onChordChange={() => onChordChange?.()}
+            onRemoveMeasure={() => removeMeasure(i)}
           />
         </div>
       ))}
       {!!edit && (
-        <div className={`add-chord-button-container ml-2`}>
+        <div
+          onMouseEnter={() => onMouseEnterAddButton()}
+          onMouseLeave={() => onMouseLeaveAddButton()}
+          className={`add-chord-button-container -ml-2 -mt-4 p-4 ${isAddChordButtonShown && "visible ml-1 mr-1"}`}
+        >
           <ChordSelectorButton
             songKey={song?.key ? { ...song.key } : undefined}
             key="add-measure-chord-selector"
+            closeOnSelect={true}
             onSelect={(chord) => {
               addChordToNewMeasureOnLine(line, chord);
             }}
             initialChord={song?.key ? { ...song.key } : undefined}
             enableExtensions={false}
             showSelectButton={true}
+            showSuggestions={true}
             selectButtonLabel="Add Measure"
           />
         </div>

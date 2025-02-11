@@ -23,6 +23,7 @@ export interface IChord {
 }
 
 export interface IMeasure {
+  _id: string;
   chords: IChord[];
 }
 

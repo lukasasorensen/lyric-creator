@@ -11,6 +11,7 @@ export interface IChordProps {
   index?: number;
   edit?: boolean;
   onChordChange?: (chord: IChord) => void;
+  onRemoveChord?: (chord: IChord) => void;
 }
 
 export default function Chord(props: IChordProps) {
@@ -27,7 +28,11 @@ export default function Chord(props: IChordProps) {
       {({ open, close }) => (
         <>
           <PopoverButton>
-            <ChordView chord={props.chord} isSelected={open} />
+            <ChordView
+              onRemoveChord={(chord: IChord) => props?.onRemoveChord?.(chord)}
+              chord={props.chord}
+              isSelected={open}
+            />
           </PopoverButton>
           <PopoverPanel
             anchor="top"
@@ -60,9 +65,11 @@ export default function Chord(props: IChordProps) {
 export function ChordView({
   chord,
   isSelected,
+  onRemoveChord,
 }: {
   chord: IChord;
   isSelected?: boolean;
+  onRemoveChord?: (chord: IChord) => void;
 }) {
   const [isDeleteChordButtonShown, setIsDeleteChordButtonShown] = useState(false);
   const [isChordHighlighted, setIsChordHighlighted] = useState(false);
@@ -93,7 +100,10 @@ export function ChordView({
       <div
         className={`${isDeleteChordButtonShown ? "relative z-10 float-right -mr-2 -mt-9 opacity-100 transition-opacity" : "opacity-0"}`}
       >
-        <div className={`rounded-full p-1 ${tw.BTN_DANGER}`}>
+        <div
+          className={`rounded-full p-1 ${tw.BTN_DANGER}`}
+          onClick={() => onRemoveChord?.(chord)}
+        >
           <FaMinus size={10} />
         </div>
       </div>

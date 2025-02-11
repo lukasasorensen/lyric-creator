@@ -3,6 +3,7 @@ import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { NATURALS } from "@/constants/Notes";
 import { IChord } from "@/interfaces/db/ISongDb";
 import debounce from "lodash/debounce";
+import { v4 as uuid } from "uuid";
 import {
   ChangeEvent,
   KeyboardEvent,
