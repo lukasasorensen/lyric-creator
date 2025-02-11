@@ -2,7 +2,7 @@ import { IChord } from "@/interfaces/db/ISongDb";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useSongContext } from "@/providers/SongProvider";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { FaMinus } from "react-icons/fa";
 import { ChordSelector } from "@/components/ChordSelector";
 
@@ -102,7 +102,10 @@ export function ChordView({
       >
         <div
           className={`rounded-full p-1 ${tw.BTN_DANGER}`}
-          onClick={() => onRemoveChord?.(chord)}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation();
+            onRemoveChord?.(chord);
+          }}
         >
           <FaMinus size={10} />
         </div>
