@@ -53,13 +53,13 @@ export function updateSongSectionFromText(text: string, section: ISection): ISec
     const currentLine = section?.lines?.[lineIndex];
 
     return {
-      ...line,
       ...currentLine,
+      ...line,
       words: line.words?.map((word, wordIndex) => {
         const currentWord = currentLine?.words?.[wordIndex];
         return {
-          ...word,
           ...currentWord,
+          ...word,
         };
       }),
     };
