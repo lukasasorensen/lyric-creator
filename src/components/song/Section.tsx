@@ -34,7 +34,7 @@ export default function Section({
     <div
       onMouseEnter={() => setIsSectionHovered(true)}
       onMouseLeave={() => setIsSectionHovered(false)}
-      className="song-section p-2"
+      className={`song-section ${showSectionTitleOnly ? 'p-2' : 'pt-2'}`}
     >
       {(isSectionHovered || !hideTitle) && (
         <h3 className={`mt-1 text-center text-md font-bold ${showSectionTitleOnly ? '' : 'mb-4'}`}>
