@@ -12,10 +12,12 @@ export default function Section({
   showSectionTitleOnly,
   repeatCount,
   edit,
+  hideTitle = false,
   onChordChange,
 }: {
   section: ISection;
   showSectionTitleOnly: boolean;
+  hideTitle?: boolean ;
   repeatCount?: number;
   edit?: boolean;
   onChordChange?: () => void;
@@ -27,10 +29,10 @@ export default function Section({
   };
   return (
     <div className="song-section">
-      <h3 className="mb-3 mt-5 text-center text-lg font-bold">
+      {!hideTitle && <h3 className="mb-3 mt-5 text-center text-lg font-bold">
         {getSectionTitle(section?.title, !!showSectionTitleOnly)}{" "}
         {!!repeatCount && repeatCount > 1 && `[x${repeatCount}]`}
-      </h3>
+      </h3>}
       {!showSectionTitleOnly &&
         !!section?.lines?.length &&
         section.lines.map((line: ILine, i: number) => (

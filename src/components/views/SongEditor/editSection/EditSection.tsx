@@ -76,12 +76,6 @@ export default function EditSection({
     onDelete?.(order, section);
   };
 
-  const onHighlightSectionClick = async () => {
-    if (!song) return;
-
-    await toggleHighlightSection();
-  };
-
   const toggleHighlightSection = async () => {
     if (!song) return;
 
@@ -89,6 +83,14 @@ export default function EditSection({
     song.order[index].isHighlighted = order.isHighlighted;
     await updateSong(song);
   };
+
+  const toggleHideSectionTitle = async () => {
+    if (!song) return;
+
+    order.hideTitle = !order.hideTitle;
+    song.order[index].hideTitle = order.hideTitle;
+    await updateSong(song);
+  }
 
   const onChordChange = debounce(async () => {
     if (!song) return;
@@ -140,8 +142,9 @@ export default function EditSection({
               <EditSectionDropDownMenu
                 order={order}
                 onEditTextClick={onEditTextButtonClick}
-                onHighlightSectionClick={onHighlightSectionClick}
+                onHighlightSectionClick={toggleHighlightSection}
                 onRepeatInputChange={onRepeatInputChange}
+                onHideTitleClick={toggleHideSectionTitle}
                 showEditText={
                   section?.type === SectionTypes.LYRICS ||
                   section?.type === SectionTypes.PARAGRAPH
@@ -154,6 +157,7 @@ export default function EditSection({
                   edit={true}
                   section={section}
                   showSectionTitleOnly={!!order.showSectionTitleOnly}
+                  hideTitle={!!order.hideTitle}
                   repeatCount={order?.repeatCount}
                   onChordChange={onChordChange}
                 />

@@ -1,6 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems, MenuSeparator } from "@headlessui/react";
-import { FaPaintBrush } from "react-icons/fa";
-import { FaEllipsis, FaPencil } from "react-icons/fa6";
+import { FaHeading, FaPaintBrush } from "react-icons/fa";
+import { FaEllipsis, FaPencil, FaTextSlash } from "react-icons/fa6";
 import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { ThemedButton } from "@/components/Themed";
 import { NumberInputIncremeneter } from "@/components/common/NumberInputIncrementer";
@@ -12,6 +12,7 @@ export interface IEditSectionDropDownMenuProps {
   onEditTextClick: () => void;
   onHighlightSectionClick: () => void;
   onRepeatInputChange: (repeatCount: number) => void;
+  onHideTitleClick: () => void;
 }
 export default function EditSectionDropDownMenu({
   order,
@@ -19,6 +20,7 @@ export default function EditSectionDropDownMenu({
   onEditTextClick,
   onHighlightSectionClick,
   onRepeatInputChange,
+  onHideTitleClick
 }: IEditSectionDropDownMenuProps) {
   return (
     <Menu>
@@ -42,7 +44,18 @@ export default function EditSectionDropDownMenu({
             onClick={onHighlightSectionClick}
             className={`mb-2 flex gap-2 rounded-md p-2 ${tw.BTN_NONE}`}
           >
-            <FaPaintBrush className="mt-1" /> {order.isHighlighted ? "Remove Highlight" : "Highlight Section"}
+            <FaPaintBrush className="mt-1" />{" "}
+            {order.isHighlighted ? "Remove Highlight" : "Highlight Section"}
+          </button>
+        </MenuItem>
+
+        <MenuItem>
+          <button
+            onClick={onHideTitleClick}
+            className={`mb-2 flex gap-2 rounded-md p-2 ${tw.BTN_NONE}`}
+          >
+            {order.hideTitle ? <FaHeading className="mt-1"/> : <FaTextSlash className="mt-1" />}{" "}
+            {order.hideTitle ? "Show Title" : "Hide Title"}
           </button>
         </MenuItem>
 

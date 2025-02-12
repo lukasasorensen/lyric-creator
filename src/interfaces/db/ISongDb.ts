@@ -39,6 +39,7 @@ export interface IOrder {
   repeatCount?: number;
   isRepeat?: boolean;
   isHighlighted?: boolean;
+  hideTitle?: boolean;
 }
 
 export interface ISongDb extends IDbDocumentDefault {
