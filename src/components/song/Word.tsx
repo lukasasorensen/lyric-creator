@@ -159,7 +159,7 @@ export function DraggableChord({
   return (
     <div
       ref={chordRef}
-      className={`${tw.TEXT_SECONDARY} word-chord -mb-1 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "pointer-events-none text-4xl" : ""}`}
+      className={`${tw.TEXT_SECONDARY} word-chord -mb-2.5 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "pointer-events-none text-4xl" : ""}`}
       style={{
         transform: `translateX(${translate.x}px) ${isOutsideOfContainer ? `translateY(${translate.y}px)` : ""}`,
       }}

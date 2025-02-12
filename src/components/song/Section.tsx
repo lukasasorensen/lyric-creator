@@ -34,10 +34,10 @@ export default function Section({
     <div
       onMouseEnter={() => setIsSectionHovered(true)}
       onMouseLeave={() => setIsSectionHovered(false)}
-      className="song-section"
+      className="song-section p-2"
     >
       {(isSectionHovered || !hideTitle) && (
-        <h3 className={`mt-1 text-center text-lg font-bold ${showSectionTitleOnly ? '' : 'mb-1'}`}>
+        <h3 className={`mt-1 text-center text-md font-bold ${showSectionTitleOnly ? '' : 'mb-4'}`}>
           {getSectionTitle(section?.title, !!showSectionTitleOnly)}{" "}
           {!!repeatCount && repeatCount > 1 && `[x${repeatCount}]`}
         </h3>
