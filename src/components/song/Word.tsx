@@ -92,7 +92,7 @@ export function WordInner({
           onMoveChord={onMoveChord}
         />
       )}
-      <div className={`word ${tw.TEXT_PRIMARY}`} data-word-id={word._id}>
+      <div className={`word inline-block cursor-pointer px-1 pt-1 ${tw.TEXT_PRIMARY}`} data-word-id={word._id}>
         {word.text}{" "}
       </div>
     </div>
@@ -159,7 +159,7 @@ export function DraggableChord({
   return (
     <div
       ref={chordRef}
-      className={`${tw.TEXT_SECONDARY} word-chord -mb-2.5 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "pointer-events-none text-4xl" : ""}`}
+      className={`${tw.TEXT_SECONDARY} word-chord -mb-3.5 cursor-col-resize pt-2 font-bold leading-3 ${drag.isDragging ? "pointer-events-none text-4xl" : ""}`}
       style={{
         transform: `translateX(${translate.x}px) ${isOutsideOfContainer ? `translateY(${translate.y}px)` : ""}`,
       }}

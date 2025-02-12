@@ -37,7 +37,7 @@ export default function Section({
       className={`song-section ${showSectionTitleOnly ? 'p-2' : 'pt-2'}`}
     >
       {(isSectionHovered || !hideTitle) && (
-        <h3 className={`mt-1 text-center text-md font-bold ${showSectionTitleOnly ? '' : 'mb-4'}`}>
+        <h3 className={`mt-1 text-center text-md font-bold ${showSectionTitleOnly ? 'mb-1' : 'mb-3 -mt-2'}`}>
           {getSectionTitle(section?.title, !!showSectionTitleOnly)}{" "}
           {!!repeatCount && repeatCount > 1 && `[x${repeatCount}]`}
         </h3>

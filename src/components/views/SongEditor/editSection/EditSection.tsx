@@ -138,7 +138,7 @@ export default function EditSection({
             >
               <FaBars />
             </div>
-            <div className="edit-section-pencil-button absolute right-5 top-3">
+            <div className="edit-section-pencil-button absolute right-5 top-2">
               <EditSectionDropDownMenu
                 order={order}
                 onEditTextClick={onEditTextButtonClick}
