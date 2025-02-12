@@ -225,7 +225,9 @@ export default function SongEditor() {
               <div className="song-editor-container p-25 w-full">
                 {!!song?.order?.length &&
                   getOrderWithIds(song.order).map((order, i) => (
-                    <EditSection id={order.id} key={i} index={i} order={order} />
+                    <div key={'edit-section-' + i} className="mb-2">
+                      <EditSection id={order.id} key={i} index={i} order={order} />
+                    </div>
                   ))}
                 {showNewSectionInput && (
                   <div className="container mb-8 flex justify-center">

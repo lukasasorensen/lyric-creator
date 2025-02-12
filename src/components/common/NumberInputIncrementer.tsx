@@ -31,6 +31,9 @@ export function NumberInputIncremeneter(props: INumberInputIncrementer) {
 
   const decrement = () => {
     const decrementedValue = value - 1;
+    if (props.min && decrementedValue < Number(props.min)) {
+      return;
+    }
     setValue(decrementedValue);
     props.onChange?.(decrementedValue);
   };
@@ -38,11 +41,11 @@ export function NumberInputIncremeneter(props: INumberInputIncrementer) {
   return (
     <div className={`container p-2 ${props.containerClassName ?? ""}`}>
       <label
-        className={`mb-2 block text-sm font-medium text-gray-900 dark:text-white ${props?.labelClassName ?? ""}`}
+        className={`mb-2 mr-2 block text-sm font-medium text-gray-900 dark:text-white ${props?.labelClassName ?? ""}`}
       >
         {props.label}
       </label>
-      <div className="relative flex max-w-[8rem] items-center">
+      <div className="-mt-3 relative flex max-w-[8rem] items-center">
         <button
           type="button"
           className={`h-8 rounded-s-lg border border-gray-300 bg-gray-100 p-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 ${props.buttonClassName ?? ""}`}

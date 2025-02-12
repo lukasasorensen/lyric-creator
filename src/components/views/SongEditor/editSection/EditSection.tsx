@@ -1,24 +1,19 @@
 "use client";
 import { ISongDb, IOrder, ISection, IWord } from "@/interfaces/db/ISongDb";
-import { updateSongSectionFromText, getWordsFromSection } from "@/utils/SongUtil";
 import { useRef, useState } from "react";
-import { FaEllipsis, FaPencil } from "react-icons/fa6";
 import Section from "@/components/song/Section";
-import { ThemedButton, ThemedTextInput } from "@/components/Themed";
-import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 import { updateSongById } from "@/clients/songClient";
 import LoadingDisplay from "@/components/common/LoadingDisplay";
 import { useSongContext } from "@/providers/SongProvider";
-import autoResizeInputToFitText from "@/utils/HtmlInputUtil";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FaBars } from "react-icons/fa";
-import { NumberInputIncremeneter } from "@/components/common/NumberInputIncrementer";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { SectionTypes } from "@/constants/SectionTypes";
 import ChordSection from "@/components/song/ChordSection";
 import { debounce } from "lodash";
 import EditSectionDropDownMenu from "./EditSectionDropDownMenu";
+import EditSectionText from "./EditSectionText";
+import { TailWindColorThemeClasses as tw } from "@/constants/ColorTheme";
 
 export default function EditSection({
   order,
@@ -37,12 +32,8 @@ export default function EditSection({
 }) {
   const { song, setSong } = useSongContext();
   const section = song?.sections?.[order?.sectionName];
-  const [isEditing, setIsEditing] = useState(!!edit);
-  const [editText, setEditText] = useState(getWordsFromSection(section));
-  const [editTitleText, setEditTitleText] = useState(section?.title ?? "");
+  const [editingState, setEditingState] = useState("view");
   const [isSaving, setIsSaving] = useState(false);
-
-  const inputRef = useRef(null);
 
   // dnd sortable
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -54,40 +45,14 @@ export default function EditSection({
     transition,
   };
 
-  const onEditButtonClick = () => {
-    setIsEditing(true);
-    setTimeout(() => {
-      if (inputRef.current) {
-        autoResizeInputToFitText(inputRef.current);
-      }
-    }, 1);
+  const onEditTextButtonClick = () => {
+    setEditingState("text");
   };
 
-  const onTextChange = (
-    section: ISection | null | undefined,
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    if (!e.target) return;
-    autoResizeInputToFitText(e.target);
-    setEditText(e.target.value);
-    onSectionChange?.(section);
-  };
-
-  const onSectionTitleChange = (section: ISection | null | undefined, value: string) => {
-    setEditTitleText(value);
-    onSectionChange?.(section);
-  };
-
-  const done = async () => {
+  const doneEditingText = async () => {
+    setEditingState("view");
     if (!song) return;
-    let section = song.sections[order.sectionName];
-    if (section.type === SectionTypes.LYRICS) {
-      section = updateSongSectionFromText(editText, section);
-    }
-    section.title = editTitleText;
-    song.sections[order.sectionName] = section;
     await updateSong(song);
-    setIsEditing(false);
   };
 
   const updateSong = async (song: ISongDb) => {
@@ -103,21 +68,26 @@ export default function EditSection({
     }
   };
 
-  const deleteSection = async (sectionKey: string, orderIndex: number) => {
+  const onDeleteSection = async () => {
     if (!song) return;
-    if (!song.sections[sectionKey]) {
-      console.error("Error Deleting Section - section not found", { sectionKey, song });
-      throw new Error("Error Deleting Section - section not found");
-    }
-    if (!order.showSectionTitleOnly) {
-      delete song.sections[sectionKey];
-      song.order = song.order.filter((o) => o.sectionName !== sectionKey && !o.isRepeat);
-    } else {
-      song.order.splice(orderIndex, 1);
-    }
+
     await updateSong(song);
-    setIsEditing(false);
+    setEditingState("view");
     onDelete?.(order, section);
+  };
+
+  const onHighlightSectionClick = async () => {
+    if (!song) return;
+
+    await toggleHighlightSection();
+  };
+
+  const toggleHighlightSection = async () => {
+    if (!song) return;
+
+    order.isHighlighted = !order.isHighlighted;
+    song.order[index].isHighlighted = order.isHighlighted;
+    await updateSong(song);
   };
 
   const onChordChange = debounce(async () => {
@@ -130,6 +100,7 @@ export default function EditSection({
     order.repeatCount = repeatCount;
     // todo using index is sketchy
     song.order[index].repeatCount = repeatCount;
+    await updateSong(song);
   };
 
   return (
@@ -144,65 +115,19 @@ export default function EditSection({
         style={style}
         className={`${isSaving ? "opacity-30" : ""} container max-w-2xl`}
       >
-        {isEditing && (
-          <div className="mb-10 rounded-lg bg-slate-400/30 bg-white/10 p-5">
-            <>
-              <div className="float-right text-right">
-                <NumberInputIncremeneter
-                  onChange={onRepeatInputChange}
-                  label="Repeat"
-                  defaultValue={order.repeatCount ?? 1}
-                  min={1}
-                  step={1}
-                  containerClassName="flex gap-2"
-                  labelClassName="m-0 self-center"
-                />
-              </div>
-              {!!order?.showSectionTitleOnly && (
-                <div className="relative flex w-full">
-                  <h3 className="mb-3 w-full text-center text-lg font-bold">
-                    {section?.title}
-                    {!!order?.repeatCount && `[x${order.repeatCount}]`}
-                  </h3>
-                </div>
-              )}
-              {!order?.showSectionTitleOnly && (
-                <ThemedTextInput
-                  className="text-center"
-                  placeholder="Section Title"
-                  onChange={(e) => {
-                    onSectionTitleChange(section, e.target.value);
-                  }}
-                  value={editTitleText}
-                />
-              )}
-              {!order?.showSectionTitleOnly && section?.type === SectionTypes.LYRICS && (
-                <textarea
-                  className={`section-input mt-2 block w-full rounded-md border border-gray-800 p-2.5 text-center leading-10 focus:border-blue-500 focus:ring-blue-500 ${tw.TEXT_PRIMARY} ${tw.BG_PRIMARY}`}
-                  value={editText}
-                  onChange={(e) => onTextChange(section, e)}
-                  ref={inputRef}
-                ></textarea>
-              )}
-            </>
-            <div className="flex w-full justify-end p-2">
-              <ThemedButton
-                className=""
-                text="Delete"
-                color="danger-secondary"
-                onClick={() => deleteSection(order.sectionName, index)}
-              />
-              <ThemedButton
-                className=""
-                color="primary"
-                text="Done"
-                onClick={() => done()}
-              />
-            </div>
-          </div>
+        {editingState === "text" && (
+          <EditSectionText
+            onDone={doneEditingText}
+            onSectionChange={onSectionChange}
+            onDeleteSection={onDeleteSection}
+            order={order}
+            index={index}
+          />
         )}
-        {!isEditing && (
-          <div className="edit-section-view-container container relative rounded-lg p-5 hover:bg-slate-400/30 dark:hover:bg-white/10">
+        {editingState !== "text" && (
+          <div
+            className={`edit-section-view-container container relative rounded-lg p-5  ${order.isHighlighted ? tw.BG_PRIMARY : "hover:bg-slate-400/30 dark:hover:bg-white/10"}`}
+          >
             <div
               className="sortable-item-drag-handle absolute left-5 z-10"
               ref={setNodeRef}
@@ -211,12 +136,16 @@ export default function EditSection({
             >
               <FaBars />
             </div>
-            <div
-              className="edit-section-pencil-button absolute right-5"
-            >
+            <div className="edit-section-pencil-button absolute right-5">
               <EditSectionDropDownMenu
-                onEditTextClick={onEditButtonClick}
-                onEditStyleClick={() => {}}
+                order={order}
+                onEditTextClick={onEditTextButtonClick}
+                onHighlightSectionClick={onHighlightSectionClick}
+                onRepeatInputChange={onRepeatInputChange}
+                showEditText={
+                  section?.type === SectionTypes.LYRICS ||
+                  section?.type === SectionTypes.PARAGRAPH
+                }
               />
             </div>
             {!!section && (!section.type || section.type === SectionTypes.LYRICS) && (
