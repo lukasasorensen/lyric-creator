@@ -128,17 +128,17 @@ export default function EditSection({
         )}
         {editingState !== "text" && (
           <div
-            className={`edit-section-view-container container relative rounded-lg p-5  ${order.isHighlighted ? tw.BG_PRIMARY : "hover:bg-slate-400/30 dark:hover:bg-white/10"}`}
+            className={`edit-section-view-container container relative rounded-lg p-2  ${order.isHighlighted ? tw.BG_PRIMARY : "hover:bg-slate-400/30 dark:hover:bg-white/10"}`}
           >
             <div
-              className="sortable-item-drag-handle absolute left-5 z-10"
+              className="sortable-item-drag-handle absolute left-5 top-3 z-10"
               ref={setNodeRef}
               {...attributes}
               {...listeners}
             >
               <FaBars />
             </div>
-            <div className="edit-section-pencil-button absolute right-5">
+            <div className="edit-section-pencil-button absolute right-5 top-3">
               <EditSectionDropDownMenu
                 order={order}
                 onEditTextClick={onEditTextButtonClick}

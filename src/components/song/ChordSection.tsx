@@ -41,7 +41,7 @@ export default function ChordSection({
 
   return (
     <div className="song-section">
-      <h3 className="mb-5 mt-2 text-center text-lg font-bold">
+      <h3 className="mb-3 -mt-2 text-center text-lg font-bold">
         {getSectionTitle(section?.title, !!showSectionTitleOnly)}{" "}
         {!!repeatCount && repeatCount > 1 && `[x${repeatCount}]`}
       </h3>

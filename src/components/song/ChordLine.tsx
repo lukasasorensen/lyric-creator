@@ -53,7 +53,7 @@ export default function ChordLine({
   };
 
   return (
-    <div className="song-line-container mb-3 flex flex-wrap justify-center whitespace-pre-line text-center leading-7">
+    <div className="song-line-container flex flex-wrap justify-center whitespace-pre-line text-center leading-7">
       {line?.measures?.map((measure, i) => (
         <div key={`${i}-measure`} className="measure-container flex">
           <Measure
