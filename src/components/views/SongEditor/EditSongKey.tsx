@@ -40,7 +40,7 @@ export default function EditSongKey() {
       {({ close }) => (
         <>
           <PopoverButton>
-            <p className={`mb-5 text-center text-lg font-bold ${tw.TEXT_TERTIARY}`}>
+            <p className={`text-center text-lg font-bold ${tw.TEXT_TERTIARY}`}>
               {song?.key?.letter
                 ? `Key of ${song.key.letter}${song.key?.quality ?? ""}`
                 : "Add Song Key"}

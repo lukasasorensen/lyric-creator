@@ -208,9 +208,11 @@ export default function SongEditor() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="song-editor-edit-title-container mb-4 p-4 text-center">
+      <div className="song-editor-edit-title-container mb-1 p-4 text-center">
         <EditSongTitle />
-        <EditSongKey />
+        <div className="mt-1">
+          <EditSongKey />
+        </div>
       </div>
       <div
         className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} pb-10`}
@@ -225,7 +227,7 @@ export default function SongEditor() {
               <div className="song-editor-container p-25 w-full">
                 {!!song?.order?.length &&
                   getOrderWithIds(song.order).map((order, i) => (
-                    <div key={'edit-section-' + i} className="mb-2">
+                    <div key={"edit-section-" + i} className="mb-2">
                       <EditSection id={order.id} key={i} index={i} order={order} />
                     </div>
                   ))}
