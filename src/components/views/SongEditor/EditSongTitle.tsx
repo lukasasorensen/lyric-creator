@@ -49,7 +49,7 @@ export default function EditSongTitle() {
     <div>
       {!isEditingSongTitle && (
         <h1
-          className={`mb-5 text-center text-3xl font-bold ${tw.TEXT_SECONDARY}`}
+          className={`text-center text-3xl font-bold ${tw.TEXT_SECONDARY}`}
           onClick={showEditSongTitleInput}
         >
           {song?.title}

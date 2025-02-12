@@ -208,16 +208,18 @@ export default function SongEditor() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="song-editor-edit-title-container mb-4 p-10 text-center">
+      <div className="song-editor-edit-title-container mb-1 p-4 text-center">
         <EditSongTitle />
-        <EditSongKey />
+        <div className="mt-1">
+          <EditSongKey />
+        </div>
       </div>
       <div
         className={`song-editor-outer-container container mx-auto flex max-w-screen-lg flex-col justify-center rounded-2xl ${tw.BG_SECONDARY} pb-10`}
       >
         {isSaving && <LoadingDisplay text="Saving..." />}
         {!isSaving && (
-          <div className="song-container mt-10 p-5">
+          <div className="song-container p-5">
             <SortableContext
               items={getOrderWithIds(song?.order ?? [])}
               strategy={verticalListSortingStrategy}
@@ -225,7 +227,9 @@ export default function SongEditor() {
               <div className="song-editor-container p-25 w-full">
                 {!!song?.order?.length &&
                   getOrderWithIds(song.order).map((order, i) => (
-                    <EditSection id={order.id} key={i} index={i} order={order} />
+                    <div key={"edit-section-" + i} className="mb-2">
+                      <EditSection id={order.id} key={i} index={i} order={order} />
+                    </div>
                   ))}
                 {showNewSectionInput && (
                   <div className="container mb-8 flex justify-center">

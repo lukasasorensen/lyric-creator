@@ -14,7 +14,7 @@ export default function Line({
   onMoveChord?: (chord: IChord, moveToWordId: string) => void;
 }) {
   return (
-    <div className="song-line-container whitespace-pre-line text-center leading-10">
+    <div className="song-line-container whitespace-pre-line text-center leading-10 -mt-3.5">
       {line?.words?.map((word, i) => (
         <Word
           onMoveChord={onMoveChord}
