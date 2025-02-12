@@ -7,7 +7,7 @@ export default function EditorLayout({
 }>) {
   return (
     <div
-      className={`flex min-h-screen flex-col items-center ${tw.BG_PRIMARY} w-full p-24`}
+      className={`flex min-h-screen flex-col items-center ${tw.BG_PRIMARY} w-full py-8`}
     >
       {children}
     </div>

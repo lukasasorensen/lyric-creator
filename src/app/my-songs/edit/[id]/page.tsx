@@ -38,11 +38,13 @@ export default function SongEditorView() {
 
   return (
     <main className="song-container w-full">
-      <Link href="/my-songs">
-        <div className="-mb-10 cursor-pointer p-5">
-          <FaArrowLeft size={22} className={`${tw.TEXT_TERTIARY}`} />
-        </div>
-      </Link>
+      <div className="absolute">
+        <Link href="/my-songs">
+          <button className="cursor-pointer p-5">
+            <FaArrowLeft size={22} className={`${tw.TEXT_TERTIARY}`} />
+          </button>
+        </Link>
+      </div>
       <SongEditor />
     </main>
   );
